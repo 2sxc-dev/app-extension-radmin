@@ -346,12 +346,17 @@ export class TabulatorAdapter {
       });
 
       if (this.isViewConfigMode()) {
-        table.on("rowContext", (e, row) => {
-          this.showFloatingMenu(table, row, e);
-        });
+        table.on("dataProcessing", () => {
+          // Wait for data to be processed
+          table.on("rowMouseEnter", (e: any, row) => {
+            // Trigger Action Buttons for rows
+            this.showFloatingMenu(table, row, e);
+          });
 
-        table.on("headerContext", (e, column) => {
-          this.showFloatingColumnMenu(column, e, tableConfigData);
+          table.on("headerMouseEnter", (e, column) => {
+            // Trigger Action Buttons for column headers
+            this.showFloatingColumnMenu(column, e, tableConfigData);
+          });
         });
       }
     } catch (err) {
@@ -360,7 +365,12 @@ export class TabulatorAdapter {
   }
 
   isViewConfigMode(): boolean {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get("viewconfigmode")?.toLowerCase() === "true";
+    const url = window.location.href.toLowerCase();
+    const queryParamValue = new URLSearchParams(window.location.search)
+      .get("viewconfigmode")
+      ?.toLowerCase();
+
+    // TODO: @2pp - Dirty hack, later use 2sxc MyPage BasisURL...
+    return queryParamValue === "true" || url.includes("viewconfigmode/true");
   }
 }

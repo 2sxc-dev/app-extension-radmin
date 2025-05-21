@@ -18,8 +18,13 @@ export class tabulatorTable {
     const urlParams = new URLSearchParams(window.location.search);
     const viewIdFromParams = urlParams.get("viewid");
     const viewId = viewIdFromParams ? viewIdFromParams : data.viewId;
-    const linkParametersFromParams = urlParams.toString().replace(/(^|&)viewid=[^&]*/g, "").replace(/^&/, "");
-    const linkParameters = linkParametersFromParams ? linkParametersFromParams : undefined;
+    let linkParameters: string | undefined;
+    if (urlParams.has("viewconfigmode")) { // Ensure that the viewconfigmode is not accidentally used as a link parameter
+      linkParameters = undefined;
+    } else {
+      const linkParametersFromParams = urlParams.toString().replace(/(^|&)viewid=[^&]*/g, "").replace(/^&/, "");
+      linkParameters = linkParametersFromParams ? linkParametersFromParams : undefined;
+    }
 
     // Load table configuration with ConfigurationLoader
     const configLoader = new ConfigurationLoader(sxc);
