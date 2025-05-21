@@ -1,0 +1,2000 @@
+[
+  {
+    "Id": 55,
+    "Guid": "a8aa6d65-6638-4091-9943-dff735570517",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "2015-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 40,
+      "Guid": "e1e025d6-76ad-41b4-9317-b1618367d4c8",
+      "Priority": 11,
+      "Title": "2sic Introduction"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "2badge Basics"
+  },
+  {
+    "Id": 57,
+    "Guid": "1ba31d5a-ed2c-4e57-8913-308dc1e1309d",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "2015-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 40,
+      "Guid": "e1e025d6-76ad-41b4-9317-b1618367d4c8",
+      "Priority": 11,
+      "Title": "2sic Introduction"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Intranet (2badge, Dashboard, Ferien, …); Laufwerke"
+  },
+  {
+    "Id": 58,
+    "Guid": "3d71ab5a-68cc-46d9-9f4d-89021034388f",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "2015-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 40,
+      "Guid": "e1e025d6-76ad-41b4-9317-b1618367d4c8",
+      "Priority": 11,
+      "Title": "2sic Introduction"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "PC, Outlook, Telefon, LastPass"
+  },
+  {
+    "Id": 59,
+    "Guid": "f26c7581-d95f-476f-af91-9a678386ba67",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "2015-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 40,
+      "Guid": "e1e025d6-76ad-41b4-9317-b1618367d4c8",
+      "Priority": 11,
+      "Title": "2sic Introduction"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Azing \"verwenden\""
+  },
+  {
+    "Id": 60,
+    "Guid": "74257475-18d4-4163-b4e7-5bc9c77ea06f",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "2015-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 40,
+      "Guid": "e1e025d6-76ad-41b4-9317-b1618367d4c8",
+      "Priority": 11,
+      "Title": "2sic Introduction"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Azing \"advanced\""
+  },
+  {
+    "Id": 62,
+    "Guid": "4662ec76-ee92-47b3-b1fa-69cf04e0dfdc",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 5,
+    "Description": "",
+    "LifecycleFirst": "2005-01-01T00:00:00Z",
+    "LifecycleLatest": "2015-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 61,
+      "Guid": "755f2400-eea2-49a4-8d48-413eac0698e0",
+      "Icon": "📖",
+      "Title": "Documentation"
+    },
+    "Subject": {
+      "Id": 41,
+      "Guid": "c3efbe3b-9629-4611-85c0-cdfcc0e1f369",
+      "Priority": 12,
+      "Title": "2sic Foundation"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Documentation of all Foundations"
+  },
+  {
+    "Id": 65,
+    "Guid": "a551cc92-e4e6-41d4-b1a8-882017bf777a",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 23,
+      "Guid": "c7e56e3e-9417-4b62-98d9-4ed3878ed3ac",
+      "Icon": "ℹ️",
+      "Title": "Factsheet"
+    },
+    "Subject": {
+      "Id": 41,
+      "Guid": "c3efbe3b-9629-4611-85c0-cdfcc0e1f369",
+      "Priority": 12,
+      "Title": "2sic Foundation"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Values, Mission, Vision Short DE"
+  },
+  {
+    "Id": 66,
+    "Guid": "df0c2172-756e-4f62-9379-e3fc7ada32ac",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 41,
+      "Guid": "c3efbe3b-9629-4611-85c0-cdfcc0e1f369",
+      "Priority": 12,
+      "Title": "2sic Foundation"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "2sic Values, Mission, Vision"
+  },
+  {
+    "Id": 67,
+    "Guid": "c26aa171-8043-4a98-90f6-e458438e3c58",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 41,
+      "Guid": "c3efbe3b-9629-4611-85c0-cdfcc0e1f369",
+      "Priority": 12,
+      "Title": "2sic Foundation"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Organization Structure"
+  },
+  {
+    "Id": 68,
+    "Guid": "e02790c7-2167-4442-a363-df3360a28e20",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 41,
+      "Guid": "c3efbe3b-9629-4611-85c0-cdfcc0e1f369",
+      "Priority": 12,
+      "Title": "2sic Foundation"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Roles and Responsibilities"
+  },
+  {
+    "Id": 69,
+    "Guid": "c31b3884-c082-4c5c-b267-d857df45485e",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 41,
+      "Guid": "c3efbe3b-9629-4611-85c0-cdfcc0e1f369",
+      "Priority": 12,
+      "Title": "2sic Foundation"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Information Structure"
+  },
+  {
+    "Id": 70,
+    "Guid": "9913c8b8-55e0-4059-9674-c20cd8b903d3",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 7,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 50,
+    "ResourceStatus": {
+      "Id": 20,
+      "Guid": "c837a210-4387-4f20-9364-a825a6ace9ef",
+      "Emoji": "🏃🏼‍♀️",
+      "Title": "5 Actively Working on this"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 42,
+      "Guid": "640cec33-0a2f-4a78-8727-1cecc3c53cce",
+      "Priority": 20,
+      "Title": "azing Work"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "azing Work Overview - Concept"
+  },
+  {
+    "Id": 149,
+    "Guid": "bfafa8c3-5169-4852-83f8-22e00098755e",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 5,
+    "Description": "",
+    "LifecycleFirst": "2025-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 20,
+    "ResourceStatus": {
+      "Id": 20,
+      "Guid": "c837a210-4387-4f20-9364-a825a6ace9ef",
+      "Emoji": "🏃🏼‍♀️",
+      "Title": "5 Actively Working on this"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 42,
+      "Guid": "640cec33-0a2f-4a78-8727-1cecc3c53cce",
+      "Priority": 20,
+      "Title": "azing Work"
+    },
+    "SubSubject": {
+      "Id": 148,
+      "Guid": "fca769db-9dce-4041-a62a-865842f980ee",
+      "Title": "Education"
+    },
+    "Title": "Trainings Concept"
+  },
+  {
+    "Id": 150,
+    "Guid": "f0311a58-06a9-4036-8ae8-41cb06443c0e",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 4,
+    "Description": "",
+    "LifecycleFirst": "2024-12-01T00:00:00Z",
+    "LifecycleLatest": "2024-12-20T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 90,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 42,
+      "Guid": "640cec33-0a2f-4a78-8727-1cecc3c53cce",
+      "Priority": 20,
+      "Title": "azing Work"
+    },
+    "SubSubject": {
+      "Id": 148,
+      "Guid": "fca769db-9dce-4041-a62a-865842f980ee",
+      "Title": "Education"
+    },
+    "Title": "Levels of Skill (2givelife.org)"
+  },
+  {
+    "Id": 151,
+    "Guid": "6d1ae338-8507-4183-b791-875c20085c3a",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 3,
+    "Description": "",
+    "LifecycleFirst": "2025-12-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 21,
+      "Guid": "4636d196-c326-4e4c-ae28-118ac50adeaa",
+      "Emoji": "🥇",
+      "Title": "4 Next in Line"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 42,
+      "Guid": "640cec33-0a2f-4a78-8727-1cecc3c53cce",
+      "Priority": 20,
+      "Title": "azing Work"
+    },
+    "SubSubject": {
+      "Id": 148,
+      "Guid": "fca769db-9dce-4041-a62a-865842f980ee",
+      "Title": "Education"
+    },
+    "Title": "Levels of Skill Workshop"
+  },
+  {
+    "Id": 152,
+    "Guid": "081d7fb9-34af-47b2-907d-89e6473aca4c",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 4,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 42,
+      "Guid": "640cec33-0a2f-4a78-8727-1cecc3c53cce",
+      "Priority": 20,
+      "Title": "azing Work"
+    },
+    "SubSubject": {
+      "Id": 148,
+      "Guid": "fca769db-9dce-4041-a62a-865842f980ee",
+      "Title": "Education"
+    },
+    "Title": "Create Amazing Trainings"
+  },
+  {
+    "Id": 153,
+    "Guid": "59a3a11b-ab1c-44d6-a6bb-cb927f70c314",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 4,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 42,
+      "Guid": "640cec33-0a2f-4a78-8727-1cecc3c53cce",
+      "Priority": 20,
+      "Title": "azing Work"
+    },
+    "SubSubject": {
+      "Id": 148,
+      "Guid": "fca769db-9dce-4041-a62a-865842f980ee",
+      "Title": "Education"
+    },
+    "Title": "azing Skills-Growth Management"
+  },
+  {
+    "Id": 71,
+    "Guid": "42d78578-bb70-4767-84f3-38c39cdf14c6",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "C:%5CUsers%5C2dm%5C2sic%5CCompany%20Manuals%20Development%20-%20Documents%5Cazing%20Work%5CIntro%20azing%20Work%20is%20A-Z%20Amazing",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 43,
+      "Guid": "963c6514-6ef6-4b82-a86c-f4000eb2d01d",
+      "Priority": 31,
+      "Title": "2serve"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "azing Work A-Z is Amazing (Intro / Overview)"
+  },
+  {
+    "Id": 72,
+    "Guid": "deca19f3-99e6-4b0c-a6c8-8e86ed25e724",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 43,
+      "Guid": "963c6514-6ef6-4b82-a86c-f4000eb2d01d",
+      "Priority": 31,
+      "Title": "2serve"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "azing Process"
+  },
+  {
+    "Id": 74,
+    "Guid": "5bca49e0-4397-477a-9e2f-957ac7d70338",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 21,
+      "Guid": "4636d196-c326-4e4c-ae28-118ac50adeaa",
+      "Emoji": "🥇",
+      "Title": "4 Next in Line"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 43,
+      "Guid": "963c6514-6ef6-4b82-a86c-f4000eb2d01d",
+      "Priority": 31,
+      "Title": "2serve"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "2serve DoD - Definition of Done"
+  },
+  {
+    "Id": 122,
+    "Guid": "1cc7e1d9-ed3b-43a5-8b73-91e08027260e",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 7,
+    "Description": "",
+    "LifecycleFirst": "2025-02-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 43,
+      "Guid": "963c6514-6ef6-4b82-a86c-f4000eb2d01d",
+      "Priority": 31,
+      "Title": "2serve"
+    },
+    "SubSubject": {
+      "Id": 121,
+      "Guid": "c0b7ff42-f443-4c99-994b-5dc3dbf9e0e8",
+      "Title": "Context"
+    },
+    "Title": "azing Context - Concept"
+  },
+  {
+    "Id": 123,
+    "Guid": "015fcb6a-0711-45e3-902a-643c967fa2e7",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "2025-02-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 43,
+      "Guid": "963c6514-6ef6-4b82-a86c-f4000eb2d01d",
+      "Priority": 31,
+      "Title": "2serve"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "azing Context - Basics"
+  },
+  {
+    "Id": 124,
+    "Guid": "893fd841-48d3-46e8-ac7e-6be93de77fc7",
+    "AsDE": true,
+    "AsEN": true,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "2025-02-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 43,
+      "Guid": "963c6514-6ef6-4b82-a86c-f4000eb2d01d",
+      "Priority": 31,
+      "Title": "2serve"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "azing Context #2 – The 7 Levels"
+  },
+  {
+    "Id": 128,
+    "Guid": "0e8a2b80-99c9-45f9-93e6-df16c4173f3f",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 7,
+    "Description": "",
+    "LifecycleFirst": "2018-02-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 70,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 43,
+      "Guid": "963c6514-6ef6-4b82-a86c-f4000eb2d01d",
+      "Priority": 31,
+      "Title": "2serve"
+    },
+    "SubSubject": {
+      "Id": 127,
+      "Guid": "cb16e04a-4f96-4f46-b8f2-db4cfceec79c",
+      "Title": "Purpose"
+    },
+    "Title": "Core Purpose and Goals - Concept"
+  },
+  {
+    "Id": 129,
+    "Guid": "64ac0ea6-0464-4e19-a7c0-d2b8ff21bb90",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 3,
+    "Description": "",
+    "LifecycleFirst": "2018-02-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 43,
+      "Guid": "963c6514-6ef6-4b82-a86c-f4000eb2d01d",
+      "Priority": 31,
+      "Title": "2serve"
+    },
+    "SubSubject": {
+      "Id": 127,
+      "Guid": "cb16e04a-4f96-4f46-b8f2-db4cfceec79c",
+      "Title": "Purpose"
+    },
+    "Title": "2serve Purpose/Goals"
+  },
+  {
+    "Id": 130,
+    "Guid": "0466ece9-d94b-4ca0-9883-be58a9952fde",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 4,
+    "Description": "",
+    "LifecycleFirst": "2018-02-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 19,
+      "Guid": "a9fc5f50-ebc1-4d2e-8be5-a6773b76309c",
+      "Emoji": "💤",
+      "Title": "1 Waiting"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 43,
+      "Guid": "963c6514-6ef6-4b82-a86c-f4000eb2d01d",
+      "Priority": 31,
+      "Title": "2serve"
+    },
+    "SubSubject": {
+      "Id": 127,
+      "Guid": "cb16e04a-4f96-4f46-b8f2-db4cfceec79c",
+      "Title": "Purpose"
+    },
+    "Title": "2serve Purpose/Goals Advanced"
+  },
+  {
+    "Id": 73,
+    "Guid": "eb867fa5-a1bd-48fb-b0f6-9ec121b52225",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "2024-06-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 44,
+      "Guid": "8b411a01-8164-46c6-9128-18cdb0327c25",
+      "Priority": 41,
+      "Title": "2inspire"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "2inspire task vs. responsibility"
+  },
+  {
+    "Id": 75,
+    "Guid": "4a732214-602b-4bc0-b5d9-251c522b2e01",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 19,
+      "Guid": "a9fc5f50-ebc1-4d2e-8be5-a6773b76309c",
+      "Emoji": "💤",
+      "Title": "1 Waiting"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 44,
+      "Guid": "8b411a01-8164-46c6-9128-18cdb0327c25",
+      "Priority": 41,
+      "Title": "2inspire"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "World View: Benevolant Assessment"
+  },
+  {
+    "Id": 76,
+    "Guid": "ec16af8c-5773-4fad-b884-caf98625a5b4",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 19,
+      "Guid": "a9fc5f50-ebc1-4d2e-8be5-a6773b76309c",
+      "Emoji": "💤",
+      "Title": "1 Waiting"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 44,
+      "Guid": "8b411a01-8164-46c6-9128-18cdb0327c25",
+      "Priority": 41,
+      "Title": "2inspire"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Guilt-Free Problem Solving"
+  },
+  {
+    "Id": 77,
+    "Guid": "d7e4ede9-0e96-434d-9130-6db8c1d40bda",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 3,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 44,
+      "Guid": "8b411a01-8164-46c6-9128-18cdb0327c25",
+      "Priority": 41,
+      "Title": "2inspire"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Decision Making"
+  },
+  {
+    "Id": 132,
+    "Guid": "a14f53e3-d3f3-4283-98a9-d27894ee1e95",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 7,
+    "Description": "",
+    "LifecycleFirst": "2010-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-14T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 40,
+    "ResourceStatus": {
+      "Id": 20,
+      "Guid": "c837a210-4387-4f20-9364-a825a6ace9ef",
+      "Emoji": "🏃🏼‍♀️",
+      "Title": "5 Actively Working on this"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 131,
+      "Guid": "5555776d-e617-4612-b339-266c1054ce10",
+      "Title": "Tasks"
+    },
+    "Title": "Task Management Concept"
+  },
+  {
+    "Id": 133,
+    "Guid": "b51cdc2d-ea01-46f9-a91f-d784dc17658b",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "2010-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-14T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 10,
+    "ResourceStatus": {
+      "Id": 20,
+      "Guid": "c837a210-4387-4f20-9364-a825a6ace9ef",
+      "Emoji": "🏃🏼‍♀️",
+      "Title": "5 Actively Working on this"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 131,
+      "Guid": "5555776d-e617-4612-b339-266c1054ce10",
+      "Title": "Tasks"
+    },
+    "Title": "Task Use Basics"
+  },
+  {
+    "Id": 134,
+    "Guid": "388f7eed-b4f1-46d8-b5ba-921abd9e3c7a",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "2010-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-14T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 10,
+    "ResourceStatus": {
+      "Id": 21,
+      "Guid": "4636d196-c326-4e4c-ae28-118ac50adeaa",
+      "Emoji": "🥇",
+      "Title": "4 Next in Line"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 131,
+      "Guid": "5555776d-e617-4612-b339-266c1054ce10",
+      "Title": "Tasks"
+    },
+    "Title": "Task Management Basics"
+  },
+  {
+    "Id": 135,
+    "Guid": "e02afc0c-3a5e-416d-948e-ca859b6e26f0",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 1,
+    "Description": "",
+    "LifecycleFirst": "2025-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-14T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 10,
+    "ResourceStatus": {
+      "Id": 21,
+      "Guid": "4636d196-c326-4e4c-ae28-118ac50adeaa",
+      "Emoji": "🥇",
+      "Title": "4 Next in Line"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 131,
+      "Guid": "5555776d-e617-4612-b339-266c1054ce10",
+      "Title": "Tasks"
+    },
+    "Title": "Task Management Advanced"
+  },
+  {
+    "Id": 137,
+    "Guid": "f559b9bb-ee46-4081-b7c9-5523b2d21e6a",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 5,
+    "Description": "",
+    "LifecycleFirst": "2015-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-14T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 90,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 136,
+      "Guid": "a67151b5-6281-4d3c-89a1-267214a85ce1",
+      "Title": "Meetings"
+    },
+    "Title": "Meetings Concept"
+  },
+  {
+    "Id": 138,
+    "Guid": "1988f0a5-7f49-40be-b074-7c435b4eadeb",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "2025-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 100,
+    "ResourceStatus": {
+      "Id": 56,
+      "Guid": "9460b353-a929-497b-a540-33fa85bfd7e1",
+      "Emoji": "✅",
+      "Title": "9 Ready to Use"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 136,
+      "Guid": "a67151b5-6281-4d3c-89a1-267214a85ce1",
+      "Title": "Meetings"
+    },
+    "Title": "Meetings - Introduction Workshop"
+  },
+  {
+    "Id": 140,
+    "Guid": "55295ab6-fe39-4f6e-b330-dd9ff6c3756d",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "2025-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 21,
+      "Guid": "4636d196-c326-4e4c-ae28-118ac50adeaa",
+      "Emoji": "🥇",
+      "Title": "4 Next in Line"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 136,
+      "Guid": "a67151b5-6281-4d3c-89a1-267214a85ce1",
+      "Title": "Meetings"
+    },
+    "Title": "Preparation is Everything"
+  },
+  {
+    "Id": 141,
+    "Guid": "665eb7da-692c-405d-8074-0e506a86a9ea",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "2025-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 19,
+      "Guid": "a9fc5f50-ebc1-4d2e-8be5-a6773b76309c",
+      "Emoji": "💤",
+      "Title": "1 Waiting"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 136,
+      "Guid": "a67151b5-6281-4d3c-89a1-267214a85ce1",
+      "Title": "Meetings"
+    },
+    "Title": "Moderation 1"
+  },
+  {
+    "Id": 142,
+    "Guid": "4b003046-7156-4bab-95c6-0bcc9f33f6b8",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "2025-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 19,
+      "Guid": "a9fc5f50-ebc1-4d2e-8be5-a6773b76309c",
+      "Emoji": "💤",
+      "Title": "1 Waiting"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 136,
+      "Guid": "a67151b5-6281-4d3c-89a1-267214a85ce1",
+      "Title": "Meetings"
+    },
+    "Title": "Moderation 2"
+  },
+  {
+    "Id": 143,
+    "Guid": "3ffbb7e6-852e-4ba7-a381-8100aead4aa5",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 2,
+    "Description": "",
+    "LifecycleFirst": "2025-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-09T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 136,
+      "Guid": "a67151b5-6281-4d3c-89a1-267214a85ce1",
+      "Title": "Meetings"
+    },
+    "Title": "PowerPoint 1"
+  },
+  {
+    "Id": 145,
+    "Guid": "791f432e-819a-4f13-83e9-8c8d9d0f5127",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 5,
+    "Description": "",
+    "LifecycleFirst": "2015-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-14T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 19,
+      "Guid": "a9fc5f50-ebc1-4d2e-8be5-a6773b76309c",
+      "Emoji": "💤",
+      "Title": "1 Waiting"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 144,
+      "Guid": "fef719da-d401-4915-8ce9-816eb750c7bd",
+      "Title": "Specs"
+    },
+    "Title": "Meetings Concept"
+  },
+  {
+    "Id": 146,
+    "Guid": "bf58eb8d-61b8-4e67-90de-dad276487fe8",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 3,
+    "Description": "",
+    "LifecycleFirst": "2015-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-14T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 21,
+      "Guid": "4636d196-c326-4e4c-ae28-118ac50adeaa",
+      "Emoji": "🥇",
+      "Title": "4 Next in Line"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 144,
+      "Guid": "fef719da-d401-4915-8ce9-816eb750c7bd",
+      "Title": "Specs"
+    },
+    "Title": "Specs Workshop Basic"
+  },
+  {
+    "Id": 147,
+    "Guid": "5aeb20d6-2a83-42fd-8eda-fef8956e83ed",
+    "AsDE": true,
+    "AsEN": false,
+    "Complexity": 3,
+    "Description": "",
+    "LifecycleFirst": "2015-01-01T00:00:00Z",
+    "LifecycleLatest": "2025-02-14T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 14,
+      "Guid": "4ff5d286-cbf2-4f8c-bfa0-30dc9653e291",
+      "Icon": "👨🏻‍🏫",
+      "Title": "Workshop"
+    },
+    "Subject": {
+      "Id": 45,
+      "Guid": "a0d24ed2-8d16-4af9-afcf-9fe26f1c8108",
+      "Priority": 51,
+      "Title": "2create"
+    },
+    "SubSubject": {
+      "Id": 144,
+      "Guid": "fef719da-d401-4915-8ce9-816eb750c7bd",
+      "Title": "Specs"
+    },
+    "Title": "Specs Workshop Advanced"
+  },
+  {
+    "Id": 163,
+    "Guid": "70b11813-cace-41a4-a5f9-97a70ffd7c3f",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 9,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 48,
+      "Guid": "a45b1e48-0eda-4771-bb04-6f640d6f6fd3",
+      "Priority": 71,
+      "Title": "2organize"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "azing Leadership...and Trainings"
+  },
+  {
+    "Id": 154,
+    "Guid": "cad27de7-5c51-4783-a20c-ac593dc810cf",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 9,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 47,
+      "Guid": "1ba96564-9003-4f71-b05f-3e2a10cc3773",
+      "Priority": 81,
+      "Title": "2manage"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Dev Amazing Foundations"
+  },
+  {
+    "Id": 155,
+    "Guid": "f819c05b-bbe9-44bd-827b-04ef46833da5",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 9,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 47,
+      "Guid": "1ba96564-9003-4f71-b05f-3e2a10cc3773",
+      "Priority": 81,
+      "Title": "2manage"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Dev Amazing Values, Mission, Vision"
+  },
+  {
+    "Id": 156,
+    "Guid": "7c0ccfd3-14e7-4d51-9be8-2e08653767f4",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 9,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 47,
+      "Guid": "1ba96564-9003-4f71-b05f-3e2a10cc3773",
+      "Priority": 81,
+      "Title": "2manage"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Dev Amazing Culture"
+  },
+  {
+    "Id": 157,
+    "Guid": "e2c5a439-6001-4dcb-8a30-f784d6b3e79e",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 9,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 47,
+      "Guid": "1ba96564-9003-4f71-b05f-3e2a10cc3773",
+      "Priority": 81,
+      "Title": "2manage"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Dev Amazing Organizations and Roles"
+  },
+  {
+    "Id": 158,
+    "Guid": "d6fb7859-c4da-4cf5-8fd2-085e30907bfe",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 9,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 47,
+      "Guid": "1ba96564-9003-4f71-b05f-3e2a10cc3773",
+      "Priority": 81,
+      "Title": "2manage"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Dev Amazing Decision Frameworks"
+  },
+  {
+    "Id": 159,
+    "Guid": "1a688566-41a0-4588-94d9-73167ca9a8dc",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 9,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 47,
+      "Guid": "1ba96564-9003-4f71-b05f-3e2a10cc3773",
+      "Priority": 81,
+      "Title": "2manage"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Dev Amazing Change Management"
+  },
+  {
+    "Id": 160,
+    "Guid": "52abc95e-dc70-485a-9900-363a327cfb7f",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 9,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 47,
+      "Guid": "1ba96564-9003-4f71-b05f-3e2a10cc3773",
+      "Priority": 81,
+      "Title": "2manage"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Dev Amazing Management"
+  },
+  {
+    "Id": 161,
+    "Guid": "803eea25-8a20-4f26-9c8a-8bd05a1e1bbf",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 9,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 47,
+      "Guid": "1ba96564-9003-4f71-b05f-3e2a10cc3773",
+      "Priority": 81,
+      "Title": "2manage"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Dev Amazing Learning Culture"
+  },
+  {
+    "Id": 162,
+    "Guid": "9346e97f-ec90-40e6-adde-d81e38d0f8c9",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 9,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 47,
+      "Guid": "1ba96564-9003-4f71-b05f-3e2a10cc3773",
+      "Priority": 81,
+      "Title": "2manage"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "Dev Amazing Leadership"
+  },
+  {
+    "Id": 164,
+    "Guid": "bdbe56d7-82ed-478d-9dc5-ee0699256834",
+    "AsDE": false,
+    "AsEN": true,
+    "Complexity": 9,
+    "Description": "",
+    "LifecycleFirst": "0001-01-01T00:00:00Z",
+    "LifecycleLatest": "0001-01-01T00:00:00Z",
+    "LocationOriginals": "",
+    "LocationPublished": "",
+    "Progress": 0,
+    "ResourceStatus": {
+      "Id": 17,
+      "Guid": "fd736b2d-99ae-4617-80de-bea733cf479c",
+      "Emoji": "❄️",
+      "Title": "0 Do Someday"
+    },
+    "ResourceType": {
+      "Id": 13,
+      "Guid": "9d137146-82b8-49f5-82b9-8b3b56b4a88f",
+      "Icon": "💡",
+      "Title": "Concept"
+    },
+    "Subject": {
+      "Id": 47,
+      "Guid": "1ba96564-9003-4f71-b05f-3e2a10cc3773",
+      "Priority": 81,
+      "Title": "2manage"
+    },
+    "SubSubject": {
+      "Id": 54,
+      "Guid": "dca9bc18-e3f5-48fa-94a7-0a44fd43e0de",
+      "Title": "Basics"
+    },
+    "Title": "azing Management and Workshops..."
+  }
+]

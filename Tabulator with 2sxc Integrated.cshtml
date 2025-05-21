@@ -1,0 +1,46 @@
+@inherits Custom.Hybrid.RazorTyped
+@using ToSic.Razor.Blade
+@using ToSic.Sxc.Blocks
+@using AppCode
+@using AppCode.Data
+
+@{
+  var viewConfigMode = MyPage.Parameters.Bool("viewconfigmode", fallback: false);
+}
+
+<div class="form-check form-switch">
+  <input
+    class="form-check-input"
+    type="checkbox"
+    role="switch"
+    id="flexSwitchCheckDefault"
+    onchange="location.href='@($"{Link.To()}?viewconfigmode={!viewConfigMode}")'"
+    @(viewConfigMode ? "checked" : "")
+  >
+  <label class="form-check-label" for="flexSwitchCheckDefault">View Config Mode</label>
+</div>
+
+<div @Kit.Toolbar.Default(MyItem)>
+  @* Tabulator ID *@
+  <div id="azing-resources-table"></div>
+</div>
+
+@Kit.Page.TurnOn("window.table.createTabulatorTable()", data: new {
+  name = "azing-resources-table",
+  moduleId = MyContext.Module.Id,
+  viewId = MyItem.Guid.ToString()
+})
+
+<script src="@App.Folder.Url/dist/scripts.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
+<link href="@App.Folder.Url/dist/styles.min.css" rel="stylesheet">
+
+@Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.9\"></script>")
+@Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.13\"></script>")
+
+@*
+
+  - The Code is integrated into this app to have some sample data
+  - There are 2 ways of data loading immplemented 1) Call with Promise 2) Let Tabulator AJAX load
+  - The Code is related to the values of the app - when outsourced needs to be more generic
+ 
+*@

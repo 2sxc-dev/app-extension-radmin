@@ -1,0 +1,55 @@
+@inherits Custom.Hybrid.RazorTyped
+@using ToSic.Razor.Blade
+@using ToSic.Sxc.Blocks
+@using AppCode
+@using AppCode.Data
+
+@{
+  var date = MyModel.Get<DateTime>("date");
+  var tooltipFormattedDate = date.ToString("dd.MM.yyyy");
+  var cellFormattedDate = date.ToString("yy");
+  var isPlanned = MyModel.Get<bool>("isPlanned");
+    
+  string color = "";
+
+  if (tooltipFormattedDate != null && cellFormattedDate != null && date != default(DateTime))
+  {
+      var daysDiff = (DateTime.Now - date).TotalDays;
+      var yearsDiff = daysDiff / 365.25;
+
+      // Formatted date for Tooltip
+      var roundedYearsDiff = (Math.Round(yearsDiff * 4) / 4).ToString("0.00");
+      if (roundedYearsDiff == "0.00")
+      {
+          roundedYearsDiff = "< 0.25";
+      }
+
+      if (yearsDiff <= 5)
+      {
+        // Green, within the last year
+        color = "#9cdb9e";
+      }
+      else if (yearsDiff > 5 && yearsDiff < 10)
+      {
+        // Less intense green, 1-3 years
+        color = "rgba(156,219,158,0.7)";
+      }
+      else if (yearsDiff >= 10)
+      {
+        // Even less intense green, 3-5 years
+        color = "rgba(156,219,158,0.3)";
+      }
+      <span title="@tooltipFormattedDate - @roundedYearsDiff year(s)" style="background-color:@color; border-radius: 4px; padding: 0 2px;">
+        @cellFormattedDate
+      </span>
+  }
+  else if (isPlanned)
+  {
+    // Orange, if planned
+    color = "rgba(255,165,0,0.5)";
+    <span title="Is Planned for @tooltipFormattedDate" style="background-color:@color; border-radius: 4px; padding: 0 2px;">
+      X
+    </span>
+  }
+  else { }
+}

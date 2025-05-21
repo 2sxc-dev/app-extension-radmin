@@ -1,0 +1,69 @@
+@inherits Custom.Hybrid.RazorTyped
+@using ToSic.Razor.Blade
+@using ToSic.Sxc.Blocks
+@using AppCode
+@using AppCode.Data
+@using ToSic.Sxc.Services
+
+@{
+  var resources = App.Data.GetAll<Resource>().OrderBy(r => r.Subject.Priority);
+  var resourcesJson = Kit.Json.ToJson(resources);
+}
+
+@* Tabulator CDN *@
+<link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.1/dist/js/tabulator.min.js"></script>
+
+@* <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script> *@
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/luxon@2.3.1/build/global/luxon.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.20/jspdf.plugin.autotable.min.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/6.3.1/css/tabulator_bootstrap5.min.css" rel="stylesheet">
+
+@* Tabulator *@
+<div id="azing-resources-table"></div>
+
+<script>
+  const resourceData = @Html.Raw(resourcesJson);
+  var tabledata = [
+    ...resourceData
+  ];
+
+  //create Tabulator on DOM element with id "azing-resources-table"
+  var table = new Tabulator("#azing-resources-table", {
+    data: tabledata, // assign data to table
+    layout: "fitDataStretch", // fit columns to width of table
+    columns: [
+      { title: "Subject", field: "Subject.Title" },
+      { title: "SubSubject", field: "SubSubject.Title" },
+      { title: "Resource", field: "Title", formatter: "link",
+        formatterParams: {
+          url: function (cell) { return `http://azing-work.devweb-03.2sic/skills-and-growth/resource/?resource=${cell.getData().Id}`; }
+        }
+      },
+      { title: "Tp", field: "ResourceType.Icon", headerTooltip: "Type", tooltip: (e, cell) => cell.getData()?.ResourceType?.Title || "" },
+      { title: "St", field: "ResourceStatus.Emoji", headerTooltip: "Status", tooltip: (e, cell) => cell.getData()?.ResourceStatus?.Title || "" },
+      { title: "St%", field: "Progress", hozAlign: "right", formatter: function (cell) { return cell.getValue() + "%"; }, headerTooltip: "Status in %" },
+      { title: "EN", field: "AsEN", formatter: function (cell) { return cell.getValue() ? "EN" : ""; } },
+      { title: "DE", field: "AsDE", formatter: function (cell) { return cell.getValue() ? "DE" : ""; } },
+      {
+        title: "Updated", field: "LifecycleLatest", sorter: "date", formatter: function (cell) {
+          return luxon.DateTime.fromISO(cell.getValue()).toFormat('yyyy-MM');
+        },
+      },
+      {
+        title: "Level", field: "Complexity", formatter: "progress",
+        formatterParams: {
+          min: 0,
+          max: 10,
+          color: "#9cdb9e",
+          legend: true,
+          legendAlign: "right",
+        }
+      },
+    ]
+  });
+</script>

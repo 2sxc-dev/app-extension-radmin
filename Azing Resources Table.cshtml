@@ -1,0 +1,81 @@
+@inherits Custom.Hybrid.RazorTyped
+@using ToSic.Razor.Blade
+@using ToSic.Sxc.Blocks
+@using AppCode
+@using AppCode.Data
+
+@{
+  var resources = App.Data.GetAll<Resource>().OrderBy(r => r.Subject.Priority);
+}
+
+<div class="overflow-x-scroll" style="width: 100%;">
+  <table id="azing-resources-table" class="display" style="width: 100%">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>SubSubject</th>
+        <th>Resource</th>
+        <th title="Type">Tp</th>
+        <th title="Status">St</th>
+        <th title="Status in %">St%</th>
+        <th>EN</th>
+        <th>DE</th>
+        <th>Updated</th>
+        <th>Level</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var resource in resources)
+      {
+        // Render the resource
+        <tr @Kit.Toolbar.Empty().Edit(resource)>
+          <td title="@resource.Subject.Title" style="max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            @resource.Subject.Title
+          </td>
+          <td>
+            @resource.SubSubject.Title
+          </td>
+          <td title="@resource.Title" style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <a href="@Link.To(pageId: 41, parameters: MyPage.Parameters.Set("resource", resource.Id))">
+              @resource.Title
+            </a>
+          </td>
+          <td title="@resource.ResourceType.Title">
+            @resource.ResourceType.Icon
+          </td>
+          <td title="@resource.ResourceStatus.Title">
+            @resource.ResourceStatus.Emoji
+          </td>
+          <td>
+            @resource.Progress%
+          </td>
+          <td>
+            @(resource.AsEN ? "EN" : "")
+          </td>
+          <td>
+            @(resource.AsDE ? "DE" : "")
+          </td>
+          <td title="Last updeted on @resource.LifecycleLatest.ToString("dd.MM.yyyy")">
+            @resource.LifecycleLatest.ToString("yyyy-MM")
+          </td>
+          <td>
+            @Html.Partial("Progress Bar.cshtml", new { amount = resource.Complexity, max = 10, color = "#9cdb9e" })
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@* Load table *@
+<script>
+  new DataTable('#azing-resources-table', {
+    fixedHeader: {
+      header: true,
+      headerOffset: 105 // Nav = 79px + Breadcrumbs = 26px
+    },
+    lengthMenu: [{ label: 'All', value: -1 }, 50, 20, 10],
+    autoWidth: false,
+    order: []
+  });
+</script>

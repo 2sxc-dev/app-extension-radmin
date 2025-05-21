@@ -1,0 +1,75 @@
+@inherits Custom.Hybrid.RazorTyped
+@using ToSic.Razor.Blade
+@using ToSic.Sxc.Blocks
+@using AppCode
+@using AppCode.Data
+
+@{
+  // Get resource from calling file
+  var resource = MyModel.Get<Resource>("resource");
+}
+
+<table class="table table-striped">
+  <tbody>
+    <tr>
+      <th>Title</th>
+      <td>@resource.Title</td>
+    </tr>
+    <tr>
+      <th>Subject</th>
+      <td>@resource.Subject.Title</td>
+    </tr>
+    <tr>
+      <th>SubSubject</th>
+      <td>@resource.SubSubject.Title</td>
+    </tr>
+    <tr>
+      <th>Description</th>
+      <td>@resource.Description</td>
+    </tr>
+    <tr>
+      <th>ResourceType</th>
+      <td>@resource.ResourceType.Title</td>
+    </tr>
+    <tr>
+      <th>EN</th>
+      <td>
+        @(resource.AsEN ? "EN" : "")
+      </td>
+    </tr>
+    <tr>
+      <th>DE</th>
+      <td>
+        @(resource.AsDE ? "DE" : "")
+      </td>
+    </tr>
+    <tr>
+      <th>Complexity</th>
+      <td>@resource.Complexity</td>
+    </tr>
+    <tr>
+      <th>LocationOriginals</th>
+      <td>@resource.LocationOriginals</td>
+    </tr>
+    <tr>
+      <th>LocationPublished</th>
+      <td>@resource.LocationPublished</td>
+    </tr>
+    <tr>
+      <th>ResourceStatus</th>
+      <td>@resource.ResourceStatus.Title</td>
+    </tr>
+    <tr>
+      <th>Progress</th>
+      <td>@resource.Progress</td>
+    </tr>
+    <tr>
+      <th>LifecycleFirst</th>
+      <td>@resource.LifecycleFirst</td>
+    </tr>
+    <tr>
+      <th>LifecycleLatest</th>
+      <td>@resource.LifecycleLatest</td>
+    </tr>
+  </tbody>
+</table>

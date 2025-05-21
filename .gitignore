@@ -1,0 +1,12 @@
+obj/
+bin/
+
+sh.exe.stackdump
+node_modules
+
+# folders from visual studio which you don't want in your git repo
+.temp_cache
+.temp_cache\default-production
+
+# folders from built webpack which you don't want in your git repo
+dist

@@ -1,0 +1,126 @@
+@inherits Custom.Hybrid.RazorTyped
+@using ToSic.Razor.Blade
+@using ToSic.Sxc.Blocks
+@using AppCode
+@using AppCode.Data
+
+@{
+  var persons = App.Data.GetAll<Person>();
+  var resources = App.Data.GetAll<Resource>().OrderBy(r => r.Subject.Priority);
+}
+
+<div class="overflow-x-scroll" style="width: 100%;">
+  <table id="trainings-table" class="display" style="width: 100%;">
+    <thead>
+      <tr>
+        <th>Resource</th>
+        <th title="Training %">✅</th>
+        <th title="Done">✔️</th>
+        <th title="Pending">⌚</th>
+        @foreach (var person in persons)
+        {
+          <th title="@person.Name">
+            <a href="@Link.To(parameters: MyPage.Parameters.Set("details", person.NameId))">
+              @person.NameId.Replace("2", "").ToUpper()
+            </a>
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var group in resources)
+      {
+        var resourceTrainings = group.Parents<Training>(field: nameof(Training.Resources)).ToList();
+        
+        var distinctAttendees = resourceTrainings
+          .Where(t => !t.IsPlanned)
+          .SelectMany(t => t.Attendees)
+          .Distinct()
+          .Count();
+
+        var pendingAttendees = resourceTrainings
+          .Where(t => t.IsPlanned)
+          .SelectMany(t => t.Attendees)
+          .Distinct()
+          .Count();
+
+        var personsCount = distinctAttendees + pendingAttendees;
+
+        <tr>
+          <td title="@group.Title" style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <a href="@Link.To(pageId: 41, parameters: MyPage.Parameters.Set("resource", group.Id))">
+              @group.Title
+            </a>
+          </td>
+          <td >
+            @* Show Percentage of persons which attended the resource *@
+            @Html.Partial("Progress Bar.cshtml", new {
+              amount = personsCount > 0
+                ? (100 / (double)personsCount * distinctAttendees)
+                : 0,
+              max = 100,
+              color = "#9cdb9e",
+              suffix = "%"
+            })
+          </td>
+          <td>
+            @* Show Amount of persons which attended the resource *@
+            @Html.Partial("Progress Bar.cshtml", new {
+              amount = distinctAttendees,
+              max = personsCount,
+              color = "#adefff"
+            })
+          </td>
+          <td>
+            @* Show Amount of persons which haven't attended the resource yet *@
+            @Html.Partial("Progress Bar.cshtml", new {
+              amount = pendingAttendees,
+              max = personsCount,
+              color = "#cfadff"
+            })
+          </td>
+          @* For each person, get unique training dates as "yy" with a tooltip displaying "dd.MM.yyyy" or "x" if none *@
+          @foreach (var person in persons)
+          {
+            var personTrainings = resourceTrainings
+              .Where(t => t.Attendees.Contains(person))
+              .OrderByDescending(t => t.Date)
+              .ToList();
+
+            var date = personTrainings
+              .Select(t => t.Date)
+              .Distinct()
+              .FirstOrDefault();
+            
+            var isPlanned = personTrainings
+              .Select(t => t.IsPlanned)
+              .FirstOrDefault();
+          
+            <td>
+              @if (date != null)
+              {
+                @Html.Partial("Attendance Date.cshtml", new { date, isPlanned })
+              }
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<script>
+  new DataTable('#trainings-table', {
+    fixedHeader: {
+      header: true,
+      headerOffset: 105 // Nav = 79px + Breadcrumbs = 26px
+    },
+    lengthMenu: [{ label: 'All', value: -1 }, 50, 20, 10],
+    autoWidth: false,
+    columnDefs: [
+      { targets: [0, 1, 2, 3], orderable: true },
+      { targets: "_all", orderable: false }
+    ],
+    order: []
+  });
+</script>

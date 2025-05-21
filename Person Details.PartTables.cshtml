@@ -1,0 +1,185 @@
+@inherits Custom.Hybrid.RazorTyped
+@using ToSic.Razor.Blade
+@using ToSic.Sxc.Blocks
+@using AppCode
+@using AppCode.Data
+
+@{
+  // Get person from calling file
+  var person = MyModel.Get<Person>("person");
+
+  var allRoles = App.Data.GetAll<Roles>();
+  
+  var roles = person.Roles;
+  var functions = roles.SelectMany(r => r.Functions);
+
+  var functionResources = functions
+    .SelectMany(f => f.Resources)
+    .Distinct();
+  var resources = App.Data
+    .GetAll<Resource>()
+    .OrderBy(r => r.Subject.Priority);
+
+  var personFunctions = roles
+    .SelectMany(role => role.Functions, (role, function) => new { RoleTitle = role.Title, FunctionTitle = function.Title })
+    .ToList();
+  
+  var trainings = App.Data.GetAll<Training>();
+
+  // Should it also show subject / unit titles?
+  var showAllTrainings = MyPage.Parameters.Bool("show-all-trainings", fallback: false);
+}
+
+@* Table showing Functions and roles assigned to selected user *@
+<h2>Functions and Roles assigned to this use</h2>
+<table id="person-functions-table" class="display" style="width: 100%;">
+  <thead>
+    <tr>
+      <th>Role</th>
+      <th>Function</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var pf in personFunctions)
+    {
+      <tr>
+        <td><strong>@pf.RoleTitle</strong></td>
+        <td>@pf.FunctionTitle</td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+<h2>Trainings</h2>
+
+@* Toggle for for only showing attended traingings or all *@
+<div class="form-check form-switch">
+  <input 
+    class="form-check-input"
+    type="checkbox"
+    role="switch"
+    id="attended-switch" 
+    @(showAllTrainings ? "checked" : "")
+    onchange="location.href='@Link.To(parameters: MyPage.Parameters.Set("show-all-trainings", !showAllTrainings))'"
+  >
+  <label class="form-check-label" for="attended-switch">Show All</label>
+</div>
+
+@if (!trainings.Any())
+{
+  <p>No Trainings attended.</p>
+}
+else
+{
+  <table id="person-trainings-table" class="display" style="width: 100%;">
+    <thead>
+      <tr>
+        <th>Resource</th>
+        <th>Pending</th>
+        <th>Training Date</th>
+        <th>Needed</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var resource in resources)
+      {
+        // Get all Trainings for this resource which the person attended
+        var attendedTrainings = trainings.Where(t => t.Attendees.Any(a => a.Id == person.Id));
+
+        // TODO: @2pp this looks very complicated, should be simplified
+        var resourceTraining = trainings
+          .SelectMany(t => t.Children<Resource>("Resources"), (t, r) => new { Training = t, Resource = r })
+          .Where(tr => tr.Resource.Id == resource.Id && tr.Training.Attendees.Any(a => a.Id == person.Id))
+          .Select(tr => tr.Training);
+        var latestTraining = resourceTraining
+          .OrderByDescending(t => t.Date)
+          .FirstOrDefault();
+
+        var isPlanned = latestTraining != null && latestTraining.IsPlanned;
+
+        // Get all Roles which have a function with the resource
+        var matchingRoles = roles
+              .Where(r => r.Functions
+                .Any(f => f.Resources != null && f.Resources
+                  .Any(res => res.Id == resource.Id))
+              ).ToList();
+
+        <tr @Kit.Toolbar.Empty().New(trainings,
+          tweak: t =>
+            t.Prefill("Attendees", person.Guid)
+            .Prefill("Title", (resource.Title + " - " + person.Name))
+            .Prefill("Date", DateTime.Now)
+            .Prefill("Resources", resource.Guid))
+        >
+          <td @Kit.Toolbar.Edit(resource)>@resource.Title</td>
+          <td>@(isPlanned ? "⌚" : "")</td>
+          <td>
+            @if (latestTraining != null)
+            {
+              <div class="d-flex" @Kit.Toolbar.Edit(latestTraining)>
+                @Html.Partial("Attendance Date.cshtml", new {
+                  date = latestTraining.Date,
+                  isPlanned = latestTraining.IsPlanned
+                })
+                <span>&nbsp;</span>
+                @latestTraining.Title
+              </div>
+            }
+          </td>
+          <td>
+          @if (latestTraining != null && functionResources.Contains(latestTraining.Resources))
+          {
+            @* Training attended and needed *@
+            <span>✅</span>
+          }
+          else if (latestTraining != null && !functionResources.Contains(latestTraining.Resources))
+          {
+            @* Training attended but not needed *@
+            <span></span>
+          }
+          else if (latestTraining == null && functionResources.Contains(resource))
+          {
+            @* Training needed but not attended *@
+            <span>❌</span>
+          }
+
+          @if (matchingRoles.Count() > 1)
+          {
+            <span title="@string.Join(", ", matchingRoles.Select(r => r.Title))">
+              @matchingRoles.FirstOrDefault().Title (+)
+            </span>
+          }
+          else if (matchingRoles.Any())
+          {
+            <span>@matchingRoles.FirstOrDefault().Title</span>
+          }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+<script>
+  new DataTable('#person-functions-table', {
+    fixedHeader: {
+      header: true,
+      headerOffset: 105 // Nav = 79px + Breadcrumbs = 26px
+    },
+    lengthMenu: [{ label: 'All', value: -1 }, 50, 20, 10],
+    autoWidth: false,
+    order: []
+  });
+</script>
+
+<script>
+  new DataTable('#person-trainings-table', {
+    fixedHeader: {
+      header: true,
+      headerOffset: 105 // Nav = 79px + Breadcrumbs = 26px
+    },
+    lengthMenu: [{ label: 'All', value: -1 }, 50, 20, 10],
+    autoWidth: false,
+    order: []
+  });
+</script>

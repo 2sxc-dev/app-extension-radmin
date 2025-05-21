@@ -1,0 +1,49 @@
+@inherits Custom.Hybrid.RazorTyped
+@using ToSic.Razor.Blade
+@using ToSic.Sxc.Blocks
+@using AppCode
+@using AppCode.Data
+
+@* Load DataTables.Net *@
+<link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+
+@* Load DataTables fixedHeader files *@
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/4.0.1/css/fixedHeader.dataTables.css" />
+<script src="https://cdn.datatables.net/fixedheader/4.0.1/js/dataTables.fixedHeader.js"></script>
+<script src="https://cdn.datatables.net/fixedheader/4.0.1/js/fixedHeader.dataTables.js"></script>
+
+@{
+  var persons = App.Data.GetAll<Person>();
+
+  // Get the NameId from the URL if one is selected
+  var nameId = MyPage.Parameters["details"];
+
+  var person = persons.Where(p => p.NameId == nameId).FirstOrDefault();
+
+  // Should it also show subject / unit titles?
+  var showAllTrainings = MyPage.Parameters.Bool("show-all-trainings", fallback: false);
+}
+
+@* Dropdown for selecting 2sic employees *@
+<select id="personsDropdown" class="form-select mb-4" onchange="location.href=this.value">
+  <option value="@Link.To(parameters: MyPage.Parameters.Remove("details"))">
+    Select a person
+  </option>
+  @foreach (var p in persons)
+  {
+    var selected = p.NameId == nameId ? "selected" : "";
+    var href = Link.To(parameters: p.NameId == nameId
+      ? MyPage.Parameters.Remove("details")
+      : MyPage.Parameters.Set("details", p.NameId));
+
+    <option value="@href" @selected>@p.Name</option>
+  }
+</select>
+
+@if (nameId != null)
+{
+  <h1 @Kit.Toolbar.Default(person)>@person.Name - @person.NameId</h1>
+
+  @Html.Partial("Person Details.PartTables.cshtml", new { person })
+}
