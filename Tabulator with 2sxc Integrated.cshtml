@@ -6,9 +6,14 @@
 
 @{
   var viewConfigMode = MyPage.Parameters.Bool("viewconfigmode", fallback: false);
+  var itemViewId = MyPage.Parameters.String("viewid", fallback: null);
+  Guid parsedGuid;
+  var item = string.IsNullOrEmpty(itemViewId) || !Guid.TryParse(itemViewId, out parsedGuid)
+    ? MyItem
+    : App.Data.GetOne<DataViewTableConfig>(parsedGuid);
 }
 
-<h1>@MyItem.Title</h1>
+<h1>@item.Title</h1>
 
 <div class="form-check form-switch">
   <input
@@ -22,7 +27,7 @@
   <label class="form-check-label" for="flexSwitchCheckDefault">View Config Mode</label>
 </div>
 
-<div @Kit.Toolbar.Default(MyItem)>
+<div @Kit.Toolbar.Default(item)>
   @* Tabulator ID *@
   <div id="azing-resources-table"></div>
 </div>
@@ -30,7 +35,7 @@
 @Kit.Page.TurnOn("window.table.createTabulatorTable()", data: new {
   name = "azing-resources-table",
   moduleId = MyContext.Module.Id,
-  viewId = MyItem.Guid.ToString()
+  viewId = item.Guid.ToString()
 })
 
 <script src="@App.Folder.Url/dist/scripts.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
@@ -41,7 +46,6 @@
 
 @*
 
-  - The Code is integrated into this app to have some sample data
   - There are 2 ways of data loading immplemented 1) Call with Promise 2) Let Tabulator AJAX load
   - The Code is related to the values of the app - when outsourced needs to be more generic
  
