@@ -4,6 +4,8 @@ import {
   FormatModule,
   PageModule,
   InteractionModule,
+  RowComponent,
+  ColumnComponent,
 } from "tabulator-tables";
 import { DateTime } from "luxon";
 import { TabulatorConfig } from "./tabulator-models";
@@ -60,13 +62,14 @@ export class TabulatorAdapter {
    * @param e - The click event.
    * @param row - The Tabulator row instance.
    */
-  openEditDialog(e: Event, row: any) {
+  openEditRowDialog(e: Event, row: RowComponent) {
     e.preventDefault();
     // Cleanup any lingering floating menus before opening the dialog
     this.cleanupFloatingMenus();
 
-    const rowData = row.getData();
     const action = "edit";
+
+    const rowData = row.getData();
     const params = { entityId: rowData.Id };
 
     return $2sxc(row.getElement())
@@ -92,7 +95,7 @@ export class TabulatorAdapter {
    */
   openNewColumnDialog(
     e: Event,
-    column: any,
+    column: ColumnComponent,
     tableConfigData: DataViewTableConfig
   ) {
     e.preventDefault();
@@ -125,12 +128,44 @@ export class TabulatorAdapter {
   }
 
   /**
+   * Open the dialog to edit an existing DataViewColumnConfig on right-click on a column header.
+   * The dialog is prefilled with the properties of the column config.
+   * @param e - The right-click event.
+   * @param column - The Tabulator column instance.
+   */
+  async openEditColumnDialog(
+    e: Event,
+    column: ColumnComponent,
+    entityId: number
+  ) {
+    e.preventDefault();
+    this.cleanupFloatingMenus();
+
+    const action = "edit";
+
+    const params = { entityId };
+
+    return $2sxc(column.getElement())
+      .cms.run({
+        action: action as CommandNames,
+        params: params,
+      })
+      .then((data: any) => {
+        return data;
+      })
+      .catch((err: string) => {
+        console.error("Error running cms action: ", err);
+        throw err;
+      });
+  }
+
+  /**
    * Extracted function that creates and displays the floating UI.
    * @param table - The Tabulator table instance.
    * @param row - The Tabulator row instance.
    * @param event - The originating event.
    */
-  private showFloatingMenu(table: any, row: any, event: Event) {
+  private showFloatingMenu(table: Tabulator, row: RowComponent, event: Event) {
     event.preventDefault();
     const tableElement = table.element;
     const rowElement = row.getElement();
@@ -176,7 +211,7 @@ export class TabulatorAdapter {
     btn.onclick = (ev) => {
       floatingEl.remove();
       ev.stopPropagation();
-      this.openEditDialog(event, row);
+      this.openEditRowDialog(event, row);
     };
     floatingEl.appendChild(btn);
 
@@ -219,7 +254,7 @@ export class TabulatorAdapter {
    * @param event - The originating event.
    */
   private showFloatingColumnMenu(
-    column: any,
+    column: ColumnComponent,
     event: Event,
     tableConfigData: DataViewTableConfig
   ) {
@@ -260,13 +295,23 @@ export class TabulatorAdapter {
       zIndex: 1000,
     });
 
+    // Check if the column is already configured
+    const colConfig = tableConfigData.dataViewColumnConfig.find(
+      (cfg) => cfg.valueSelector === column.getField()
+    );
+    const allreadyConfigured = !!colConfig;
+    // Get the ColumnConfig id for editing
+    const entityId = colConfig?.id ?? 0;
+
     const btn = document.createElement("button");
-    btn.textContent = "➕";
+    btn.textContent = allreadyConfigured ? "✏️" : "➕";
     btn.className = "btn btn-sm";
     btn.onclick = (ev) => {
       floatingEl.remove();
       ev.stopPropagation();
-      this.openNewColumnDialog(event, column, tableConfigData);
+      if (!allreadyConfigured)
+        this.openNewColumnDialog(event, column, tableConfigData);
+      else this.openEditColumnDialog(event, column, entityId);
     };
     floatingEl.appendChild(btn);
     document.body.appendChild(floatingEl);
@@ -304,7 +349,7 @@ export class TabulatorAdapter {
       if (this.isViewConfigMode()) {
         table.on("dataProcessing", () => {
           // Wait for data to be processed
-          table.on("rowMouseEnter", (e: any, row) => {
+          table.on("rowMouseEnter", (e: Event, row) => {
             // Trigger Action Buttons for rows
             this.showFloatingMenu(table, row, e);
           });
@@ -348,7 +393,7 @@ export class TabulatorAdapter {
       if (this.isViewConfigMode()) {
         table.on("dataProcessing", () => {
           // Wait for data to be processed
-          table.on("rowMouseEnter", (e: any, row) => {
+          table.on("rowMouseEnter", (e, row) => {
             // Trigger Action Buttons for rows
             this.showFloatingMenu(table, row, e);
           });
@@ -371,6 +416,7 @@ export class TabulatorAdapter {
       ?.toLowerCase();
 
     // TODO: @2pp - Dirty hack, later use 2sxc MyPage BasisURL...
+    // Hardcoded URL check for viewconfigmode
     return queryParamValue === "true" || url.includes("viewconfigmode/true");
   }
 }

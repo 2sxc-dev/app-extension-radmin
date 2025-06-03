@@ -6,6 +6,7 @@ import { DataViewColumnConfig } from "./table-columns-model";
 export interface DataViewTableConfig {
   title: string;
   viewId: number;
+  id: number;
   dataContentType: string;
   columnsAutoShowRemaining: boolean;
   dataQuery: string;

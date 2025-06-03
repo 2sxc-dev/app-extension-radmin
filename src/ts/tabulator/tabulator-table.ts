@@ -29,7 +29,6 @@ export class tabulatorTable {
     // Load table configuration with ConfigurationLoader
     const configLoader = new ConfigurationLoader(sxc);
     const tableConfigData = await configLoader.loadConfig(viewId);
-    console.log("Table configuration loaded:", tableConfigData);
     const resourceLoader = new DataContentLoader(sxc);
 
     // Now create & initialize the Tabulator table

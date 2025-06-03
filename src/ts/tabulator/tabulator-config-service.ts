@@ -21,6 +21,7 @@ export class TabulatorConfigService {
       dataContentType: "",
       dataQuery: "",
       viewId: data.viewId,
+      id: data.id,
       dataViewColumnConfig: data.dataViewColumnConfig,
       columnsAutoShowRemaining: data.columnsAutoShowRemaining,
       pagination: data.pagingMode === "true",
