@@ -32,7 +32,7 @@ declare global {
 export class TabulatorAdapter {
   // Shared helper to create common Tabulator configuration options
   private async createCommonConfig(
-    tableConfigData: TabulatorConfig,
+    tableConfigData: DataViewTableConfig,
     data: object[]
   ): Promise<any> {
     const configService = new TabulatorConfigService();
@@ -339,7 +339,7 @@ export class TabulatorAdapter {
   // (V1) Create a Tabulator table with provided data
   async createTableOnPromise(
     name: string,
-    tableConfigData: any,
+    tableConfigData: DataViewTableConfig,
     entries: object[]
   ) {
     try {
@@ -368,7 +368,7 @@ export class TabulatorAdapter {
   // (V2) Create a Tabulator table with AJAX data loading
   async createTable(
     name: string,
-    tableConfigData: any,
+    tableConfigData: DataViewTableConfig,
     dataProvider: TabulatorDataProvider
   ) {
     try {

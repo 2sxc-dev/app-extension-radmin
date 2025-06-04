@@ -12,11 +12,15 @@ export class TabulatorConfigService {
     entries: object[]
   ): TabulatorConfig {
     const columnAdapter = new TabulatorColumnAdapter();
-    
+
     return {
       layout: "fitDataStretch",
-      columns: columnAdapter.convert(data.dataViewColumnConfig, data.columnsAutoShowRemaining, entries),
-      data: [], // Will be replaced later with real data
+      columns: columnAdapter.convert(
+        data.dataViewColumnConfig,
+        data.columnsAutoShowRemaining,
+        entries
+      ),
+      data: [], // Will later get replaced with real data
       title: data.title || "2sxc Table",
       dataContentType: "",
       dataQuery: "",
@@ -26,7 +30,7 @@ export class TabulatorConfigService {
       columnsAutoShowRemaining: data.columnsAutoShowRemaining,
       pagination: data.pagingMode === "true",
       paginationSize: data.pagingSize ?? 10,
-      guid: ""
+      guid: "",
     } as TabulatorConfig;
   }
 }

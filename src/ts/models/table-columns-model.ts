@@ -8,6 +8,7 @@ export interface DataViewColumnConfig {
   linkParameters: string
   linkViewId: string
   title: string;
+  width: number | "automatic";
   DataContentType: string;
   tooltipEnabled: boolean;
   guid: string;

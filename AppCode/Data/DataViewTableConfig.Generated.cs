@@ -12,8 +12,8 @@ namespace AppCode.Data
 */
 
 // Generator:   CSharpDataModelsGenerator
-// App/Edition: azing Skills and Growth/
-// User:        2sic Web-Developer
+// App/Edition: 2sxc-Tables/
+// User:        SuperUser Account
 using System.Collections.Generic;
 
 namespace AppCode.Data
