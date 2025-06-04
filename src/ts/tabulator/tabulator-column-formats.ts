@@ -33,4 +33,12 @@ export const formatConfigs: Record<string, Partial<TabulatorColumnConfig>> = {
       outputFormat: "HH:mm:ss",
     },
   },
+  "progress": {
+    formatter: "progress",
+    formatterParams: {
+      min: 0,
+      max: 100,
+      color: ["#31B4E8"],
+    },
+  },
 };
