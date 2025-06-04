@@ -29,11 +29,11 @@
 
 <div @Kit.Toolbar.Default(item)>
   @* Tabulator ID *@
-  <div id="azing-resources-table"></div>
+  <div id="azing-resources-table-@MyContext.Module.Id"></div>
 </div>
 
 @Kit.Page.TurnOn("window.table.createTabulatorTable()", data: new {
-  name = "azing-resources-table",
+  name = "azing-resources-table-" + MyContext.Module.Id,
   moduleId = MyContext.Module.Id,
   viewId = item.Guid.ToString()
 })
