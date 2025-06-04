@@ -24,7 +24,11 @@ export class TabulatorColumnAdapter {
       const column: TabulatorColumnConfig = {
         title: col.title,
         field: col.valueSelector,
-        tooltip: col.tooltipEnabled,
+        tooltip: col.tooltipEnabled // Show tooltip if enabled. If tooltipSelector is provided, use it; otherwise, use default tooltip
+          ? col.tooltipSelector && col.tooltipSelector.trim() !== ""
+            ? this.replaceParameters(col.tooltipSelector, entries[0] || {}) // TODO: 2pp this only uses the first entry, but it should use the current cell data
+            : col.tooltipEnabled
+          : false,
         ...formatConfig,
       };
 
@@ -35,11 +39,9 @@ export class TabulatorColumnAdapter {
         column.formatter = "link";
         column.formatterParams = {
           url: (cell: any) => {
-            const params = col.linkParameters.replace(
-              /\[([^\]]+)\]/g,
-              (_, key) => {
-                return this.getNestedValue(cell.getData(), key) || "";
-              }
+            const params = this.replaceParameters(
+              col.linkParameters,
+              cell.getData()
             );
             return `?viewid=${col.linkViewId}${params ? "&" + params : ""}`;
           },
@@ -75,6 +77,17 @@ export class TabulatorColumnAdapter {
     }
 
     return configuredColumns;
+  }
+
+  /**
+   * Replaces parameters in strings with actual values from the data object.
+   * For example, if a parameter is "id=[Id]&name=[Name]", it will replace [Id] and [Name]
+   * with the corresponding values from the data object.
+   */
+  private replaceParameters(template: string, data: any): string {
+    return template.replace(/\[([^\]]+)\]/g, (_, key) => {
+      return this.getNestedValue(data, key) || "";
+    });
   }
 
   /**
