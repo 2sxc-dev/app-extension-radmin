@@ -12,7 +12,6 @@ export class TabulatorConfigService {
     entries: object[]
   ): TabulatorConfig {
     const columnAdapter = new TabulatorColumnAdapter();
-
     return {
       layout: "fitDataStretch",
       columns: columnAdapter.convert(
@@ -27,6 +26,7 @@ export class TabulatorConfigService {
       viewId: data.viewId,
       id: data.id,
       dataViewColumnConfig: data.dataViewColumnConfig,
+      search: data.search,
       columnsAutoShowRemaining: data.columnsAutoShowRemaining,
       pagination: data.pagingMode === "true",
       paginationSize: data.pagingSize ?? 10,

@@ -10,6 +10,7 @@ export interface DataViewTableConfig {
   dataContentType: string;
   columnsAutoShowRemaining: boolean;
   dataQuery: string;
+  search?: boolean;
   dataViewColumnConfig: DataViewColumnConfig[];
   pagingMode?: string;
   pagingSize?: number;
