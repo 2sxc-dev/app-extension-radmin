@@ -18,7 +18,8 @@ export interface TabulatorColumnConfig {
   title: string;
   field: string;
   tooltip?: boolean | string;
-  hozAlign?: string;
+  headerHozAlign?: "right" | "left" | "center";
+  hozAlign?: "right" | "left" | "center";
   width?: number | "automatic";
   formatter?: string;
   formatterParams?: object;

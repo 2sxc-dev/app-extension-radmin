@@ -8,6 +8,7 @@ export interface DataViewColumnConfig {
   linkParameters: string
   linkViewId: string
   title: string;
+  horizontalAlignment: "automatic" | "left" | "center" | "right";
   width: number | "automatic";
   DataContentType: string;
   tooltipEnabled: boolean;

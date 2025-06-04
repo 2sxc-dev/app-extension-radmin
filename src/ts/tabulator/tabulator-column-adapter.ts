@@ -29,8 +29,16 @@ export class TabulatorColumnAdapter {
             ? this.replaceParameters(col.tooltipSelector, entries[0] || {}) // TODO: 2pp this only uses the first entry, but it should use the current cell data
             : col.tooltipEnabled
           : false,
-        width: col.width !== "automatic" ? col.width as number : undefined,
+        width: col.width !== "automatic" ? col.width : undefined,
         ...formatConfig,
+        hozAlign:
+          col.horizontalAlignment !== "automatic"
+            ? col.horizontalAlignment
+            : undefined,
+        headerHozAlign:
+          col.horizontalAlignment !== "automatic"
+            ? col.horizontalAlignment
+            : undefined,
       };
 
       /**
