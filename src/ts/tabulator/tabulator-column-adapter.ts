@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import { TabulatorColumnConfig } from "./tabulator-models";
 import { formatConfigs } from "./tabulator-column-formats";
 import { DataViewColumnConfig } from "../models/table-columns-model";
+import { CellComponent } from "tabulator-tables";
 
 export class TabulatorColumnAdapter {
   convert(
@@ -26,7 +27,7 @@ export class TabulatorColumnAdapter {
         field: col.valueSelector,
         tooltip: col.tooltipEnabled
           ? col.tooltipSelector
-            ? (e: Event, cell: any) =>
+            ? (e: Event, cell: CellComponent) =>
                 this.replaceParameters(col.tooltipSelector, cell.getData())
             : true
           : false,
@@ -48,7 +49,7 @@ export class TabulatorColumnAdapter {
       if (col.linkEnable) {
         column.formatter = "link";
         column.formatterParams = {
-          url: (cell: any) => {
+          url: (cell: CellComponent) => {
             const params = this.replaceParameters(
               col.linkParameters,
               cell.getData()

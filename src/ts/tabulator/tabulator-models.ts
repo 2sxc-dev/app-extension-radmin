@@ -1,3 +1,4 @@
+import { CellComponent } from "tabulator-tables";
 import { DataViewTableConfig } from "../models/table-model";
 
 /** Tabulator Config
@@ -27,7 +28,7 @@ export interface TabulatorColumnConfig {
     | boolean
     | string
     | Node
-    | ((e: Event, cell: any) => boolean | string | Node);
+    | ((e: Event, cell: CellComponent) => boolean | string | Node);
   headerHozAlign?: "right" | "left" | "center";
   hozAlign?: "right" | "left" | "center";
   width?: number | "automatic";

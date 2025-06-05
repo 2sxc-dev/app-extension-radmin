@@ -260,10 +260,19 @@ export class TabulatorFloatingUi {
       zIndex: 1000,
     });
 
-    // Check if the column is already configured
-    const colConfig = tableConfigData.dataViewColumnConfig.find(
-      (cfg) => cfg.valueSelector === column.getField()
-    );
+    // Check if the column is already configured by comparing its definitions
+    const colConfig = tableConfigData.dataViewColumnConfig.find((cfg) => {
+      const colDef = column.getDefinition();
+
+      // Match on multiple properties for uniqueness
+      const fieldMatch = cfg.valueSelector === column.getField();
+      const titleMatch = cfg.title === colDef.title;
+      const widthMatch = cfg.width === colDef.width;
+
+      // We require at least field and title to match, width is a bonus
+      return fieldMatch && titleMatch && widthMatch;
+    });
+
     const allreadyConfigured = !!colConfig;
     // Get the ColumnConfig id for editing
     const entityId = colConfig?.id ?? 0;
