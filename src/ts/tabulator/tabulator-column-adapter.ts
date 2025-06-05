@@ -24,10 +24,11 @@ export class TabulatorColumnAdapter {
       const column: TabulatorColumnConfig = {
         title: col.title,
         field: col.valueSelector,
-        tooltip: col.tooltipEnabled // Show tooltip if enabled. If tooltipSelector is provided, use it; otherwise, use default tooltip
-          ? col.tooltipSelector && col.tooltipSelector.trim() !== ""
-            ? this.replaceParameters(col.tooltipSelector, entries[0] || {}) // TODO: 2pp this only uses the first entry, but it should use the current cell data
-            : col.tooltipEnabled
+        tooltip: col.tooltipEnabled
+          ? col.tooltipSelector
+            ? (e: Event, cell: any) =>
+                this.replaceParameters(col.tooltipSelector, cell.getData())
+            : true
           : false,
         width: col.width !== "automatic" ? col.width : undefined,
         ...formatConfig,
