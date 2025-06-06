@@ -5,6 +5,8 @@
 @using AppCode.Data
 
 @{
+  Kit.Page.Activate("2sxc.JsCore");
+  
   var viewConfigMode = MyPage.Parameters.Bool("viewconfigmode", fallback: false);
   var itemViewId = MyPage.Parameters.String("viewid", fallback: null);
   Guid parsedGuid;
