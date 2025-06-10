@@ -12,8 +12,8 @@ namespace AppCode.Data
 */
 
 // Generator:   CSharpDataModelsGenerator
-// App/Edition: azing Skills and Growth/
-// User:        2sic Web-Developer
+// App/Edition: 2sxc-Tables/
+// User:        SuperUser Account
 namespace AppCode.Data
 {
   // This is a generated class for AppSettings (scope: System.App)
