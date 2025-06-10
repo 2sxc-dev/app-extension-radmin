@@ -46,18 +46,42 @@ export class TabulatorAdapter {
   private floatingUi = new TabulatorFloatingUi();
 
   /**
-   * @param data
-   * @param filterParams
-   * @returns
+   * Custom filter function that matches any field in a row against the search term
+   * @param data The row data
+   * @param filterParams Filter parameters including search value
+   * @param row The Tabulator row object
+   * @returns True if any field matches the search
    */
   private matchAny(data: any, filterParams: any, row?: any): boolean {
     const search = filterParams.value?.toString().toLowerCase() || "";
+    if (!search) return true; // Show all rows if search is empty
+
+    // If we have a row object, we can access the cells directly
+    if (row && row.getCells) {
+      const cells = row.getCells();
+      for (const cell of cells) {
+        const value = cell.getValue();
+        if (value != null && String(value).toLowerCase().includes(search)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // Fallback: search through the data object directly
     for (const key in data) {
       const value = data[key];
-      if (value != null && value.toString().toLowerCase().includes(search)) {
-        return true;
+      if (value != null) {
+        // Convert to string to handle different data types
+        const stringValue =
+          typeof value === "object" ? JSON.stringify(value) : String(value);
+
+        if (stringValue.toLowerCase().includes(search)) {
+          return true;
+        }
       }
     }
+
     return false;
   }
 
@@ -65,7 +89,15 @@ export class TabulatorAdapter {
     const filterInput = document.querySelector<HTMLInputElement>(
       `#${filterName}`
     );
+    
     if (filterInput) {
+      filterInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          return false;
+        }
+      });
+      
       filterInput.addEventListener("input", (e) => {
         const value = (e.target as HTMLInputElement).value;
         table.setFilter(this.matchAny, { value });
@@ -89,7 +121,7 @@ export class TabulatorAdapter {
       if (this.isViewConfigMode()) {
         table.on("dataProcessing", () => {
           // Wait for data to be processed
-          table.on("rowMouseEnter", (e: Event, row) => {
+          table.on("rowMouseEnter", (e, row) => {
             // Trigger Action Buttons for rows
             this.floatingUi.showFloatingMenu(table, row, e);
           });
@@ -110,7 +142,7 @@ export class TabulatorAdapter {
     tableName: string,
     tableConfigData: DataViewTableConfig,
     dataProvider: TabulatorDataProvider,
-    filterName?: string,
+    filterName?: string
   ) {
     try {
       const initialData: object[] = await dataProvider.getAjaxRequestFunc()();

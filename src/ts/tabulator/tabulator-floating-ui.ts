@@ -267,10 +267,9 @@ export class TabulatorFloatingUi {
       // Match on multiple properties for uniqueness
       const fieldMatch = cfg.valueSelector === column.getField();
       const titleMatch = cfg.title === colDef.title;
-      const widthMatch = cfg.width === colDef.width;
 
-      // We require at least field and title to match, width is a bonus
-      return fieldMatch && titleMatch && widthMatch;
+      // We require at least field and title to match
+      return fieldMatch && titleMatch;
     });
 
     const allreadyConfigured = !!colConfig;
