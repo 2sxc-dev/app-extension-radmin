@@ -6,8 +6,8 @@ import { TabulatorDataProvider } from "./tabulator-data-provider";
 export class tabulatorTable {
   // This method is called from a Razor-File
   async createTabulatorTable(data: {
-    name: string;
-    entries: object[];
+    tableName: string;
+    filterName: string;
     moduleId: number;
     viewId: string;
   }) {
@@ -44,7 +44,7 @@ export class tabulatorTable {
         ? contentsData
         : (contentsData as { Resources: object[] }).Resources;
       await tabulatorAdapter.createTableOnPromise(
-        data.name,
+        data.tableName,
         tableConfigData,
         resources
       );
@@ -59,7 +59,7 @@ export class tabulatorTable {
         const headers = await sxc.webApi.headers("GET");
         const dataProvider = new TabulatorDataProvider(apiUrl, headers);
         await tabulatorAdapter.createTable(
-          data.name,
+          data.tableName,
           tableConfigData,
           dataProvider
         );
@@ -69,13 +69,10 @@ export class tabulatorTable {
         const contentsData = await resourceLoader.loadQueryDataContent(
           tableConfigData.dataQuery
         );
-        const resources = Array.isArray(contentsData)
-          ? contentsData
-          : (contentsData as { Resources: object[] }).Resources;
         await tabulatorAdapter.createTableOnPromise(
-          data.name,
+          data.tableName,
           tableConfigData,
-          resources
+          contentsData,
         );
       }
     }

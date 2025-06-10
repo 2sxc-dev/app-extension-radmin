@@ -43,15 +43,35 @@ export class TabulatorAdapter {
 
   private floatingUi = new TabulatorFloatingUi();
 
+  /**
+   * @param data 
+   * @param filterParams 
+   * @returns 
+   */
+  private matchAny(data: any, filterParams: any){
+    //data - the data for the row being filtered
+    //filterParams - params object passed to the filter
+
+    var match = false;
+
+    for(var key in data){
+        if(data[key] == filterParams.value){
+            match = true;
+        }
+    }
+
+    return match;
+}
+
   // (V1) Create a Tabulator table with provided data
   async createTableOnPromise(
-    name: string,
+    tableName: string,
     tableConfigData: DataViewTableConfig,
-    entries: object[]
+    entries: object[],
   ) {
     try {
       const options = await this.createCommonConfig(tableConfigData, entries);
-      const table = new Tabulator(`#${name}`, options);
+      const table = new Tabulator(`#${tableName}`, options);
 
       if (this.isViewConfigMode()) {
         table.on("dataProcessing", () => {
@@ -64,6 +84,7 @@ export class TabulatorAdapter {
           table.on("headerMouseEnter", (e, column) => {
             // Trigger Action Buttons for column headers
             this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
+            table.setFilter(this.matchAny, {value:5})
           });
         });
       }
@@ -74,9 +95,9 @@ export class TabulatorAdapter {
 
   // (V2) Create a Tabulator table with AJAX data loading
   async createTable(
-    name: string,
+    tableName: string,
     tableConfigData: DataViewTableConfig,
-    dataProvider: TabulatorDataProvider
+    dataProvider: TabulatorDataProvider,
   ) {
     try {
       const initialData: object[] = await dataProvider.getAjaxRequestFunc()();
@@ -90,11 +111,12 @@ export class TabulatorAdapter {
       // Add AJAX specific configuration.
       options.ajaxContentType = "json";
 
-      const table = new Tabulator(`#${name}`, options);
+      const table = new Tabulator(`#${tableName}`, options);
 
       // Trigger update when table is built.
       table.on("tableBuilt", () => {
         table.setData(initialData);
+        table.setFilter(this.matchAny, {value:5})
       });
 
       if (this.isViewConfigMode()) {
