@@ -11,7 +11,7 @@
   var itemViewId = MyPage.Parameters.String("viewid", fallback: null);
   Guid parsedGuid;
   DataViewTableConfig item = string.IsNullOrEmpty(itemViewId) || !Guid.TryParse(itemViewId, out parsedGuid)
-    ? App.Data.GetOne<DataViewTableConfig>(MyItem.Guid)
+    ? As<DataViewTableConfig>(MyItem)
     : App.Data.GetOne<DataViewTableConfig>(parsedGuid);
 
   Boolean search = item.Search;

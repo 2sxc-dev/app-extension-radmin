@@ -45,6 +45,7 @@ export class tabulatorTable {
         : (contentsData as { Resources: object[] }).Resources;
       await tabulatorAdapter.createTableOnPromise(
         data.tableName,
+        data.filterName,
         tableConfigData,
         resources
       );
@@ -61,7 +62,8 @@ export class tabulatorTable {
         await tabulatorAdapter.createTable(
           data.tableName,
           tableConfigData,
-          dataProvider
+          dataProvider,
+          data.filterName,
         );
       }
       // Otherwise load content data with a Query (v1)
@@ -71,6 +73,7 @@ export class tabulatorTable {
         );
         await tabulatorAdapter.createTableOnPromise(
           data.tableName,
+          data.filterName,
           tableConfigData,
           contentsData,
         );

@@ -4,6 +4,7 @@ import {
   FormatModule,
   PageModule,
   InteractionModule,
+  FilterModule,
 } from "tabulator-tables";
 import { DateTime } from "luxon";
 import { TabulatorConfig } from "./tabulator-models";
@@ -18,6 +19,7 @@ Tabulator.registerModule([
   FormatModule,
   PageModule,
   InteractionModule,
+  FilterModule,
 ]);
 
 export class TabulatorAdapter {
@@ -44,34 +46,45 @@ export class TabulatorAdapter {
   private floatingUi = new TabulatorFloatingUi();
 
   /**
-   * @param data 
-   * @param filterParams 
-   * @returns 
+   * @param data
+   * @param filterParams
+   * @returns
    */
-  private matchAny(data: any, filterParams: any){
-    //data - the data for the row being filtered
-    //filterParams - params object passed to the filter
-
-    var match = false;
-
-    for(var key in data){
-        if(data[key] == filterParams.value){
-            match = true;
-        }
+  private matchAny(data: any, filterParams: any, row?: any): boolean {
+    const search = filterParams.value?.toString().toLowerCase() || "";
+    for (const key in data) {
+      const value = data[key];
+      if (value != null && value.toString().toLowerCase().includes(search)) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    return match;
-}
+  private setupFilterInput(table: Tabulator, filterName: string) {
+    const filterInput = document.querySelector<HTMLInputElement>(
+      `#${filterName}`
+    );
+    if (filterInput) {
+      filterInput.addEventListener("input", (e) => {
+        const value = (e.target as HTMLInputElement).value;
+        table.setFilter(this.matchAny, { value });
+      });
+    }
+  }
 
   // (V1) Create a Tabulator table with provided data
   async createTableOnPromise(
     tableName: string,
+    filterName: string,
     tableConfigData: DataViewTableConfig,
-    entries: object[],
+    entries: object[]
   ) {
     try {
       const options = await this.createCommonConfig(tableConfigData, entries);
       const table = new Tabulator(`#${tableName}`, options);
+
+      this.setupFilterInput(table, filterName);
 
       if (this.isViewConfigMode()) {
         table.on("dataProcessing", () => {
@@ -84,7 +97,6 @@ export class TabulatorAdapter {
           table.on("headerMouseEnter", (e, column) => {
             // Trigger Action Buttons for column headers
             this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
-            table.setFilter(this.matchAny, {value:5})
           });
         });
       }
@@ -98,6 +110,7 @@ export class TabulatorAdapter {
     tableName: string,
     tableConfigData: DataViewTableConfig,
     dataProvider: TabulatorDataProvider,
+    filterName?: string,
   ) {
     try {
       const initialData: object[] = await dataProvider.getAjaxRequestFunc()();
@@ -113,10 +126,14 @@ export class TabulatorAdapter {
 
       const table = new Tabulator(`#${tableName}`, options);
 
+      // Set up filter input if filterName is provided
+      if (filterName) {
+        this.setupFilterInput(table, filterName);
+      }
+
       // Trigger update when table is built.
       table.on("tableBuilt", () => {
         table.setData(initialData);
-        table.setFilter(this.matchAny, {value:5})
       });
 
       if (this.isViewConfigMode()) {
