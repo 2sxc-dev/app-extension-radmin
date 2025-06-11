@@ -5,7 +5,11 @@ export class TabulatorDataProvider {
   protected headers: Record<string, string>;
   protected dataContentType?: string;
 
-  constructor(apiUrl: string, headers: Record<string, string>, dataContentType?: string) {
+  constructor(
+    apiUrl: string,
+    headers: Record<string, string>,
+    dataContentType?: string
+  ) {
     this.apiUrl = apiUrl;
     this.headers = headers;
     this.dataContentType = dataContentType;
@@ -29,7 +33,7 @@ export class TabulatorDataProvider {
    * Update headers
    */
   updateHeaders(headers: Record<string, string>): void {
-    this.headers = headers;
+    Object.assign(this.headers, headers);
   }
 
   /**
@@ -47,39 +51,28 @@ export class TabulatorDataProvider {
    */
   getUrlGenerator() {
     return (url: string, config: any, params: any): string => {
-      // Build query parameters for server-side pagination, sorting and filtering
       const queryParams = new URLSearchParams();
-      
+
       // Add pagination parameters
       if (params.page !== undefined) {
         queryParams.append("page", params.page.toString());
         queryParams.append("size", params.size.toString());
       }
-      
+
       // Add sorting parameters
       if (params.sorters && params.sorters.length > 0) {
         params.sorters.forEach((sorter: any) => {
           queryParams.append("sort", `${sorter.field},${sorter.dir}`);
         });
       }
-      
-      // Add filtering parameters
-      if (params.filters && params.filters.length > 0) {
-        params.filters.forEach((filter: any) => {
-          queryParams.append(`filter[${filter.field}]`, filter.value);
-        });
-      }
-      
-      // Add search parameter if global filter is used
+
+      // Optionally add a search term
       if (params.searchTerm) {
         queryParams.append("search", params.searchTerm);
       }
-      
-      // Append query string to URL
+
       const queryString = queryParams.toString();
-      if (!queryString) return url;
-      
-      return url + (url.includes('?') ? '&' : '?') + queryString;
+      return queryString ? `${url}?${queryString}` : url;
     };
   }
 
@@ -88,26 +81,27 @@ export class TabulatorDataProvider {
    */
   getResponseProcessor() {
     return (url: string, params: any, response: any) => {
-      // Parse the response data
-      const data = typeof response === 'string' ? JSON.parse(response) : response;
-      
+      const data =
+        typeof response === "string" ? JSON.parse(response) : response;
+
       // Handle different response formats
       if (Array.isArray(data)) {
         return {
           data: data,
-          last_page: 1 // Default if server doesn't return pagination info
+          last_page: 1,
         };
       } else if (data.Resources) {
-        // 2sxc query format
         return {
           data: data.Resources,
-          last_page: Math.ceil((data.TotalItems || data.Resources.length) / data.PageSize) || 1
+          last_page:
+            Math.ceil(
+              (data.TotalItems || data.Resources.length) / data.PageSize
+            ) || 1,
         };
       } else {
-        // Generic format assuming data.items and data.totalPages
         return {
           data: data.items || data,
-          last_page: data.totalPages || 1
+          last_page: data.totalPages || 1,
         };
       }
     };
@@ -122,9 +116,8 @@ export class TabulatorDataProvider {
         method: "GET",
         headers: this.headers,
       });
-
       const data = await response.json();
-      
+
       // Handle different response formats
       if (Array.isArray(data)) {
         return data;

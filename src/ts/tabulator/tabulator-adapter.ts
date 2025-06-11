@@ -41,12 +41,7 @@ export class TabulatorAdapter {
     data: object[]
   ): Promise<TabulatorConfig> {
     const configService = new TabulatorConfigService();
-    const config: TabulatorConfig = configService.createTabulatorConfig(
-      tableConfigData,
-      data
-    );
-    
-    return config;
+    return configService.createTabulatorConfig(tableConfigData, data);
   }
 
   /**
@@ -54,12 +49,11 @@ export class TabulatorAdapter {
    */
   private matchAny(data: any, filterParams: any, row?: any): boolean {
     const search = filterParams.value?.toString().toLowerCase() || "";
-    if (!search) return true; // Show all rows if search is empty
+    if (!search) return true;
 
-    // If we have a row object, we can access the cells directly
+    // Check row cells if row object is available
     if (row && row.getCells) {
-      const cells = row.getCells();
-      for (const cell of cells) {
+      for (const cell of row.getCells()) {
         const value = cell.getValue();
         if (value != null && String(value).toLowerCase().includes(search)) {
           return true;
@@ -68,14 +62,12 @@ export class TabulatorAdapter {
       return false;
     }
 
-    // Fallback: search through the data object directly
+    // Fallback: search in the data object
     for (const key in data) {
       const value = data[key];
       if (value != null) {
-        // Convert to string to handle different data types
         const stringValue =
           typeof value === "object" ? JSON.stringify(value) : String(value);
-
         if (stringValue.toLowerCase().includes(search)) {
           return true;
         }
@@ -86,31 +78,28 @@ export class TabulatorAdapter {
   }
 
   /**
-   * Set up filter input for the table
+   * Set up a purely custom input filter for the table
    */
-  private setupFilterInput(table: Tabulator, filterName: string, isRemote: boolean = false) {
-    const filterInput = document.querySelector<HTMLInputElement>(`#${filterName}`);
-    
-    if (filterInput) {
-      filterInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          return false;
-        }
-      });
-      
-      filterInput.addEventListener("input", (e) => {
-        const value = (e.target as HTMLInputElement).value;
-        
-        if (isRemote) {
-          // For remote filtering, send the search term to the server
-          table.setData(table.getAjaxUrl(), { searchTerm: value });
-        } else {
-          // For local filtering, use the matchAny function
-          table.setFilter(this.matchAny, { value });
-        }
-      });
-    }
+  private setupFilterInput(table: Tabulator, filterName: string) {
+    const filterInput = document.querySelector<HTMLInputElement>(
+      `#${filterName}`
+    );
+
+    if (!filterInput) return;
+
+    // Prevent 'Enter' from reloading page
+    filterInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    // Apply local matchAny filter
+    filterInput.addEventListener("input", (e) => {
+      const value = (e.target as HTMLInputElement).value;
+      table.setFilter(this.matchAny, { value });
+    });
   }
 
   /**
@@ -124,13 +113,13 @@ export class TabulatorAdapter {
   ) {
     try {
       const config = await this.createCommonConfig(tableConfigData, entries);
-      
+
       // Apply pagination settings from 2sxc config
       if (tableConfigData.pagingMode === "true") {
         config.pagination = true;
         config.paginationSize = tableConfigData.pagingSize ?? 10;
       }
-      
+
       // Add dependencies separately using our extended interface
       const options: ExtendedOptions = {
         ...config,
@@ -140,15 +129,14 @@ export class TabulatorAdapter {
           DateTime: DateTime,
         },
       };
-      
-      const table = new Tabulator(`#${tableName}`, options as Options);
 
-      this.setupFilterInput(table, filterName, false);
+      const table = new Tabulator(`#${tableName}`, options as Options);
+      this.setupFilterInput(table, filterName);
 
       if (this.isViewConfigMode()) {
         this.setupViewConfigMode(table, tableConfigData);
       }
-      
+
       return table;
     } catch (err) {
       console.error("Failed to create Tabulator table:", err);
@@ -158,34 +146,37 @@ export class TabulatorAdapter {
 
   /**
    * Create a Tabulator table with AJAX data loading
+   * Refactored to only use the local custom filter (no remote filtering).
    */
   async createTable(
     tableName: string,
     tableConfigData: DataViewTableConfig,
     dataProvider: TabulatorDataProvider,
     filterName?: string,
-    additionalOptions?: Options,
+    additionalOptions?: Options
   ) {
     try {
       // Get sample data for column setup
       const sampleData = await dataProvider.getInitialData();
-      
-      // Get base configuration from 2sxc
-      const baseConfig = await this.createCommonConfig(tableConfigData, sampleData);
-      
-      // Configure pagination based on 2sxc settings
-      const paginationConfig: Partial<Options> = tableConfigData.pagingMode === "true" ? {
-        pagination: true,
-        paginationMode: "remote",
-        paginationSize: tableConfigData.pagingSize ?? 10,
-        paginationSizeSelector: [10, 25, 50, 100],
-        paginationInitialPage: 1,
-      } : {};
-      
-      // Get ajax configuration
+      const baseConfig = await this.createCommonConfig(
+        tableConfigData,
+        sampleData
+      );
+
+      // Apply pagination settings
+      const paginationConfig: Partial<Options> =
+        tableConfigData.pagingMode === "true"
+          ? {
+              pagination: true,
+              paginationMode: "remote",
+              paginationSize: tableConfigData.pagingSize ?? 10,
+              paginationSizeSelector: [10, 25, 50, 100],
+              paginationInitialPage: 1,
+            }
+          : {};
+
       const ajaxConfig = dataProvider.getAjaxConfig();
-      
-      // Merge all configurations with proper typing
+
       const finalOptions: ExtendedOptions = {
         ...baseConfig,
         data: sampleData,
@@ -195,31 +186,29 @@ export class TabulatorAdapter {
         ajaxContentType: "json",
         ajaxURLGenerator: dataProvider.getUrlGenerator(),
         ajaxResponse: dataProvider.getResponseProcessor(),
-        sortMode: "remote",
-        filterMode: "remote",
         dependencies: {
           DateTime: DateTime,
         },
         ...(additionalOptions || {}),
       };
-      
+
       const table = new Tabulator(`#${tableName}`, finalOptions as Options);
-      
+
       if (filterName) {
-        this.setupFilterInput(table, filterName, true);
+        this.setupFilterInput(table, filterName);
       }
-      
+
       if (this.isViewConfigMode()) {
         this.setupViewConfigMode(table, tableConfigData);
       }
-      
+
       return table;
     } catch (err) {
       console.error("Failed to create Tabulator table:", err);
       return null;
     }
   }
-  
+
   /**
    * Check if the current view is in configuration mode
    */
@@ -228,14 +217,16 @@ export class TabulatorAdapter {
     const queryParamValue = new URLSearchParams(window.location.search)
       .get("viewconfigmode")
       ?.toLowerCase();
-
     return queryParamValue === "true" || url.includes("viewconfigmode/true");
   }
-  
+
   /**
    * Setup view configuration mode
    */
-  private setupViewConfigMode(table: Tabulator, tableConfigData: DataViewTableConfig): void {
+  private setupViewConfigMode(
+    table: Tabulator,
+    tableConfigData: DataViewTableConfig
+  ): void {
     table.on("dataLoaded", () => {
       table.on("rowMouseEnter", (e, row) => {
         this.floatingUi.showFloatingMenu(table, row, e);
