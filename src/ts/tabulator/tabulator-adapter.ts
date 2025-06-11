@@ -103,41 +103,6 @@ export class TabulatorAdapter {
   }
 
   /**
-   * Create a Tabulator table with data loaded via Promise
-   */
-  async createTableOnPromise(
-    tableName: string,
-    filterName: string,
-    tableConfigData: DataViewTableConfig,
-    entries: object[]
-  ) {
-    try {
-      const config = await this.createCommonConfig(tableConfigData, entries);
-
-      const options: ExtendedOptions = {
-        ...config,
-        data: entries,
-        layout: config.layout || "fitDataStretch",
-        dependencies: {
-          DateTime: DateTime,
-        },
-      };
-
-      const table = new Tabulator(`#${tableName}`, options as Options);
-      this.setupFilterInput(table, filterName);
-
-      if (this.isViewConfigMode()) {
-        this.setupViewConfigMode(table, tableConfigData);
-      }
-
-      return table;
-    } catch (err) {
-      console.error("Failed to create Tabulator table:", err);
-      return null;
-    }
-  }
-
-  /**
    * Create a Tabulator table with AJAX data loading
    */
   async createTable(
@@ -159,11 +124,6 @@ export class TabulatorAdapter {
       const finalOptions: ExtendedOptions = {
         ...baseConfig,
         data: sampleData,
-        ajaxURL: dataProvider.getApiUrl(),
-        ajaxConfig: dataProvider.getAjaxConfig(),
-        ajaxContentType: "json",
-        ajaxURLGenerator: dataProvider.getUrlGenerator(),
-        ajaxResponse: dataProvider.getResponseProcessor(),
         dependencies: {
           DateTime: DateTime,
         },
