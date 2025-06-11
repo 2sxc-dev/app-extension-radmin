@@ -1,10 +1,12 @@
 import { TabulatorAdapter } from "./tabulator-adapter";
-import { DataContentLoader } from "../loaders/data-content-loader";
 import { ConfigurationLoader } from "../loaders/table-configuration-loader";
 import { TabulatorDataProvider } from "./tabulator-data-provider";
+import { QueryTabulatorDataProvider } from "./tabulator-query-data-provider";
 
 export class tabulatorTable {
-  // This method is called from a Razor-File
+  /**
+   * Create a Tabulator table based on configuration
+   */
   async createTabulatorTable(data: {
     tableName: string;
     filterName: string;
@@ -22,62 +24,78 @@ export class tabulatorTable {
     // Load table configuration with ConfigurationLoader
     const configLoader = new ConfigurationLoader(sxc);
     const tableConfigData = await configLoader.loadConfig(viewId);
-    const resourceLoader = new DataContentLoader(sxc);
 
-
+    // Handle link parameters
     let linkParameters: string | undefined;
-    if (urlParams.has("viewconfigmode")) { // Ensure that the viewconfigmode is not accidentally used as a link parameter
+    if (urlParams.has("viewconfigmode")) {
       linkParameters = undefined;
     } else {
-      const linkParametersFromParams = urlParams.toString().replace(/(^|&)viewid=[^&]*/g, "").replace(/^&/, "");
+      const linkParametersFromParams = urlParams.toString()
+        .replace(/(^|&)viewid=[^&]*/g, "")
+        .replace(/^&/, "");
       linkParameters = linkParametersFromParams ? linkParametersFromParams : undefined;
     }
 
-    // Now create & initialize the Tabulator table
+    // Create the Tabulator adapter
     const tabulatorAdapter = new TabulatorAdapter();
     
-    // If a linkParameters is provided, use it in the query to load data via GUID filtering
-    if (linkParameters) {
-      const contentsData = await resourceLoader.loadQueryDataContent(
+    // REFACTORED: Use data providers for all scenarios
+    
+    // When no query is provided, load the content via API (v2)
+    if (tableConfigData.dataQuery === "") {
+      // Configure API URL for data content type
+      const apiUrl = sxc.webApi.url(
+        `/api/2sxc/app/auto/data/${tableConfigData.dataContentType}`
+      );
+      const headers = await sxc.webApi.headers("GET");
+      
+      // Create standard data provider
+      const dataProvider = new TabulatorDataProvider(
+        apiUrl, 
+        headers, 
+        tableConfigData.dataContentType
+      );
+      
+      // Create table with remote data loading
+      await tabulatorAdapter.createTable(
+        data.tableName,
+        tableConfigData,
+        dataProvider,
+        data.filterName
+      );
+    } 
+    // Otherwise load content data with a Query (v1)
+    else {
+      // Create a query data provider that handles relationships
+      const queryProvider = new QueryTabulatorDataProvider(
+        sxc,
         tableConfigData.dataQuery,
         linkParameters
       );
-      const resources = Array.isArray(contentsData)
-        ? contentsData
-        : (contentsData as { Resources: object[] }).Resources;
-      await tabulatorAdapter.createTableOnPromise(
-        data.tableName,
-        data.filterName,
-        tableConfigData,
-        resources
-      );
-    }
-    // If no linkParameters is provided, treat it normally
-    else {
-      // When no query is provided, load the content via API (v2)
-      if (tableConfigData.dataQuery === "") {
-        const apiUrl = sxc.webApi.url(
-          `/api/2sxc/app/auto/data/${tableConfigData.dataContentType}`
-        );
-        const headers = await sxc.webApi.headers("GET");
-        const dataProvider = new TabulatorDataProvider(apiUrl, headers);
-        await tabulatorAdapter.createTable(
-          data.tableName,
-          tableConfigData,
-          dataProvider,
-          data.filterName,
-        );
-      }
-      // Otherwise load content data with a Query (v1)
-      else {
-        const contentsData = await resourceLoader.loadQueryDataContent(
-          tableConfigData.dataQuery
-        );
+      
+      // Initialize the provider (fetch headers)
+      await queryProvider.initialize();
+      
+      // Get initial data for table setup
+      const initialData = await queryProvider.getInitialData();
+      
+      // If link parameters are provided or we need special processing,
+      // use the Promise-based approach with pre-loaded data
+      if (linkParameters) {
         await tabulatorAdapter.createTableOnPromise(
           data.tableName,
           data.filterName,
           tableConfigData,
-          contentsData,
+          initialData
+        );
+      } 
+      // Otherwise use the remote data loading approach
+      else {
+        await tabulatorAdapter.createTable(
+          data.tableName,
+          tableConfigData,
+          queryProvider,
+          data.filterName
         );
       }
     }

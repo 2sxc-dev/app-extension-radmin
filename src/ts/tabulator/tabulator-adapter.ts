@@ -5,6 +5,7 @@ import {
   PageModule,
   InteractionModule,
   FilterModule,
+  Options,
 } from "tabulator-tables";
 import { DateTime } from "luxon";
 import { TabulatorConfig } from "./tabulator-models";
@@ -22,35 +23,34 @@ Tabulator.registerModule([
   FilterModule,
 ]);
 
+// Define an extended options interface to include custom properties
+interface ExtendedOptions extends Options {
+  dependencies?: {
+    DateTime: typeof DateTime;
+  };
+}
+
 export class TabulatorAdapter {
-  // Shared helper to create common Tabulator configuration options
+  private floatingUi = new TabulatorFloatingUi();
+
+  /**
+   * Create a common configuration base from 2sxc configuration
+   */
   private async createCommonConfig(
     tableConfigData: DataViewTableConfig,
     data: object[]
-  ): Promise<any> {
+  ): Promise<TabulatorConfig> {
     const configService = new TabulatorConfigService();
     const config: TabulatorConfig = configService.createTabulatorConfig(
       tableConfigData,
       data
     );
-    // Build the common options for the table
-    return {
-      ...config,
-      data,
-      dependencies: {
-        DateTime: DateTime,
-      },
-    };
+    
+    return config;
   }
-
-  private floatingUi = new TabulatorFloatingUi();
 
   /**
    * Custom filter function that matches any field in a row against the search term
-   * @param data The row data
-   * @param filterParams Filter parameters including search value
-   * @param row The Tabulator row object
-   * @returns True if any field matches the search
    */
   private matchAny(data: any, filterParams: any, row?: any): boolean {
     const search = filterParams.value?.toString().toLowerCase() || "";
@@ -85,10 +85,11 @@ export class TabulatorAdapter {
     return false;
   }
 
-  private setupFilterInput(table: Tabulator, filterName: string) {
-    const filterInput = document.querySelector<HTMLInputElement>(
-      `#${filterName}`
-    );
+  /**
+   * Set up filter input for the table
+   */
+  private setupFilterInput(table: Tabulator, filterName: string, isRemote: boolean = false) {
+    const filterInput = document.querySelector<HTMLInputElement>(`#${filterName}`);
     
     if (filterInput) {
       filterInput.addEventListener('keydown', (e) => {
@@ -100,12 +101,21 @@ export class TabulatorAdapter {
       
       filterInput.addEventListener("input", (e) => {
         const value = (e.target as HTMLInputElement).value;
-        table.setFilter(this.matchAny, { value });
+        
+        if (isRemote) {
+          // For remote filtering, send the search term to the server
+          table.setData(table.getAjaxUrl(), { searchTerm: value });
+        } else {
+          // For local filtering, use the matchAny function
+          table.setFilter(this.matchAny, { value });
+        }
       });
     }
   }
 
-  // (V1) Create a Tabulator table with provided data
+  /**
+   * Create a Tabulator table with data loaded via Promise
+   */
   async createTableOnPromise(
     tableName: string,
     filterName: string,
@@ -113,88 +123,127 @@ export class TabulatorAdapter {
     entries: object[]
   ) {
     try {
-      const options = await this.createCommonConfig(tableConfigData, entries);
-      const table = new Tabulator(`#${tableName}`, options);
+      const config = await this.createCommonConfig(tableConfigData, entries);
+      
+      // Apply pagination settings from 2sxc config
+      if (tableConfigData.pagingMode === "true") {
+        config.pagination = true;
+        config.paginationSize = tableConfigData.pagingSize ?? 10;
+      }
+      
+      // Add dependencies separately using our extended interface
+      const options: ExtendedOptions = {
+        ...config,
+        data: entries,
+        layout: config.layout || "fitDataStretch",
+        dependencies: {
+          DateTime: DateTime,
+        },
+      };
+      
+      const table = new Tabulator(`#${tableName}`, options as Options);
 
-      this.setupFilterInput(table, filterName);
+      this.setupFilterInput(table, filterName, false);
 
       if (this.isViewConfigMode()) {
-        table.on("dataProcessing", () => {
-          // Wait for data to be processed
-          table.on("rowMouseEnter", (e, row) => {
-            // Trigger Action Buttons for rows
-            this.floatingUi.showFloatingMenu(table, row, e);
-          });
-
-          table.on("headerMouseEnter", (e, column) => {
-            // Trigger Action Buttons for column headers
-            this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
-          });
-        });
+        this.setupViewConfigMode(table, tableConfigData);
       }
+      
+      return table;
     } catch (err) {
       console.error("Failed to create Tabulator table:", err);
+      return null;
     }
   }
 
-  // (V2) Create a Tabulator table with AJAX data loading
+  /**
+   * Create a Tabulator table with AJAX data loading
+   */
   async createTable(
     tableName: string,
     tableConfigData: DataViewTableConfig,
     dataProvider: TabulatorDataProvider,
-    filterName?: string
+    filterName?: string,
+    additionalOptions?: Options,
   ) {
     try {
-      const initialData: object[] = await dataProvider.getAjaxRequestFunc()();
-
-      // Build shared configuration options.
-      const options = await this.createCommonConfig(
-        tableConfigData,
-        initialData
-      );
-
-      // Add AJAX specific configuration.
-      options.ajaxContentType = "json";
-
-      const table = new Tabulator(`#${tableName}`, options);
-
-      // Set up filter input if filterName is provided
+      // Get sample data for column setup
+      const sampleData = await dataProvider.getInitialData();
+      
+      // Get base configuration from 2sxc
+      const baseConfig = await this.createCommonConfig(tableConfigData, sampleData);
+      
+      // Configure pagination based on 2sxc settings
+      const paginationConfig: Partial<Options> = tableConfigData.pagingMode === "true" ? {
+        pagination: true,
+        paginationMode: "remote",
+        paginationSize: tableConfigData.pagingSize ?? 10,
+        paginationSizeSelector: [10, 25, 50, 100],
+        paginationInitialPage: 1,
+      } : {};
+      
+      // Get ajax configuration
+      const ajaxConfig = dataProvider.getAjaxConfig();
+      
+      // Merge all configurations with proper typing
+      const finalOptions: ExtendedOptions = {
+        ...baseConfig,
+        data: sampleData,
+        ...paginationConfig,
+        ajaxURL: dataProvider.getApiUrl(),
+        ajaxConfig: ajaxConfig,
+        ajaxContentType: "json",
+        ajaxURLGenerator: dataProvider.getUrlGenerator(),
+        ajaxResponse: dataProvider.getResponseProcessor(),
+        sortMode: "remote",
+        filterMode: "remote",
+        dependencies: {
+          DateTime: DateTime,
+        },
+        ...(additionalOptions || {}),
+      };
+      
+      const table = new Tabulator(`#${tableName}`, finalOptions as Options);
+      
       if (filterName) {
-        this.setupFilterInput(table, filterName);
+        this.setupFilterInput(table, filterName, true);
       }
-
-      // Trigger update when table is built.
-      table.on("tableBuilt", () => {
-        table.setData(initialData);
-      });
-
+      
       if (this.isViewConfigMode()) {
-        table.on("dataProcessing", () => {
-          // Wait for data to be processed
-          table.on("rowMouseEnter", (e, row) => {
-            // Trigger Action Buttons for rows
-            this.floatingUi.showFloatingMenu(table, row, e);
-          });
-
-          table.on("headerMouseEnter", (e, column) => {
-            // Trigger Action Buttons for column headers
-            this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
-          });
-        });
+        this.setupViewConfigMode(table, tableConfigData);
       }
+      
+      return table;
     } catch (err) {
       console.error("Failed to create Tabulator table:", err);
+      return null;
     }
   }
-
+  
+  /**
+   * Check if the current view is in configuration mode
+   */
   isViewConfigMode(): boolean {
     const url = window.location.href.toLowerCase();
     const queryParamValue = new URLSearchParams(window.location.search)
       .get("viewconfigmode")
       ?.toLowerCase();
 
-    // TODO: @2pp - Dirty hack, later use 2sxc MyPage BasisURL...
-    // Hardcoded URL check for viewconfigmode
     return queryParamValue === "true" || url.includes("viewconfigmode/true");
+  }
+  
+  /**
+   * Setup view configuration mode
+   */
+  private setupViewConfigMode(table: Tabulator, tableConfigData: DataViewTableConfig): void {
+    table.on("dataLoaded", () => {
+      table.on("rowMouseEnter", (e, row) => {
+        this.floatingUi.showFloatingMenu(table, row, e);
+      });
+
+      table.on("headerMouseEnter", (e, column) => {
+        this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
+      });
+    });
   }
 }
