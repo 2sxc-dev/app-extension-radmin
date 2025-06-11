@@ -1,4 +1,5 @@
 import { Sxc } from "@2sic.com/2sxc-typings";
+import { Options } from "tabulator-tables";
 
 export class DataContentLoader {
   private sxc: Sxc;
@@ -20,7 +21,7 @@ export class DataContentLoader {
     }
   }
 
-  async loadQueryDataContent(query: string, linkParameters?: string): Promise<any[]> {
+  async loadQueryDataContent(query: string, linkParameters?: string): Promise<Options[]> {
     try {
       // Build endpoint URL including linkParameters if provided.
       let endpoint = `app/auto/query/${query}`;

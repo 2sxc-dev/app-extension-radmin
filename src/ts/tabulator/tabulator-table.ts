@@ -1,6 +1,6 @@
 import { TabulatorAdapter } from "./tabulator-adapter";
-import { DataContentLoader } from "../data-content-loader";
-import { ConfigurationLoader } from "../table-configuration-loader";
+import { DataContentLoader } from "../loaders/data-content-loader";
+import { ConfigurationLoader } from "../loaders/table-configuration-loader";
 import { TabulatorDataProvider } from "./tabulator-data-provider";
 
 export class tabulatorTable {
@@ -18,6 +18,13 @@ export class tabulatorTable {
     const urlParams = new URLSearchParams(window.location.search);
     const viewIdFromParams = urlParams.get("viewid");
     const viewId = viewIdFromParams ? viewIdFromParams : data.viewId;
+
+    // Load table configuration with ConfigurationLoader
+    const configLoader = new ConfigurationLoader(sxc);
+    const tableConfigData = await configLoader.loadConfig(viewId);
+    const resourceLoader = new DataContentLoader(sxc);
+
+
     let linkParameters: string | undefined;
     if (urlParams.has("viewconfigmode")) { // Ensure that the viewconfigmode is not accidentally used as a link parameter
       linkParameters = undefined;
@@ -25,11 +32,6 @@ export class tabulatorTable {
       const linkParametersFromParams = urlParams.toString().replace(/(^|&)viewid=[^&]*/g, "").replace(/^&/, "");
       linkParameters = linkParametersFromParams ? linkParametersFromParams : undefined;
     }
-
-    // Load table configuration with ConfigurationLoader
-    const configLoader = new ConfigurationLoader(sxc);
-    const tableConfigData = await configLoader.loadConfig(viewId);
-    const resourceLoader = new DataContentLoader(sxc);
 
     // Now create & initialize the Tabulator table
     const tabulatorAdapter = new TabulatorAdapter();

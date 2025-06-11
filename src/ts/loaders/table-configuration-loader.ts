@@ -1,5 +1,5 @@
 import { Sxc } from "@2sic.com/2sxc-typings";
-import { DataViewTableConfig } from "./models/table-model";
+import { DataViewTableConfig } from "../models/table-model";
 
 export class ConfigurationLoader {
   private sxc: Sxc;
