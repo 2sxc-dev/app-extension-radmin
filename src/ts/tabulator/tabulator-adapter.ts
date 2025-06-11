@@ -114,13 +114,6 @@ export class TabulatorAdapter {
     try {
       const config = await this.createCommonConfig(tableConfigData, entries);
 
-      // Apply pagination settings from 2sxc config
-      if (tableConfigData.pagingMode === "true") {
-        config.pagination = true;
-        config.paginationSize = tableConfigData.pagingSize ?? 10;
-      }
-
-      // Add dependencies separately using our extended interface
       const options: ExtendedOptions = {
         ...config,
         data: entries,
@@ -146,7 +139,6 @@ export class TabulatorAdapter {
 
   /**
    * Create a Tabulator table with AJAX data loading
-   * Refactored to only use the local custom filter (no remote filtering).
    */
   async createTable(
     tableName: string,
@@ -163,26 +155,12 @@ export class TabulatorAdapter {
         sampleData
       );
 
-      // Apply pagination settings
-      const paginationConfig: Partial<Options> =
-        tableConfigData.pagingMode === "true"
-          ? {
-              pagination: true,
-              paginationMode: "remote",
-              paginationSize: tableConfigData.pagingSize ?? 10,
-              paginationSizeSelector: [10, 25, 50, 100],
-              paginationInitialPage: 1,
-            }
-          : {};
-
-      const ajaxConfig = dataProvider.getAjaxConfig();
-
+      // Build final options from config
       const finalOptions: ExtendedOptions = {
         ...baseConfig,
         data: sampleData,
-        ...paginationConfig,
         ajaxURL: dataProvider.getApiUrl(),
-        ajaxConfig: ajaxConfig,
+        ajaxConfig: dataProvider.getAjaxConfig(),
         ajaxContentType: "json",
         ajaxURLGenerator: dataProvider.getUrlGenerator(),
         ajaxResponse: dataProvider.getResponseProcessor(),
