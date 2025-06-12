@@ -130,7 +130,7 @@ export class TabulatorAdapter {
         },
         ajaxResponse: (url, params, response) => {
           console.log("Raw AJAX response:", response);
-          return response;
+          return dataProvider.processData(response);
         },
         ...tabulatorConfig,
         dependencies: {

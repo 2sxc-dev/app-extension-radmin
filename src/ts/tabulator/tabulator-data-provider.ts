@@ -44,6 +44,13 @@ export class TabulatorDataProvider {
   }
 
   /**
+   * Process raw data without fetching it - can be used by ajaxResponse
+   */
+  processData(data: string): any {
+    return data;
+  }
+
+  /**
    * Get the AJAX configuration for Tabulator
    */
   getAjaxConfig() {

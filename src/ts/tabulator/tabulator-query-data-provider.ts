@@ -33,19 +33,26 @@ export class QueryTabulatorDataProvider extends TabulatorDataProvider {
         endpoint += `?${this.linkParameters}`;
       }
 
-      // Fetch data from the endpoint using the query string
+      // Fetch data from the endpoint
       const data = await this.sxc.webApi.fetchJson(endpoint);
 
-      // Process the data with relationship handling
+      // Process the data using our method
       return this.processQueryData(data, this.query);
     } catch (error) {
       console.error(`Error loading data from query ${this.query}:`, error);
       return [];
     }
   }
+  
+  /**
+   * Process raw data without fetching it - can be used by ajaxResponse
+   */
+  processData(data: string) {
+    return this.processQueryData(data, this.query);
+  }
 
   /**
-   * Process query data to handle relationships
+   * Private helper to process query data to handle relationships
    */
   private processQueryData(data: any, queryName: string): any[] {
     // Determine the main items using the provided query key
@@ -55,7 +62,6 @@ export class QueryTabulatorDataProvider extends TabulatorDataProvider {
     if (!Array.isArray(mainItems)) return [];
 
     // Build lookup maps for every other property that returns an array
-    // with reference objects (i.e. those with an "Id" property)
     const lookupMaps: Record<string, Record<number, any>> = {};
     Object.keys(data).forEach((key) => {
       // Skip the main key
