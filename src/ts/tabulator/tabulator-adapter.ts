@@ -87,7 +87,10 @@ export class TabulatorAdapter {
       `#${filterName}`
     );
 
-    if (!filterInput) return;
+    if (!filterInput) {
+      console.warn(`Filter input with ID ${filterName} not found`);
+      return;
+    }
 
     // Prevent 'Enter' from reloading page
     filterInput.addEventListener("keydown", (e) => {
@@ -142,7 +145,7 @@ export class TabulatorAdapter {
       const table = new Tabulator(`#${tableName}`, tabulatorOptions);
 
       // Optional filtering setup
-      if (filterName) {
+      if (filterName && tableConfigData.search) {
         this.setupFilterInput(table, filterName);
       }
 

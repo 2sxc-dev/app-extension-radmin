@@ -2,6 +2,7 @@ import { TabulatorAdapter } from "./tabulator-adapter";
 import { ConfigurationLoader } from "../loaders/table-configuration-loader";
 import { TabulatorDataProvider } from "./tabulator-data-provider";
 import { QueryTabulatorDataProvider } from "./tabulator-query-data-provider";
+import { TabulatorSearchFilter } from "../../custom/search-filter";
 
 export class tabulatorTable {
   /**
@@ -39,6 +40,12 @@ export class tabulatorTable {
         : undefined;
     }
 
+    // Create the filter input if search is enabled
+    if (tableConfigData.search) {
+      const searchFilter = new TabulatorSearchFilter();
+      searchFilter.createFilterInput(data.tableName, data.filterName);
+    }
+
     // Create the Tabulator adapter
     const tabulatorAdapter = new TabulatorAdapter();
 
@@ -63,8 +70,7 @@ export class tabulatorTable {
         dataProvider,
         data.filterName
       );
-    }
-    else {
+    } else {
       // Create a query data provider that handles relationships
       const queryProvider = new QueryTabulatorDataProvider(
         sxc,
