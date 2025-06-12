@@ -14,6 +14,7 @@ import { TabulatorConfigService } from "./tabulator-config-service";
 import { TabulatorDataProvider } from "./tabulator-data-provider";
 import { DataViewTableConfig } from "../models/table-model";
 import { TabulatorFloatingUi } from "./tabulator-floating-ui";
+import { TabulatorSearchFilter } from "../../custom/search-filter";
 
 // Register required modules for Tabulator
 Tabulator.registerModule([
@@ -47,50 +48,13 @@ export class TabulatorAdapter {
   }
 
   /**
-   * Custom filter function that matches any field in a row against the search term
-   */
-  private matchAny(data: any, filterParams: any, row?: any): boolean {
-    const search = filterParams.value?.toString().toLowerCase() || "";
-    if (!search) return true;
-
-    // Check row cells if row object is available
-    if (row && row.getCells) {
-      for (const cell of row.getCells()) {
-        const value = cell.getValue();
-        if (value != null && String(value).toLowerCase().includes(search)) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    // Fallback: search in the data object
-    for (const key in data) {
-      const value = data[key];
-      if (value != null) {
-        const stringValue =
-          typeof value === "object" ? JSON.stringify(value) : String(value);
-        if (stringValue.toLowerCase().includes(search)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  /**
    * Set up a purely custom input filter for the table
    */
   private setupFilterInput(table: Tabulator, filterName: string) {
-    const filterInput = document.querySelector<HTMLInputElement>(
-      `#${filterName}`
-    );
-
-    if (!filterInput) {
-      console.warn(`Filter input with ID ${filterName} not found`);
-      return;
-    }
+    const searchFilter = new TabulatorSearchFilter();
+    
+    const filterInput = searchFilter.getFilterFunction(filterName);
+    if (!filterInput) return;
 
     // Prevent 'Enter' from reloading page
     filterInput.addEventListener("keydown", (e) => {
@@ -103,7 +67,7 @@ export class TabulatorAdapter {
     // Apply local matchAny filter
     filterInput.addEventListener("input", (e) => {
       const value = (e.target as HTMLInputElement).value;
-      table.setFilter(this.matchAny, { value });
+      table.setFilter(searchFilter.matchAny, { value });
     });
   }
 
