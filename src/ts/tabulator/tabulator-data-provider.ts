@@ -1,3 +1,5 @@
+import { HttpMethod } from "tabulator-tables";
+
 export class TabulatorDataProvider {
   protected apiUrl: string;
   protected headers: Record<string, string>;
@@ -14,24 +16,50 @@ export class TabulatorDataProvider {
   }
 
   /**
+   * Get the API URL
+   */
+  getApiUrl(): string {
+    return this.apiUrl;
+  }
+
+  /**
+   * Update the API URL
+   */
+  updateApiUrl(url: string): void {
+    this.apiUrl = url;
+  }
+
+  /**
+   * Get the headers for AJAX requests
+   */
+  getHeaders(): Record<string, string> {
+    return this.headers;
+  }
+
+  /**
+   * Update headers
+   */
+  updateHeaders(headers: Record<string, string>): void {
+    this.headers = headers;
+  }
+
+  /**
+   * Get the AJAX configuration for Tabulator
+   */
+  getAjaxConfig() {
+    return {
+      method: "GET" as HttpMethod,
+      headers: this.headers,
+    };
+  }
+
+  /**
    * Get initial data for table setup
    */
   async getInitialData() {
     try {
-      const response = await fetch(this.apiUrl, {
-        method: "GET",
-        headers: this.headers,
-      });
-      const data = await response.json();
-
-      // Handle different response formats
-      if (Array.isArray(data)) {
-        return data;
-      } else if (data.Resources) {
-        return data.Resources;
-      } else {
-        return data.items || data;
-      }
+      const response = await fetch(this.apiUrl, this.getAjaxConfig());
+      return await response.json();
     } catch (error) {
       console.error("Error fetching initial data:", error);
       return [];

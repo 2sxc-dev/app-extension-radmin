@@ -6,6 +6,7 @@ import {
   InteractionModule,
   FilterModule,
   Options,
+  AjaxModule,
 } from "tabulator-tables";
 import { DateTime } from "luxon";
 import { TabulatorConfig } from "./tabulator-models";
@@ -21,6 +22,7 @@ Tabulator.registerModule([
   PageModule,
   InteractionModule,
   FilterModule,
+  AjaxModule,
 ]);
 
 // Define an extended options interface to include custom properties
@@ -36,7 +38,7 @@ export class TabulatorAdapter {
   /**
    * Create a common configuration base from 2sxc configuration
    */
-  private async createCommonConfig(
+  private async createTabulatorConfig(
     tableConfigData: DataViewTableConfig,
     data: object[]
   ): Promise<TabulatorConfig> {
@@ -109,33 +111,42 @@ export class TabulatorAdapter {
     tableName: string,
     tableConfigData: DataViewTableConfig,
     dataProvider: TabulatorDataProvider,
-    filterName?: string,
-    additionalOptions?: Options
+    filterName?: string
   ) {
     try {
-      // Get sample data for column setup
-      const sampleData = await dataProvider.getInitialData();
-      const baseConfig = await this.createCommonConfig(
-        tableConfigData,
-        sampleData
-      );
+      // Get initial data for column setup
+      const initialData = await dataProvider.getInitialData();
 
-      // Build final options from config
-      const finalOptions: ExtendedOptions = {
-        ...baseConfig,
-        data: sampleData,
+      // Base config generation
+      const tabulatorConfig: Partial<ExtendedOptions> =
+        await this.createTabulatorConfig(tableConfigData, initialData);
+
+      // Build final Tabulator options
+      const tabulatorOptions: ExtendedOptions = {
+        ajaxURL: dataProvider.getApiUrl(),
+        ajaxConfig: {
+          method: "GET",
+          headers: dataProvider.getHeaders(),
+        },
+        ajaxResponse: (url, params, response) => {
+          console.log("Raw AJAX response:", response);
+          return response;
+        },
+        ...tabulatorConfig,
         dependencies: {
           DateTime: DateTime,
         },
-        ...(additionalOptions || {}),
       };
 
-      const table = new Tabulator(`#${tableName}`, finalOptions as Options);
+      // Create the table
+      const table = new Tabulator(`#${tableName}`, tabulatorOptions);
 
+      // Optional filtering setup
       if (filterName) {
         this.setupFilterInput(table, filterName);
       }
 
+      // Optional view config mode
       if (this.isViewConfigMode()) {
         this.setupViewConfigMode(table, tableConfigData);
       }

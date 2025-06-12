@@ -19,7 +19,6 @@ export class TabulatorConfigService {
         data.columnsAutoShowRemaining,
         entries
       ),
-      data: [], // Will later get replaced with real data
       title: data.title || "2sxc Table",
       dataContentType: "",
       dataQuery: "",

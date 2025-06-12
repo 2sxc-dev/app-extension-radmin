@@ -13,11 +13,8 @@ export class QueryTabulatorDataProvider extends TabulatorDataProvider {
     }`;
     const apiUrl = sxc.webApi.url(endpoint);
 
-    // Get headers from sxc
-    const headers = {}; // We'll set these asynchronously
-
     // Initialize the base provider
-    super(apiUrl, headers);
+    super(apiUrl, sxc.webApi.headers("GET"));
 
     // Store references for later use
     this.sxc = sxc;
