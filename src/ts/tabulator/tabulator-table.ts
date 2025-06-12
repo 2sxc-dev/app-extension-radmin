@@ -1,7 +1,7 @@
 import { TabulatorAdapter } from "./tabulator-adapter";
 import { ConfigurationLoader } from "../loaders/table-configuration-loader";
-import { TabulatorDataProvider } from "./tabulator-data-provider";
-import { QueryTabulatorDataProvider } from "./tabulator-query-data-provider";
+import { DataProvider } from "../providers/data-provider";
+import { QueryDataProvider } from "../providers/query-data-provider";
 import { TabulatorSearchFilter } from "../../custom/search-filter";
 
 export class tabulatorTable {
@@ -57,7 +57,7 @@ export class tabulatorTable {
       const headers = await sxc.webApi.headers("GET");
 
       // Create standard data provider
-      const dataProvider = new TabulatorDataProvider(
+      const dataProvider = new DataProvider(
         apiUrl,
         headers,
         tableConfigData.dataContentType
@@ -72,7 +72,7 @@ export class tabulatorTable {
       );
     } else {
       // Create a query data provider that handles relationships
-      const queryProvider = new QueryTabulatorDataProvider(
+      const queryProvider = new QueryDataProvider(
         sxc,
         tableConfigData.dataQuery,
         linkParameters

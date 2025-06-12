@@ -1,6 +1,4 @@
-import { HttpMethod } from "tabulator-tables";
-
-export class TabulatorDataProvider {
+export class DataProvider {
   protected apiUrl: string;
   protected headers: Record<string, string>;
   protected dataContentType?: string;
@@ -51,11 +49,11 @@ export class TabulatorDataProvider {
   }
 
   /**
-   * Get the AJAX configuration for Tabulator
+   * Get the AJAX configuration
    */
   getAjaxConfig() {
     return {
-      method: "GET" as HttpMethod,
+      method: "GET",
       headers: this.headers,
     };
   }

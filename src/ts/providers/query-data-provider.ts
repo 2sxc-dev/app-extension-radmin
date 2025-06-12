@@ -1,7 +1,7 @@
-import { TabulatorDataProvider } from "./tabulator-data-provider";
+import { DataProvider } from "./data-provider";
 import { Sxc } from "@2sic.com/2sxc-typings";
 
-export class QueryTabulatorDataProvider extends TabulatorDataProvider {
+export class QueryDataProvider extends DataProvider {
   private sxc: Sxc;
   private query: string;
   private linkParameters?: string;

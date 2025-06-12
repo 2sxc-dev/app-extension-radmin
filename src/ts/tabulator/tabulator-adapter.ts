@@ -11,7 +11,7 @@ import {
 import { DateTime } from "luxon";
 import { TabulatorConfig } from "./tabulator-models";
 import { TabulatorConfigService } from "./tabulator-config-service";
-import { TabulatorDataProvider } from "./tabulator-data-provider";
+import { DataProvider } from "../providers/data-provider";
 import { DataViewTableConfig } from "../models/table-model";
 import { TabulatorFloatingUi } from "./tabulator-floating-ui";
 import { TabulatorSearchFilter } from "../../custom/search-filter";
@@ -52,7 +52,7 @@ export class TabulatorAdapter {
    */
   private setupFilterInput(table: Tabulator, filterName: string) {
     const searchFilter = new TabulatorSearchFilter();
-    
+
     const filterInput = searchFilter.getFilterFunction(filterName);
     if (!filterInput) return;
 
@@ -77,7 +77,7 @@ export class TabulatorAdapter {
   async createTable(
     tableName: string,
     tableConfigData: DataViewTableConfig,
-    dataProvider: TabulatorDataProvider,
+    dataProvider: DataProvider,
     filterName?: string
   ) {
     try {
