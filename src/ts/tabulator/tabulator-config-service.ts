@@ -1,4 +1,4 @@
-import { DataViewTableConfig } from "../models/table-model";
+import { DataViewTableConfig } from "../models/data-view-table-config";
 import { TabulatorColumnAdapter } from "./tabulator-column-adapter";
 import { TabulatorConfig } from "./tabulator-models";
 

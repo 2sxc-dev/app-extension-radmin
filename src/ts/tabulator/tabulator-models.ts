@@ -1,5 +1,5 @@
 import { CellComponent } from "tabulator-tables";
-import { DataViewTableConfig } from "../models/table-model";
+import { DataViewTableConfig } from "../models/data-view-table-config";
 
 /** Tabulator Config
  * This is the format expected by the Tabulator library.

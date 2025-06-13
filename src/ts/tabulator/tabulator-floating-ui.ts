@@ -1,6 +1,6 @@
 import { CommandNames } from "@2sic.com/2sxc-typings";
 import { ColumnComponent, RowComponent, Tabulator } from "tabulator-tables";
-import { DataViewTableConfig } from "../models/table-model";
+import { DataViewTableConfig } from "../models/data-view-table-config";
 import { offset } from "@floating-ui/dom";
 
 declare global {

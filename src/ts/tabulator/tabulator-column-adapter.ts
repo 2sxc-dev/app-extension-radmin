@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { TabulatorColumnConfig } from "./tabulator-models";
 import { formatConfigs } from "./tabulator-column-formats";
-import { DataViewColumnConfig } from "../models/table-columns-model";
+import { DataViewColumnConfig } from "../models/data-view-column-config";
 import { CellComponent } from "tabulator-tables";
 
 export class TabulatorColumnAdapter {
