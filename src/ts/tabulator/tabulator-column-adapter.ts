@@ -117,7 +117,7 @@ export class TabulatorColumnAdapter {
    * When this is the case, it returns the to-be-formatted type as a string.
    * If the type cannot be determined, it returns an empty string.
    */
-  private detectType(field: string, entries: unknown): string {
+  private detectType(field: string, entries: Object[]): string {
     // Attempt to parse JSON if `entries` is a string
     let parsedEntries: object[];
 

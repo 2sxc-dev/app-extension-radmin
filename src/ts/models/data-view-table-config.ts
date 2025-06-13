@@ -1,4 +1,4 @@
-import { DataViewColumnConfig } from "./table-columns-model";
+import { DataViewColumnConfig } from "./data-view-column-config";
 
 /** Table Config
  * This is the format provided by the 2sxc backend.
