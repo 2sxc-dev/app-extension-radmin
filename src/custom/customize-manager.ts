@@ -9,7 +9,10 @@ import { ITableCustomizer } from "./ITableCustomizer";
 export class CustomizeManager {
   private static instance: CustomizeManager;
   private customizers: ITableCustomizer[] = [];
-  private activeCustomizers: Map<string, ITableCustomizer> = new Map();
+  private activeCustomizers: Map<string, ITableCustomizer[]> = new Map(); // Changed to store arrays
+
+  // Private constructor for singleton pattern
+  private constructor() {}
 
   /**
    * Get the singleton instance of the CustomizeManager
@@ -35,18 +38,24 @@ export class CustomizeManager {
    * @returns The modified table configuration
    */
   public customizeConfig(config: DataViewTableConfig): DataViewTableConfig {
-    // Clear active customizers for this session
-    this.activeCustomizers.clear();
+    // Clear active customizers for this table
+    this.activeCustomizers.delete(config.guid);
 
     // Apply each customizer that should be applied to this config
     let modifiedConfig = { ...config };
+    const activeCustomizersForThisTable: ITableCustomizer[] = [];
 
     for (const customizer of this.customizers) {
       if (customizer.shouldApply(config)) {
         // Store this customizer as active for this config
-        this.activeCustomizers.set(config.guid, customizer);
+        activeCustomizersForThisTable.push(customizer);
         modifiedConfig = customizer.customizeConfig(modifiedConfig);
       }
+    }
+
+    // Store all active customizers for this table
+    if (activeCustomizersForThisTable.length > 0) {
+      this.activeCustomizers.set(config.guid, activeCustomizersForThisTable);
     }
 
     return modifiedConfig;
@@ -59,11 +68,13 @@ export class CustomizeManager {
    * @returns The modified Tabulator options
    */
   public customizeTabulator(options: Options, configGuid: string): Options {
-    // Apply only the customizers that were active for this config
+    // Apply all customizers that were active for this config
     let modifiedOptions = { ...options };
 
-    const customizer = this.activeCustomizers.get(configGuid);
-    if (customizer) {
+    const customizersForThisTable =
+      this.activeCustomizers.get(configGuid) || [];
+
+    for (const customizer of customizersForThisTable) {
       modifiedOptions = customizer.customizeTabulator(modifiedOptions);
     }
 
