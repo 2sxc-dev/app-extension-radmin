@@ -12,9 +12,10 @@ import { DateTime } from "luxon";
 import { TabulatorConfig } from "./tabulator-models";
 import { TabulatorConfigService } from "./tabulator-config-service";
 import { DataProvider } from "../providers/data-provider";
-import { DataViewTableConfig } from "../models/table-model";
+import { DataViewTableConfig } from "../models/data-view-table-config";
 import { TabulatorFloatingUi } from "./tabulator-floating-ui";
-import { TabulatorSearchFilter } from "../../custom/search-filter";
+import { TabulatorSearchFilter } from "./tabulator-search-filter";
+import { CustomizeSkillsAndGrowth } from "../../custom/customize-skills-and-growth";
 
 // Register required modules for Tabulator
 Tabulator.registerModule([
@@ -78,7 +79,8 @@ export class TabulatorAdapter {
     tableName: string,
     tableConfigData: DataViewTableConfig,
     dataProvider: DataProvider,
-    filterName?: string
+    filterName: string | undefined,
+    customizer?: CustomizeSkillsAndGrowth
   ) {
     try {
       // Get initial data for column setup
@@ -89,14 +91,13 @@ export class TabulatorAdapter {
         await this.createTabulatorConfig(tableConfigData, initialData);
 
       // Build final Tabulator options
-      const tabulatorOptions: ExtendedOptions = {
+      const tabulatorOptionsRaw: ExtendedOptions = {
         ajaxURL: dataProvider.getApiUrl(),
         ajaxConfig: {
           method: "GET",
           headers: dataProvider.getHeaders(),
         },
         ajaxResponse: (url, params, response) => {
-          console.log("Raw AJAX response:", response);
           return dataProvider.processData(response);
         },
         ...tabulatorConfig,
@@ -104,6 +105,11 @@ export class TabulatorAdapter {
           DateTime: DateTime,
         },
       };
+
+      // patch with customizer
+      const tabulatorOptions =
+        customizer?.customizeTabulator(tabulatorOptionsRaw) ||
+        tabulatorOptionsRaw;
 
       // Create the table
       const table = new Tabulator(`#${tableName}`, tabulatorOptions);

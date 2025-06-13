@@ -2,7 +2,8 @@ import { TabulatorAdapter } from "./tabulator-adapter";
 import { ConfigurationLoader } from "../loaders/table-configuration-loader";
 import { DataProvider } from "../providers/data-provider";
 import { QueryDataProvider } from "../providers/query-data-provider";
-import { TabulatorSearchFilter } from "../../custom/search-filter";
+import { TabulatorSearchFilter } from "./tabulator-search-filter";
+import { CustomizeSkillsAndGrowth } from "../../custom/customize-skills-and-growth";
 
 export class tabulatorTable {
   /**
@@ -24,7 +25,10 @@ export class tabulatorTable {
 
     // Load table configuration with ConfigurationLoader
     const configLoader = new ConfigurationLoader(sxc);
-    const tableConfigData = await configLoader.loadConfig(viewId);
+    const tableConfigDataRaw = await configLoader.loadConfig(viewId);
+
+    const customizer = new CustomizeSkillsAndGrowth();
+    const tableConfigData = customizer.customizeConfig(tableConfigDataRaw);
 
     // Handle link parameters
     let linkParameters: string | undefined;
@@ -54,7 +58,7 @@ export class tabulatorTable {
       const apiUrl = sxc.webApi.url(
         `/api/2sxc/app/auto/data/${tableConfigData.dataContentType}`
       );
-      const headers = await sxc.webApi.headers("GET");
+      const headers = sxc.webApi.headers("GET");
 
       // Create standard data provider
       const dataProvider = new DataProvider(
@@ -68,7 +72,8 @@ export class tabulatorTable {
         data.tableName,
         tableConfigData,
         dataProvider,
-        data.filterName
+        data.filterName,
+        customizer,
       );
     } else {
       // Create a query data provider that handles relationships
@@ -82,7 +87,8 @@ export class tabulatorTable {
         data.tableName,
         tableConfigData,
         queryProvider,
-        data.filterName
+        data.filterName,
+        customizer,
       );
     }
   }
