@@ -2,17 +2,29 @@ import { Options } from "tabulator-tables";
 import { DataViewTableConfig } from "../ts/models/data-view-table-config";
 
 export class CustomizeSkillsAndGrowth {
+  // Store the targeted GUID
+  private readonly targetGuid = "96d0d969-dd03-45fe-ab58-351c9ff91236";
+
+  // Track if the current table should be customized
+  private shouldCustomize = false;
+
   customizeConfig(config: DataViewTableConfig): DataViewTableConfig {
-    console.log("GUID:", config.guid);
-    if (config.guid == "96d0d969-dd03-45fe-ab58-351c9ff91236") {
-      console.log("<TRUE>");
+    // Check if this table matches our target and store the result
+    this.shouldCustomize = config.guid === this.targetGuid;
+
+    if (this.shouldCustomize) {
+      // You could also customize the config object here if needed
+      // For example: config.title = "Custom Title";
     }
 
     return config;
   }
 
   customizeTabulator(options: Options): Options {
-    console.log("Customizing Tabulator options for Skills and Growth");
+    // Only apply customizations if this is our target table
+    if (!this.shouldCustomize) {
+      return options;
+    }
 
     // Modify column formatters
     if (options.columns) {
@@ -23,12 +35,6 @@ export class CustomizeSkillsAndGrowth {
             ...(column.formatterParams || {}),
             max: 9,
           };
-
-          console.log(
-            `Modified progress formatter for column: ${
-              column.title || column.field
-            }`
-          );
         }
 
         // Customize date formatter
@@ -39,12 +45,6 @@ export class CustomizeSkillsAndGrowth {
             ...params,
             outputFormat: "yyyy-MM",
           };
-
-          console.log(
-            `Modified date formatter for column: ${
-              column.title || column.field
-            }`
-          );
         }
       });
     }

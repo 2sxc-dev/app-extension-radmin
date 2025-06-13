@@ -47,11 +47,17 @@ export class tabulatorTable {
     // Create the filter input if search is enabled
     if (tableConfigData.search) {
       const searchFilter = new TabulatorSearchFilter();
-      searchFilter.createFilterInput(data.tableName, data.filterName, data.moduleId);
+      searchFilter.createFilterInput(
+        data.tableName,
+        data.filterName,
+        data.moduleId
+      );
     }
 
     // Create the Tabulator adapter
     const tabulatorAdapter = new TabulatorAdapter();
+
+    let dataProvider;
 
     if (tableConfigData.dataQuery === "") {
       // Configure API URL for data content type
@@ -61,35 +67,26 @@ export class tabulatorTable {
       const headers = sxc.webApi.headers("GET");
 
       // Create standard data provider
-      const dataProvider = new DataProvider(
+      dataProvider = new DataProvider(
         apiUrl,
         headers,
         tableConfigData.dataContentType
       );
-
-      // Create table with remote data loading
-      await tabulatorAdapter.createTable(
-        data.tableName,
-        tableConfigData,
-        dataProvider,
-        data.filterName,
-        customizer,
-      );
     } else {
       // Create a query data provider that handles relationships
-      const queryProvider = new QueryDataProvider(
+      dataProvider = new QueryDataProvider(
         sxc,
         tableConfigData.dataQuery,
         linkParameters
       );
-
-      await tabulatorAdapter.createTable(
-        data.tableName,
-        tableConfigData,
-        queryProvider,
-        data.filterName,
-        customizer,
-      );
     }
+    // Create table with remote data loading
+    await tabulatorAdapter.createTable(
+      data.tableName,
+      tableConfigData,
+      dataProvider,
+      data.filterName,
+      customizer
+    );
   }
 }
