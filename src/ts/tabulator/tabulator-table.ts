@@ -3,7 +3,8 @@ import { ConfigurationLoader } from "../loaders/table-configuration-loader";
 import { DataProvider } from "../providers/data-provider";
 import { QueryDataProvider } from "../providers/query-data-provider";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
-import { CustomizeSkillsAndGrowth } from "../../custom/customize-skills-and-growth";
+import { initializeCustomizers } from "../../custom/customizers-init";
+import { CustomizeManager } from "../../custom/customize-manager";
 
 export class tabulatorTable {
   /**
@@ -27,8 +28,15 @@ export class tabulatorTable {
     const configLoader = new ConfigurationLoader(sxc);
     const tableConfigDataRaw = await configLoader.loadConfig(viewId);
 
-    const customizer = new CustomizeSkillsAndGrowth();
-    const tableConfigData = customizer.customizeConfig(tableConfigDataRaw);
+    // Initialize the customizers
+    initializeCustomizers();
+
+    // Get the CustomizeManager instance
+    const customizeManager = CustomizeManager.getInstance();
+
+    // Apply customizations to the config
+    const tableConfigData =
+      customizeManager.customizeConfig(tableConfigDataRaw);
 
     // Handle link parameters
     let linkParameters: string | undefined;
@@ -57,7 +65,7 @@ export class tabulatorTable {
     // Create the Tabulator adapter
     const tabulatorAdapter = new TabulatorAdapter();
 
-    let dataProvider;
+    let dataProvider: DataProvider;
 
     if (tableConfigData.dataQuery === "") {
       // Configure API URL for data content type
@@ -80,13 +88,14 @@ export class tabulatorTable {
         linkParameters
       );
     }
+
     // Create table with remote data loading
     await tabulatorAdapter.createTable(
       data.tableName,
       tableConfigData,
       dataProvider,
       data.filterName,
-      customizer
+      customizeManager
     );
   }
 }

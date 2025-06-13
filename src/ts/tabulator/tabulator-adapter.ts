@@ -16,6 +16,7 @@ import { DataViewTableConfig } from "../models/data-view-table-config";
 import { TabulatorFloatingUi } from "./tabulator-floating-ui";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
 import { CustomizeSkillsAndGrowth } from "../../custom/customize-skills-and-growth";
+import { CustomizeManager } from "../../custom/customize-manager";
 
 // Register required modules for Tabulator
 Tabulator.registerModule([
@@ -80,7 +81,7 @@ export class TabulatorAdapter {
     tableConfigData: DataViewTableConfig,
     dataProvider: DataProvider,
     filterName: string | undefined,
-    customizer?: CustomizeSkillsAndGrowth
+    customizeManager: CustomizeManager
   ) {
     try {
       // Get initial data for column setup
@@ -106,10 +107,11 @@ export class TabulatorAdapter {
         },
       };
 
-      // patch with customizer
-      const tabulatorOptions =
-        customizer?.customizeTabulator(tabulatorOptionsRaw) ||
-        tabulatorOptionsRaw;
+      // Apply customizations to the options using the manager
+      const tabulatorOptions = customizeManager.customizeTabulator(
+        tabulatorOptionsRaw,
+        tableConfigData.guid
+      );
 
       // Create the table
       const table = new Tabulator(`#${tableName}`, tabulatorOptions);
