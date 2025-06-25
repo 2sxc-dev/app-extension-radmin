@@ -1,6 +1,6 @@
 import { CustomizeManager } from "./customize-manager";
-import { CustomizeSkillsAndGrowth } from "./customize-skills-and-growth";
-import { CustomizeRolesTable } from "./customize-roles-table";
+import { CustomizeSkillsAndGrowth } from "./customizers/customize-skills-and-growth";
+import { CustomizeRolesTable } from "./customizers/customize-roles-table";
 
 /**
  * Initialize all customizers and register them with the CustomizeManager

@@ -9,7 +9,7 @@ import { ITableCustomizer } from "./ITableCustomizer";
 export class CustomizeManager {
   private static instance: CustomizeManager;
   private customizers: ITableCustomizer[] = [];
-  private activeCustomizers: Map<string, ITableCustomizer[]> = new Map(); // Changed to store arrays
+  private activeCustomizers: Map<string, ITableCustomizer[]> = new Map();
 
   // Private constructor for singleton pattern
   private constructor() {}

@@ -15,7 +15,7 @@ import { DataProvider } from "../providers/data-provider";
 import { DataViewTableConfig } from "../models/data-view-table-config";
 import { TabulatorFloatingUi } from "./tabulator-floating-ui";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
-import { CustomizeSkillsAndGrowth } from "../../custom/customize-skills-and-growth";
+import { CustomizeSkillsAndGrowth } from "../../custom/customizers/customize-skills-and-growth";
 import { CustomizeManager } from "../../custom/customize-manager";
 
 // Register required modules for Tabulator
