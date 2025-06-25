@@ -25,10 +25,16 @@ export class CustomizeSkillsAndGrowth implements ITableCustomizer {
             max: 9,
           };
         }
+        
+        if (column.title === "St%") {
+          column.formatter = (cell) => {
+            const value = cell.getValue();
+            return value !== null && value !== undefined ? `${value}%` : "";
+          };
+        }
 
         // Customize date formatter
         if (column.formatter === "datetime") {
-
           column.formatterParams = {
             ...column.formatterParams,
             outputFormat: "yyyy-MM",
@@ -36,6 +42,9 @@ export class CustomizeSkillsAndGrowth implements ITableCustomizer {
         }
       });
     }
+
+    // Make table fit data width
+    options.layout = "fitColumns";
 
     return options;
   }
