@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using ToSic.Eav.Data;
@@ -30,42 +29,31 @@ namespace AppCode.Api
 
     private object ConvertToJsonSchema(IContentType contentType)
     {
-      var properties = contentType.Attributes.Select(attribute =>
-      {
-        string typeName = attribute.Type.ToString();
-        switch (typeName)
-        {
-          case "String":
-            return new SchemaProperty(attribute.Name, "string");
-          case "Number":
-          case "Int":
-          case "Integer":
-            return new SchemaProperty(attribute.Name, "integer");
-          case "Decimal":
-          case "Float":
-          case "Double":
-            return new SchemaProperty(attribute.Name, "number");
-          case "Boolean":
-            return new SchemaProperty(attribute.Name, "boolean");
-          case "DateTime":
-            return new SchemaProperty(attribute.Name, "string", "date-time");
-          case "Date":
-            return new SchemaProperty(attribute.Name, "string", "date");
-          case "Hyperlink":
-          case "Url":
-            return new SchemaProperty(attribute.Name, "string", "uri");
-          case "Email":
-            return new SchemaProperty(attribute.Name, "string", "email");
-          case "Entity":
-          case "Object":
-            return new SchemaProperty(attribute.Name, "object");
-          case "Array":
-          case "List":
-            return new SchemaProperty(attribute.Name, "array");
-          default:
-            return new SchemaProperty(attribute.Name, "string");
-        }
-      });
+      var properties = contentType.Attributes
+        .Select(attribute => {
+          string typeName = attribute.Type.ToString();
+          
+          // Determine type using functional transformations
+          string schemaType = new[] { "String" }.Contains(typeName) ? "string" :
+                             new[] { "Number", "Int", "Integer" }.Contains(typeName) ? "integer" :
+                             new[] { "Decimal", "Float", "Double" }.Contains(typeName) ? "number" :
+                             new[] { "Boolean" }.Contains(typeName) ? "boolean" :
+                             new[] { "Entity", "Object" }.Contains(typeName) ? "object" :
+                             new[] { "Array", "List" }.Contains(typeName) ? "array" :
+                             "string";  // Default
+          
+          // Determine format using functional transformations
+          string format = new[] { "DateTime" }.Contains(typeName) ? "date-time" :
+                         new[] { "Date" }.Contains(typeName) ? "date" :
+                         new[] { "Hyperlink", "Url" }.Contains(typeName) ? "uri" :
+                         new[] { "Email" }.Contains(typeName) ? "email" :
+                         null;  // No format for other types
+          
+          // Create schema property based on determined type and format
+          return string.IsNullOrEmpty(format) 
+            ? new SchemaProperty(attribute.Name, schemaType) 
+            : new SchemaProperty(attribute.Name, schemaType, format);
+        });
 
       var schema = new JsonSchema
       {
