@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 using ToSic.Eav.Data;
 
@@ -29,92 +30,56 @@ namespace AppCode.Api
 
     private object ConvertToJsonSchema(IContentType contentType)
     {
-      // Create the base schema object
-      var schema = new Dictionary<string, object>
+      var properties = contentType.Attributes.Select(attribute =>
       {
-        ["$schema"] = "http://json-schema.org/draft-07/schema#",
-        ["description"] = $"Schema for {contentType.Name} content type",
-        ["title"] = contentType.Name,
-        ["type"] = "object",
-        ["properties"] = new Dictionary<string, object>(),
-        ["required"] = new List<string>()
-      };
-
-      // Process each attribute
-      var properties = (Dictionary<string, object>)schema["properties"];
-      var required = (List<string>)schema["required"];
-
-      foreach (var attribute in contentType.Attributes)
-      {
-        var property = new Dictionary<string, object>
-        {
-          ["title"] = attribute.Name,
-          ["description"] = $"{attribute.Name} field"
-        };
-
-        // Map the type
         string typeName = attribute.Type.ToString();
         switch (typeName)
         {
           case "String":
-            property["type"] = "string";
-            break;
+            return new SchemaProperty(attribute.Name, "string");
           case "Number":
           case "Int":
           case "Integer":
-            property["type"] = "integer";
-            break;
+            return new SchemaProperty(attribute.Name, "integer");
           case "Decimal":
           case "Float":
           case "Double":
-            property["type"] = "number";
-            break;
+            return new SchemaProperty(attribute.Name, "number");
           case "Boolean":
-            property["type"] = "boolean";
-            break;
+            return new SchemaProperty(attribute.Name, "boolean");
           case "DateTime":
-            property["type"] = "string";
-            property["format"] = "date-time";
-            break;
+            return new SchemaProperty(attribute.Name, "string", "date-time");
           case "Date":
-            property["type"] = "string";
-            property["format"] = "date";
-            break;
+            return new SchemaProperty(attribute.Name, "string", "date");
           case "Hyperlink":
           case "Url":
-            property["type"] = "string";
-            property["format"] = "uri";
-            break;
+            return new SchemaProperty(attribute.Name, "string", "uri");
           case "Email":
-            property["type"] = "string";
-            property["format"] = "email";
-            break;
+            return new SchemaProperty(attribute.Name, "string", "email");
           case "Entity":
           case "Object":
-            property["type"] = "object";
-            break;
+            return new SchemaProperty(attribute.Name, "object");
           case "Array":
           case "List":
-            property["type"] = "array";
-            property["items"] = new Dictionary<string, object>
-            {
-              ["type"] = "string"
-            };
-            break;
+            return new SchemaProperty(attribute.Name, "array");
           default:
-            property["type"] = "string";
-            break;
+            return new SchemaProperty(attribute.Name, "string");
         }
+      });
 
-        // Add to properties
-        properties[attribute.Name] = property;
-
-        // If this is a required field, add to required array
-        if (attribute.IsTitle)
-        {
-          required.Add(attribute.Name);
-        }
-      }
+      var schema = new JsonSchema
+      {
+        Id = contentType.NameId.ToString(),
+        Title = contentType.Name,
+        Type = "object",
+        Description = "",
+        Properties = properties.ToDictionary(p => p.Title, p => p),
+        Required = contentType.Attributes
+          .Where(a => a.IsTitle)
+          .Select(a => a.Name)
+          .ToList()
+          // TODO: There is no IsRequired, so only the title is required (wip)
+      };
 
       return schema;
     }
