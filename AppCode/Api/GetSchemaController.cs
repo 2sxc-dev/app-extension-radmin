@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using ToSic.Eav.Data;
@@ -30,46 +31,76 @@ namespace AppCode.Api
     private object ConvertToJsonSchema(IContentType contentType)
     {
       var properties = contentType.Attributes
-        .Select(attribute => {
-          string typeName = attribute.Type.ToString();
-          
-          // Determine type using functional transformations
-          string schemaType = new[] { "String" }.Contains(typeName) ? "string" :
-                             new[] { "Number", "Int", "Integer" }.Contains(typeName) ? "integer" :
-                             new[] { "Decimal", "Float", "Double" }.Contains(typeName) ? "number" :
-                             new[] { "Boolean" }.Contains(typeName) ? "boolean" :
-                             new[] { "Entity", "Object" }.Contains(typeName) ? "object" :
-                             new[] { "Array", "List" }.Contains(typeName) ? "array" :
-                             "string";  // Default
-          
-          // Determine format using functional transformations
-          string format = new[] { "DateTime" }.Contains(typeName) ? "date-time" :
-                         new[] { "Date" }.Contains(typeName) ? "date" :
-                         new[] { "Hyperlink", "Url" }.Contains(typeName) ? "uri" :
-                         new[] { "Email" }.Contains(typeName) ? "email" :
-                         null;  // No format for other types
-          
+        .Select(attribute =>
+        {
+          // Use the dictionary-based helper methods for type and format
+          string schemaType = GetTypeName(attribute);
+          string format = GetFormatName(attribute);
+
           // Create schema property based on determined type and format
-          return string.IsNullOrEmpty(format) 
-            ? new SchemaProperty(attribute.Name, schemaType) 
-            : new SchemaProperty(attribute.Name, schemaType, format);
-        });
+          return new SchemaProperty(attribute.Name, schemaType, format);
+        })
+        .ToDictionary(p => p.Title, p => p);
 
       var schema = new JsonSchema
       {
         Id = contentType.NameId.ToString(),
         Title = contentType.Name,
         Type = "object",
-        Description = "",
-        Properties = properties.ToDictionary(p => p.Title, p => p),
+        Description = contentType.Metadata.GetBestValue<string>("Description"),
+        Properties = properties,
         Required = contentType.Attributes
-          .Where(a => a.IsTitle)
+          .Where(a => a.IsTitle || a.Metadata.GetBestValue<bool>("Required"))
           .Select(a => a.Name)
           .ToList()
-          // TODO: There is no IsRequired, so only the title is required (wip)
       };
 
       return schema;
     }
+
+    // Updated method signature to match IContentTypeAttribute
+    string GetTypeName(IContentTypeAttribute attribute)
+    {
+      // Use the TypeMappings dictionary to get the type name
+      return TypeMappings.TryGetValue(attribute.Type.ToString(), out var typeName)
+        ? typeName
+        : "string"; // Default to string if type not found
+    }
+
+    // Updated method signature to match IContentTypeAttribute
+    string GetFormatName(IContentTypeAttribute attribute)
+    {
+      // Use the FormatMappings dictionary to get the format
+      return FormatMappings.TryGetValue(attribute.Type.ToString(), out var formatName)
+        ? formatName
+        : null; // No format if type not found in mappings
+    }
+
+    // Dictionary for type mappings
+    static Dictionary<string, string> TypeMappings = new Dictionary<string, string>
+    {
+      { "String", "string" },
+      { "Number", "integer" },
+      { "Int", "integer" },
+      { "Integer", "integer" },
+      { "Decimal", "number" },
+      { "Float", "number" },
+      { "Double", "number" },
+      { "Boolean", "boolean" },
+      { "Entity", "object" },
+      { "Object", "object" },
+      { "Array", "array" },
+      { "List", "array" }
+    };
+
+    // Dictionary for format mappings
+    static Dictionary<string, string> FormatMappings = new Dictionary<string, string>
+    {
+      { "DateTime", "date-time" },
+      { "Date", "date" },
+      { "Hyperlink", "uri" },
+      { "Url", "uri" },
+      { "Email", "email" }
+    };
   }
 }
