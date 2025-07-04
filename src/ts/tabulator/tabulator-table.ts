@@ -5,6 +5,7 @@ import { QueryDataProvider } from "../providers/query-data-provider";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
 import { initializeCustomizers } from "../../custom/customizers-init";
 import { CustomizeManager } from "../../custom/customize-manager";
+import { SchemaProvider } from "../providers/schema-provider";
 
 export class tabulatorTable {
   /**
@@ -88,12 +89,15 @@ export class tabulatorTable {
         linkParameters
       );
     }
+    
+    const schemaProvider = new SchemaProvider(sxc);
 
     // Create table with remote data loading
     await tabulatorAdapter.createTable(
       data.tableName,
       tableConfigData,
       dataProvider,
+      schemaProvider,
       data.filterName,
       customizeManager
     );

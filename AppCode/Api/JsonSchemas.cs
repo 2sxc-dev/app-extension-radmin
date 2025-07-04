@@ -33,7 +33,5 @@ namespace AppCode.Api
     public Dictionary<string, object> Items { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string Description { get; set; }
-
   }
-
 }

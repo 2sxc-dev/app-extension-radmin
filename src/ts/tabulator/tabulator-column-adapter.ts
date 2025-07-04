@@ -3,19 +3,21 @@ import { TabulatorColumnConfig } from "./tabulator-models";
 import { formatConfigs } from "./tabulator-column-formats";
 import { DataViewColumnConfig } from "../models/data-view-column-config";
 import { CellComponent } from "tabulator-tables";
+import { JsonSchema, SchemaProperty } from "../models/json-schema";
 
 export class TabulatorColumnAdapter {
   convert(
     columnConfig: DataViewColumnConfig[],
     columnsAutoShowRemaining: boolean,
-    entries: object[]
+    schema: JsonSchema
   ): TabulatorColumnConfig[] {
     let configuredColumns = columnConfig.map((col) => {
       let chosenFormat = col.valueFormat;
 
-      // If the format is "" for automatic, try to discover the correct format
-      if (col.valueFormat === "")
-        chosenFormat = this.detectType(col.valueSelector, entries);
+      // If the format is "" for automatic, try to get format from schema
+      if (col.valueFormat === "") {
+        chosenFormat = this.getFormatFromSchema(col.valueSelector, schema);
+      }
 
       const formatConfig =
         chosenFormat && formatConfigs[chosenFormat]
@@ -63,31 +65,56 @@ export class TabulatorColumnAdapter {
     });
 
     if (columnsAutoShowRemaining) {
-      if (entries.length === 0) {
-        return configuredColumns;
-      }
-
-      // Get all keys from the first entry
-      const allKeys = Object.keys(entries[0]);
-
       // Extract the keys that are already present in the configured columns
       const configuredFields = new Set(
         configuredColumns.map((col) => col.field)
       );
 
+      // Get all properties from schema
+      const schemaProperties = Object.keys(schema.properties);
+
       // Create columns for any missing fields
-      const remainingColumns = allKeys
+      const remainingColumns = schemaProperties
         .filter((key) => !configuredFields.has(key))
-        .map((key) => ({
-          title: key,
-          field: key,
-        }));
+        .map((key) => {
+          const property = schema.properties[key];
+          const format = this.mapSchemaTypeToFormat(property);
+
+          return {
+            title: property.title || key,
+            field: key,
+            ...(formatConfigs[format] || {}),
+          };
+        });
 
       // Combine the configured columns with the remaining columns
       return configuredColumns.concat(remainingColumns);
     }
 
     return configuredColumns;
+  }
+
+  /**
+   * Maps schema property types and formats to Tabulator formats
+   */
+  private mapSchemaTypeToFormat(property: SchemaProperty): string {
+    if (property.format === "date-time") return "date-time";
+    if (property.format === "date") return "date";
+    if (property.format === "uri" || property.format === "email") return "link";
+
+    return property.type;
+  }
+
+  /**
+   * Gets format information from the schema for a specific field
+   */
+  private getFormatFromSchema(field: string, schema: JsonSchema): string {
+    // Check if the field exists in the schema
+    if (schema.properties[field]) {
+      const property = schema.properties[field];
+      return this.mapSchemaTypeToFormat(property);
+    }
+    return "";
   }
 
   /**

@@ -1,4 +1,5 @@
 import { DataViewTableConfig } from "../models/data-view-table-config";
+import { JsonSchema } from "../models/json-schema";
 import { TabulatorColumnAdapter } from "./tabulator-column-adapter";
 import { TabulatorConfig } from "./tabulator-models";
 
@@ -7,17 +8,19 @@ import { TabulatorConfig } from "./tabulator-models";
  * Is used to convert the configuration from 2sxc into a format that Tabulator can understand.
  */
 export class TabulatorConfigService {
+
   createTabulatorConfig(
     data: DataViewTableConfig,
-    entries: object[]
+    schema: JsonSchema
   ): TabulatorConfig {
     const columnAdapter = new TabulatorColumnAdapter();
+    
     return {
       layout: "fitDataStretch",
       columns: columnAdapter.convert(
         data.dataViewColumnConfig,
         data.columnsAutoShowRemaining,
-        entries
+        schema
       ),
       title: data.title || "2sxc Table",
       dataContentType: "",

@@ -15,8 +15,9 @@ import { DataProvider } from "../providers/data-provider";
 import { DataViewTableConfig } from "../models/data-view-table-config";
 import { TabulatorFloatingUi } from "./tabulator-floating-ui";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
-import { CustomizeSkillsAndGrowth } from "../../custom/customizers/customize-skills-and-growth";
 import { CustomizeManager } from "../../custom/customize-manager";
+import { JsonSchema } from "../models/json-schema";
+import { SchemaProvider } from "../providers/schema-provider";
 
 // Register required modules for Tabulator
 Tabulator.registerModule([
@@ -37,16 +38,16 @@ interface ExtendedOptions extends Options {
 
 export class TabulatorAdapter {
   private floatingUi = new TabulatorFloatingUi();
-
   /**
    * Create a common configuration base from 2sxc configuration
    */
   private async createTabulatorConfig(
     tableConfigData: DataViewTableConfig,
-    data: object[]
+    schema: JsonSchema
   ): Promise<TabulatorConfig> {
     const configService = new TabulatorConfigService();
-    return configService.createTabulatorConfig(tableConfigData, data);
+
+    return configService.createTabulatorConfig(tableConfigData, schema);
   }
 
   /**
@@ -80,16 +81,15 @@ export class TabulatorAdapter {
     tableName: string,
     tableConfigData: DataViewTableConfig,
     dataProvider: DataProvider,
+    schemaProvider: SchemaProvider,
     filterName: string | undefined,
     customizeManager: CustomizeManager
   ) {
     try {
-      // Get initial data for column setup
-      const initialData = await dataProvider.getInitialData();
-
-      // Base config generation
+      const schema = await schemaProvider.getSchema("DataViewColumnConfig");
+      
       const tabulatorConfig: Partial<ExtendedOptions> =
-        await this.createTabulatorConfig(tableConfigData, initialData);
+        await this.createTabulatorConfig(tableConfigData, schema);
 
       // Build final Tabulator options
       const tabulatorOptionsRaw: ExtendedOptions = {

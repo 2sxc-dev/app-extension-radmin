@@ -12,7 +12,7 @@ export class DataProvider {
     this.headers = headers;
     this.dataContentType = dataContentType;
   }
-
+  
   /**
    * Get the API URL
    */
