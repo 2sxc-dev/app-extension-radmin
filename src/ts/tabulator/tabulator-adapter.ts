@@ -86,8 +86,8 @@ export class TabulatorAdapter {
     customizeManager: CustomizeManager
   ) {
     try {
-      const schema = await schemaProvider.getSchema("DataViewColumnConfig");
-      
+      const schema = await schemaProvider.getSchema(tableConfigData.dataContentType || tableConfigData.dataQuery);
+
       const tabulatorConfig: Partial<ExtendedOptions> =
         await this.createTabulatorConfig(tableConfigData, schema);
 

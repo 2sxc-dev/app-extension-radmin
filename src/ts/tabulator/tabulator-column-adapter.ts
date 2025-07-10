@@ -98,6 +98,7 @@ export class TabulatorColumnAdapter {
    * Maps schema property types and formats to Tabulator formats
    */
   private mapSchemaTypeToFormat(property: SchemaProperty): string {
+    // Format ist different from type
     if (property.format === "date-time") return "date-time";
     if (property.format === "date") return "date";
     if (property.format === "uri" || property.format === "email") return "link";
