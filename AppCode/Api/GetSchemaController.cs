@@ -47,10 +47,10 @@ namespace AppCode.Api
         Id = contentType.NameId.ToString(),
         Title = contentType.Name,
         Type = "object",
-        Description = contentType.Metadata.GetBestValue<string>("Description"),
+        Description = contentType.Metadata.Get<string>("Description"),
         Properties = properties,
         Required = contentType.Attributes
-          .Where(a => a.IsTitle || a.Metadata.GetBestValue<bool>("Required"))
+          .Where(a => a.IsTitle || a.Metadata.Get<bool>("Required"))
           .Select(a => a.Name)
           .ToList()
       };
