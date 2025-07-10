@@ -137,47 +137,4 @@ export class TabulatorColumnAdapter {
       .split(".")
       .reduce((prev, curr) => (prev ? prev[curr] : undefined), obj);
   }
-
-  /**
-   * Checks the first non-null/undefined value in the given column
-   * and tries to determine if it matches a known data type.
-   * When this is the case, it returns the to-be-formatted type as a string.
-   * If the type cannot be determined, it returns an empty string.
-   */
-  private detectType(field: string, entries: Object[]): string {
-    // Attempt to parse JSON if `entries` is a string
-    let parsedEntries: object[];
-
-    if (Array.isArray(entries)) {
-      parsedEntries = entries;
-    } else {
-      console.warn("Entries is not a string or an array, unable to process.");
-      return "";
-    }
-
-    // Find the first non-null/undefined value
-    const firstValue = parsedEntries
-      .map((entry: any) => entry[field])
-      .find((val) => val !== null && val !== undefined);
-
-    if (firstValue === undefined) return "";
-    if (typeof firstValue === "boolean") return "boolean";
-    if (!isNaN(Number(firstValue)) && firstValue !== "") return "number";
-
-    const dt = DateTime.fromISO(String(firstValue), { zone: "utc" });
-    if (dt.isValid) {
-      // If the date part is all zeros (year=1, month=1, day=1), treat as time
-      if (dt.year === 1 && dt.month === 1 && dt.day === 1) {
-        return "time";
-      }
-      // If the time part is all zeros, treat as date
-      if (dt.hour === 0 && dt.minute === 0 && dt.second === 0) {
-        return "date";
-      }
-      // Otherwise it's date-time
-      return "date-time";
-    }
-
-    return "";
-  }
 }
