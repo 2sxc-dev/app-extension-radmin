@@ -80,9 +80,9 @@ namespace AppCode.Api
     static Dictionary<string, string> TypeMappings = new Dictionary<string, string>
     {
       { "String", "string" },
-      { "Number", "integer" },
-      { "Int", "integer" },
-      { "Integer", "integer" },
+      { "Number", "number" },
+      { "Int", "number" },
+      { "number", "number" },
       { "Decimal", "number" },
       { "Float", "number" },
       { "Double", "number" },

@@ -98,7 +98,7 @@ export class TabulatorAdapter {
           method: "GET",
           headers: dataProvider.getHeaders(),
         },
-        ajaxResponse: (url, params, response) => {
+        ajaxResponse: (response) => {
           return dataProvider.processData(response);
         },
         ...tabulatorConfig,
