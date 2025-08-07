@@ -87,7 +87,6 @@ export class TabulatorAdapter {
   ) {
     try {
       const schema = await schemaProvider.getSchema(tableConfigData.dataContentType || tableConfigData.dataQuery);
-
       const tabulatorConfig: Partial<ExtendedOptions> =
         await this.createTabulatorConfig(tableConfigData, schema);
 
@@ -98,7 +97,7 @@ export class TabulatorAdapter {
           method: "GET",
           headers: dataProvider.getHeaders(),
         },
-        ajaxResponse: (response) => {
+        ajaxResponse: (url, params, response) => {
           return dataProvider.processData(response);
         },
         ...tabulatorConfig,
