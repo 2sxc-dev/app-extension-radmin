@@ -16,7 +16,7 @@ export class SchemaProvider {
   async getSchema(typeName: string): Promise<JsonSchema> {
     try {
       return await this.sxc.webApi.fetchJson(
-        `/api/2sxc/app/auto/api/GetSchema/GetSchema?typename=${encodeURIComponent(
+        `app/auto/api/GetSchema/GetSchema?typename=${encodeURIComponent(
           typeName
         )}`
       );

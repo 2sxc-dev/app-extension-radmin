@@ -71,7 +71,7 @@ export class tabulatorTable {
     if (tableConfigData.dataQuery === "") {
       // Configure API URL for data content type
       const apiUrl = sxc.webApi.url(
-        `/api/2sxc/app/auto/data/${tableConfigData.dataContentType}`
+        `app/auto/data/${tableConfigData.dataContentType}`
       );
       const headers = sxc.webApi.headers("GET");
 

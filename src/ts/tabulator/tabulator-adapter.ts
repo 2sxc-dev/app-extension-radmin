@@ -7,6 +7,7 @@ import {
   FilterModule,
   Options,
   AjaxModule,
+  ColumnComponent,
 } from "tabulator-tables";
 import { DateTime } from "luxon";
 import { TabulatorConfig } from "./tabulator-models";
@@ -155,7 +156,7 @@ export class TabulatorAdapter {
         this.floatingUi.showFloatingMenu(table, row, e);
       });
 
-      table.on("headerMouseEnter", (e, column) => {
+      table.on("headerMouseEnter" as any, (e: MouseEvent, column: ColumnComponent) => {
         this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
       });
     });
