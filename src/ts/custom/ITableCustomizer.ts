@@ -1,5 +1,5 @@
 import { Options } from "tabulator-tables";
-import { DataViewTableConfig } from "../ts/models/data-view-table-config";
+import { DataViewTableConfig } from "../models/data-view-table-config";
 
 /**
  * Interface for table customizers

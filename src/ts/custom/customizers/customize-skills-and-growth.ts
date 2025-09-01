@@ -1,6 +1,6 @@
 import { Options } from "tabulator-tables";
-import { DataViewTableConfig } from "../../ts/models/data-view-table-config";
 import { ITableCustomizer } from "../ITableCustomizer";
+import { DataViewTableConfig } from "../../models/data-view-table-config";
 
 export class CustomizeSkillsAndGrowth implements ITableCustomizer {
   // Store the targeted GUID

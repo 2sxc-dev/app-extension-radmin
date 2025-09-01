@@ -5,7 +5,11 @@
   "main": "(none)",
   "scripts": {
     "build": "webpack",
-    "watch": "webpack --watch --config webpack.config.js"
+    "watch": "webpack --watch",
+    "build:table": "webpack --env target=table",
+    "watch:table": "webpack --watch --env target=table",
+    "build:customizers": "webpack --env target=customizers",
+    "watch:customizers": "webpack --watch --env target=customizers"
   },
   "author": "2sic internet solutions 2025",
   "license": "ISC",

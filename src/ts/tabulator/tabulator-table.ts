@@ -3,9 +3,8 @@ import { ConfigurationLoader } from "../loaders/table-configuration-loader";
 import { DataProvider } from "../providers/data-provider";
 import { QueryDataProvider } from "../providers/query-data-provider";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
-import { initializeCustomizers } from "../../custom/customizers-init";
-import { CustomizeManager } from "../../custom/customize-manager";
 import { SchemaProvider } from "../providers/schema-provider";
+import { CustomizeManager } from "../custom/customize-manager";
 
 export class tabulatorTable {
   /**
@@ -28,9 +27,6 @@ export class tabulatorTable {
     // Load table configuration with ConfigurationLoader
     const configLoader = new ConfigurationLoader(sxc);
     const tableConfigDataRaw = await configLoader.loadConfig(viewId);
-
-    // Initialize the customizers
-    initializeCustomizers();
 
     // Get the CustomizeManager instance
     const customizeManager = CustomizeManager.getInstance();

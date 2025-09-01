@@ -16,9 +16,9 @@ import { DataProvider } from "../providers/data-provider";
 import { DataViewTableConfig } from "../models/data-view-table-config";
 import { TabulatorFloatingUi } from "./tabulator-floating-ui";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
-import { CustomizeManager } from "../../custom/customize-manager";
 import { JsonSchema } from "../models/json-schema";
 import { SchemaProvider } from "../providers/schema-provider";
+import { CustomizeManager } from "../custom/customize-manager";
 
 // Register required modules for Tabulator
 Tabulator.registerModule([

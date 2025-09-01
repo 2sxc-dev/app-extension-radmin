@@ -1,10 +1,10 @@
 import { Options } from "tabulator-tables";
-import { DataViewTableConfig } from "../../ts/models/data-view-table-config";
 import { ITableCustomizer } from "../ITableCustomizer";
+import { DataViewTableConfig } from "../../models/data-view-table-config";
 
-export class CustomizeTrainingsTable implements ITableCustomizer {
+export class CustomizeResourceTable implements ITableCustomizer {
   // Store the targeted GUID
-  private readonly targetGuid = "1b5939ce-6e7f-4e03-90b7-471d4bd7770d";
+  private readonly targetGuid = "8c1ef514-0699-43b1-96c8-86a643458c18";
 
   shouldApply(config: DataViewTableConfig): boolean {
     return config.guid === this.targetGuid;
