@@ -4,8 +4,6 @@
   "description": "",
   "main": "(none)",
   "scripts": {
-    "build": "webpack",
-    "watch": "webpack --watch",
     "build:table": "webpack --env target=table",
     "watch:table": "webpack --watch --env target=table",
     "build:customizers": "webpack --env target=customizers",

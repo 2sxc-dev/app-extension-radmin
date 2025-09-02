@@ -48,12 +48,11 @@
   viewId = item.Guid.ToString()
 })
 <script src="@App.Folder.Url/dist/customizers.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
-<script src="@App.Folder.Url/dist/table.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
-<link href="@App.Folder.Url/dist/styles.min.css" rel="stylesheet">
+<script src="@App.Folder.Url/system/sxc-tables/dist/table.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
+<link href="@App.Folder.Url/system/sxc-tables/dist/styles.min.css" rel="stylesheet">
 
 @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.9\"></script>")
 @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.13\"></script>")
-
 @*
 
   - There are 2 ways of data loading immplemented 1) Call with Promise 2) Let Tabulator AJAX load

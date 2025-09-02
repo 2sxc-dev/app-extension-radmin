@@ -2,27 +2,25 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = (env = {}) => {
-  // Use env.target to select which entry to use
+  // Determine which entry to use
   let entry;
+  let outDir = "dist";
+
   if (env.target === "table") {
-    entry = { table: "./src/ts/table.ts" };
-  } else if (env.target === "customizers") {
-    entry = { customizers: "./src/ts/customizers.ts" };
-  } else {
     entry = {
       table: "./src/ts/table.ts",
-      customizers: "./src/ts/customizers.ts",
+      styles: "./src/styles/styles.scss"
     };
+    outDir = `system/sxc-tables/dist`;
+  } else if (env.target === "customizers") {
+    entry = { customizers: "./src/ts/customizers.ts" };
+    outDir = "dist";
   }
-
   return {
-    entry: {
-      ...entry,
-      styles: "./src/styles/styles.scss",
-    },
+    entry,
     output: {
       globalObject: "self",
-      path: path.resolve(__dirname, "dist"),
+      path: path.resolve(__dirname, outDir),
       filename: "[name].js",
     },
     mode: "development",
