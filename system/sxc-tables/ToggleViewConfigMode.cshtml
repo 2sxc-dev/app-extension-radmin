@@ -10,7 +10,8 @@
   if (!MyUser.IsSiteAdmin || item.IsDemoItem)
     return;
 
-  var viewConfigMode = MyModel.Bool("viewConfigMode");
+  // The view config mode would enable the JS to show edit buttons to configure the table
+  var viewConfigMode = MyPage.Parameters.Bool(SxcTablesConstants.UrlParamConfigMode, fallback: false);
   var onChangeLink = $"{Link.To()}?{SxcTablesConstants.UrlParamConfigMode}={!viewConfigMode}";
 }
 
