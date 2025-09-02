@@ -12,8 +12,8 @@ namespace AppCode.Data
 */
 
 // Generator:   CSharpDataModelsGenerator
-// App/Edition: 2sxc-Tables/
-// User:        SuperUser Account
+// App/Edition: Extension Sxc Tables/
+// User:        2sic Web-Developer
 namespace AppCode.Data
 {
   // This is a generated class for AppResources (scope: System.App)

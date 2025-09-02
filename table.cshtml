@@ -3,33 +3,22 @@
 @using ToSic.Sxc.Blocks
 @using AppCode
 @using AppCode.Data
+@using AppCode.System.SxcTables
+@using AppCode.System.SxcTables.Data
 
 @{
   Kit.Page.Activate("2sxc.JsCore");
 
-  var viewConfigMode = MyPage.Parameters.Bool("viewconfigmode", fallback: false);
-  var itemViewId = MyPage.Parameters.String("viewid", fallback: null);
-  Guid parsedGuid;
-  DataViewTableConfig item = string.IsNullOrEmpty(itemViewId) || !Guid.TryParse(itemViewId, out parsedGuid)
+  var viewConfigMode = MyPage.Parameters.Bool(SxcTablesConstants.UrlParamConfigMode, fallback: false);
+  var itemViewId = MyPage.Parameters.String(SxcTablesConstants.UrlParamViewId, fallback: null);
+  
+  DataViewTableConfig item = string.IsNullOrEmpty(itemViewId) || !Guid.TryParse(itemViewId, out var parsedGuid)
     ? As<DataViewTableConfig>(MyItem)
     : App.Data.GetOne<DataViewTableConfig>(parsedGuid);
 }
 
-@if (!item.IsDemoItem && MyUser.IsContentAdmin)
-{
-  <div class="form-check form-switch">
-    <input
-      class="form-check-input"
-      type="checkbox"
-      role="switch"
-      title="Toolbars For Table-Configuration"
-      id="flexSwitchCheckDefault"
-      onchange="location.href='@($"{Link.To()}?viewconfigmode={!viewConfigMode}")'"
-      @(viewConfigMode ? "checked" : "")
-    >
-    <label class="form-check-label" for="flexSwitchCheckDefault">View Config Mode</label>
-  </div>
-}
+@* Show Switcher to toggle table configuration mode - to admins only, and not for demo since that shouldn't be modified *@
+@Html.Partial("./system/sxc-tables/ToggleViewConfigMode.cshtml", new { item, viewConfigMode })
 
 <div class="d-flex justify-content-between align-items-center mb-1">
   <h1>@item.Title</h1>

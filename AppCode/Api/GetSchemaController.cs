@@ -1,25 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using ToSic.Eav.Data;
 
-namespace AppCode.Api
+namespace AppCode.System.SxcTables.Api
 {
   [AllowAnonymous]
   public class GetSchemaController : Custom.Hybrid.ApiTyped
   {
     [HttpGet]
-    public object GetContentType(String typename)
-    {
-      /// <summary>
-      /// Get the raw content type for the given typename as JSON
-      /// </summary>
-      return App.Data.GetContentType(typename);
-    }
-
-    [HttpGet]
-    public object GetSchema(String typename)
+    public object GetSchema(string typename)
     {
       /// <summary>
       /// Get the schema for the given typename in JSON Schema format

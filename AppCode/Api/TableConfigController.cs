@@ -1,8 +1,8 @@
 using System.Web.Http;
-using AppCode.Data;
+using AppCode.System.SxcTables.Data;
 using System;
 
-namespace AppCode.Api
+namespace AppCode.System.SxcTables.Api
 {
   [AllowAnonymous]
   public class TableConfigController : Custom.Hybrid.ApiTyped

@@ -1,0 +1,28 @@
+@inherits Custom.Hybrid.RazorTyped
+@using AppCode
+@using AppCode.System.SxcTables
+@using AppCode.System.SxcTables.Data
+
+@* Show Switcher to toggle table configuration mode - to admins only, and not for demo since that shouldn't be modified *@
+
+@{
+  var item = MyModel.Get<DataViewTableConfig>("item");
+  if (!MyUser.IsSiteAdmin || item.IsDemoItem)
+    return;
+
+  var viewConfigMode = MyModel.Bool("viewConfigMode");
+  var onChangeLink = $"{Link.To()}?{SxcTablesConstants.UrlParamConfigMode}={!viewConfigMode}";
+}
+
+<div class="form-check form-switch">
+  <input
+    class="form-check-input"
+    type="checkbox"
+    role="switch"
+    title="Toolbars For Table-Configuration"
+    id="flexSwitchCheckDefault"
+    onchange="location.href='@onChangeLink'"
+    @(viewConfigMode ? "checked" : "")
+  >
+  <label class="form-check-label" for="flexSwitchCheckDefault">View Config Mode</label>
+</div>
