@@ -24,9 +24,12 @@ export class TabulatorColumnAdapter {
           ? { ...formatConfigs[chosenFormat] }
           : {};
 
+      // Fix field name to match processed data
+      const normalizedField = normalizeFieldName(col.valueSelector, schema);
+
       const column: TabulatorColumnConfig = {
         title: col.title,
-        field: col.valueSelector,
+        field: normalizedField,
         tooltip: col.tooltipEnabled
           ? col.tooltipSelector
             ? (e: Event, cell: CellComponent) =>
@@ -111,8 +114,9 @@ export class TabulatorColumnAdapter {
    */
   private getFormatFromSchema(field: string, schema: JsonSchema): string {
     // Check if the field exists in the schema
-    if (schema.properties[field]) {
-      const property = schema.properties[field];
+    const normalizedField = normalizeFieldName(field, schema);
+    if (schema.properties[normalizedField]) {
+      const property = schema.properties[normalizedField];
       return this.mapSchemaTypeToFormat(property);
     }
     return "";
@@ -138,4 +142,13 @@ export class TabulatorColumnAdapter {
       .split(".")
       .reduce((prev, curr) => (prev ? prev[curr] : undefined), obj);
   }
+}
+
+/**
+ * Normalizes a field name to match schema property keys.
+ * Tries exact, lowercase-first, and case-insensitive matches.
+ */
+function normalizeFieldName(field: string, schema: JsonSchema): string {
+  const keys = Object.keys(schema.properties);
+  return keys.find((k) => k.toLowerCase() === field.toLowerCase()) || field;
 }
