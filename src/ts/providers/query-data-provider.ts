@@ -28,10 +28,9 @@ export class QueryDataProvider extends DataProvider {
   async getInitialData(): Promise<any[]> {
     try {
       // Build endpoint URL including linkParameters if provided
-      let endpoint = `app/auto/query/${this.query}`;
-      if (this.linkParameters) {
-        endpoint += `?${this.linkParameters}`;
-      }
+      let endpoint = `app/auto/query/${this.query}${
+        this.linkParameters ? this.linkParameters : ""
+      }`;
 
       // Fetch data from the endpoint
       const data = await this.sxc.webApi.fetchJson(endpoint);

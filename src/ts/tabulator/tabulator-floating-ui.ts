@@ -35,7 +35,7 @@ export class TabulatorFloatingUi {
     const action = "edit";
 
     const rowData = row.getData();
-    const params = { entityId: rowData.Id };
+    const params = { entityId: rowData.id };
 
     return $2sxc(row.getElement())
       .cms.run({
