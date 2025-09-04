@@ -130,14 +130,16 @@ export class TabulatorColumnAdapter {
  */
 function objectTitleFormatter(cell: CellComponent): string {
   const value = cell.getValue();
-  if (!value) return "";
+  if (!value) return "[ ]";
   if (Array.isArray(value))
-    return value
-      .map((v) => v?.Title ?? v?.title ?? "")
-      .filter(Boolean)
-      .join(", ");
+    return (
+      value
+        .map((v) => v?.Title ?? v?.title ?? JSON.stringify(v))
+        .filter(Boolean)
+        .join(", ") + " [ ]"
+    );
   if (typeof value === "object")
-    return value.Title ?? value.title ?? JSON.stringify(value);
+    return value.Title ?? value.title ?? JSON.stringify(value) + " [ ]";
   return String(value);
 }
 
