@@ -32,6 +32,6 @@ export interface TabulatorColumnConfig {
   headerHozAlign?: "right" | "left" | "center";
   hozAlign?: "right" | "left" | "center";
   width?: number | "automatic";
-  formatter?: string;
+  formatter?: string | ((cell: CellComponent) => string);
   formatterParams?: object;
 }

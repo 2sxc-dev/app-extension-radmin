@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import { TabulatorColumnConfig } from "./tabulator-models";
 import { formatConfigs } from "./tabulator-column-formats";
 import { DataViewColumnConfig } from "../models/data-view-column-config";
@@ -11,33 +10,29 @@ export class TabulatorColumnAdapter {
     columnsAutoShowRemaining: boolean,
     schema: JsonSchema
   ): TabulatorColumnConfig[] {
-    let configuredColumns = columnConfig.map((col) => {
-      let chosenFormat = col.valueFormat;
-
-      // If the format is "" for automatic, try to get format from schema
-      if (col.valueFormat === "") {
-        chosenFormat = this.getFormatFromSchema(col.valueSelector, schema);
-      }
-
-      const formatConfig =
-        chosenFormat && formatConfigs[chosenFormat]
-          ? { ...formatConfigs[chosenFormat] }
-          : {};
-
-      // Fix field name to match processed data
+    // Process configured columns
+    const configuredColumns = columnConfig.map((col) => {
       const normalizedField = normalizeFieldName(col.valueSelector, schema);
+      const prop = schema.properties[normalizedField];
+      const chosenFormat =
+        col.valueFormat || this.getFormatFromSchema(col.valueSelector, schema);
+      const formatConfig = formatConfigs[chosenFormat] || {};
+
+      // Determine formatter based on field type and configuration
+      let formatter = formatConfig.formatter;
+      if (
+        (prop?.type === "object" || prop?.type === "array") &&
+        !col.linkEnable
+      ) {
+        formatter = objectTitleFormatter;
+      }
 
       const column: TabulatorColumnConfig = {
         title: col.title,
         field: normalizedField,
-        tooltip: col.tooltipEnabled
-          ? col.tooltipSelector
-            ? (e: Event, cell: CellComponent) =>
-                this.replaceParameters(col.tooltipSelector, cell.getData())
-            : true
-          : false,
-        width: col.width !== "automatic" ? col.width : undefined,
+        formatter,
         ...formatConfig,
+        // Only set alignment if explicitly specified
         hozAlign:
           col.horizontalAlignment !== "automatic"
             ? col.horizontalAlignment
@@ -46,11 +41,18 @@ export class TabulatorColumnAdapter {
           col.horizontalAlignment !== "automatic"
             ? col.horizontalAlignment
             : undefined,
+        // Only set width if explicitly specified
+        width: col.width !== "automatic" ? col.width : undefined,
+        // Handle tooltip configuration
+        tooltip: !col.tooltipEnabled
+          ? false
+          : col.tooltipSelector
+          ? (e: Event, cell: CellComponent) =>
+              this.replaceParameters(col.tooltipSelector, cell.getData())
+          : true,
       };
 
-      /**
-       * Adds link formatter when linkEnable is true in the column config
-       */
+      // Configure link if enabled
       if (col.linkEnable) {
         column.formatter = "link";
         column.formatterParams = {
@@ -64,84 +66,79 @@ export class TabulatorColumnAdapter {
           target: "_self",
         };
       }
+
       return column;
     });
 
-    if (columnsAutoShowRemaining) {
-      // Extract the keys that are already present in the configured columns
-      const configuredFields = new Set(
-        configuredColumns.map((col) => col.field)
-      );
-
-      // Get all properties from schema
-      const schemaProperties = Object.keys(schema.properties);
-
-      // Create columns for any missing fields
-      const remainingColumns = schemaProperties
-        .filter((key) => !configuredFields.has(key))
-        .map((key) => {
-          const property = schema.properties[key];
-          const format = this.mapSchemaTypeToFormat(property);
-
-          return {
-            title: property.title || key,
-            field: key,
-            ...(formatConfigs[format] || {}),
-          };
-        });
-
-      // Combine the configured columns with the remaining columns
-      return configuredColumns.concat(remainingColumns);
+    // Add remaining columns from schema if configured
+    if (!columnsAutoShowRemaining) {
+      return configuredColumns;
     }
 
-    return configuredColumns;
+    // Get fields that are already configured
+    const configuredFields = new Set(configuredColumns.map((col) => col.field));
+
+    // Create columns for remaining schema properties
+    const remainingColumns = Object.keys(schema.properties)
+      .filter((key) => !configuredFields.has(key))
+      .map((key) => {
+        const property = schema.properties[key];
+        const format = this.mapSchemaTypeToFormat(property);
+        const formatConfig = formatConfigs[format] || {};
+
+        return {
+          title: property.title || key,
+          field: key,
+          ...formatConfig,
+          formatter:
+            property.type === "object" || property.type === "array"
+              ? objectTitleFormatter
+              : formatConfig.formatter,
+        };
+      });
+
+    return [...configuredColumns, ...remainingColumns];
   }
 
-  /**
-   * Maps schema property types and formats to Tabulator formats
-   */
   private mapSchemaTypeToFormat(property: SchemaProperty): string {
-    // Format ist different from type
     if (property.format === "date-time") return "date-time";
     if (property.format === "date") return "date";
     if (property.format === "uri" || property.format === "email") return "link";
-
     return property.type;
   }
 
-  /**
-   * Gets format information from the schema for a specific field
-   */
   private getFormatFromSchema(field: string, schema: JsonSchema): string {
-    // Check if the field exists in the schema
     const normalizedField = normalizeFieldName(field, schema);
-    if (schema.properties[normalizedField]) {
-      const property = schema.properties[normalizedField];
-      return this.mapSchemaTypeToFormat(property);
-    }
-    return "";
+    const property = schema.properties[normalizedField];
+    return property ? this.mapSchemaTypeToFormat(property) : "";
   }
 
-  /**
-   * Replaces parameters in strings with actual values from the data object.
-   * For example, if a parameter is "id=[Id]&name=[Name]", it will replace [Id] and [Name]
-   * with the corresponding values from the data object.
-   */
   private replaceParameters(template: string, data: any): string {
-    return template.replace(/\[([^\]]+)\]/g, (_, key) => {
-      return this.getNestedValue(data, key) || "";
-    });
+    return template.replace(
+      /\[([^\]]+)\]/g,
+      (_, key) => this.getNestedValue(data, key) || ""
+    );
   }
 
-  /**
-   * Gets the nested value from an object given a dot-separated key.
-   * For example, "Subject.Guid" returns obj["Subject"]?.["Guid"]
-   */
   private getNestedValue(obj: any, key: string): any {
-    return key
-      .split(".")
-      .reduce((prev, curr) => (prev ? prev[curr] : undefined), obj);
+    return key.split(".").reduce((prev, curr) => prev?.[curr], obj);
   }
+}
+
+/**
+ * Formats the title for object and array fields.
+ */
+function objectTitleFormatter(cell: CellComponent): string {
+  const value = cell.getValue();
+  if (!value) return "";
+  if (Array.isArray(value))
+    return value
+      .map((v) => v?.Title ?? v?.title ?? "")
+      .filter(Boolean)
+      .join(", ");
+  if (typeof value === "object")
+    return value.Title ?? value.title ?? JSON.stringify(value);
+  return String(value);
 }
 
 /**
