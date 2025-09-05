@@ -9,9 +9,9 @@ export interface DataViewTableConfig {
   id: number;
   dataContentType: string;
   columnsAutoShowRemaining: boolean;
-  EnableAdd: boolean;
-  EnableDelete: boolean;
-  EnableEdit: boolean;
+  enableAdd: boolean;
+  enableDelete: boolean;
+  enableEdit: boolean;
   dataQuery: string;
   search?: boolean;
   dataViewColumnConfig: DataViewColumnConfig[];

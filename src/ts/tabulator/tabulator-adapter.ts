@@ -87,7 +87,9 @@ export class TabulatorAdapter {
     customizeManager: CustomizeManager
   ) {
     try {
-      const schema = await schemaProvider.getSchema(tableConfigData.dataContentType || tableConfigData.dataQuery);
+      const schema = await schemaProvider.getSchema(
+        tableConfigData.dataContentType || tableConfigData.dataQuery
+      );
       const tabulatorConfig: Partial<ExtendedOptions> =
         await this.createTabulatorConfig(tableConfigData, schema);
 
@@ -117,13 +119,24 @@ export class TabulatorAdapter {
       const table = new Tabulator(`#${tableName}`, tabulatorOptions);
 
       // Optional filtering setup
-      if (filterName && tableConfigData.search) {
+      if (filterName && tableConfigData.search)
         this.setupFilterInput(table, filterName);
-      }
 
-      // Optional view config mode
-      if (this.isViewConfigMode()) {
+      // Optional table config mode (edit, add)
+      if (this.isViewConfigMode()){
         this.setupViewConfigMode(table, tableConfigData);
+      } else { // Only allow data manipulation if not in table config mode
+        // Optional row (data) editing setup
+        if (tableConfigData.enableEdit)
+          this.setupRowEditMode(table);
+
+        // Optional row (data) deleting setup
+        if (tableConfigData.enableDelete)
+          this.setupRowDeleteMode(table);
+
+        // Optional row (data) adding setup
+        if (tableConfigData.enableAdd)
+          this.setupRowAddMode(table, tableConfigData);
       }
 
       return table;
@@ -152,13 +165,40 @@ export class TabulatorAdapter {
     tableConfigData: DataViewTableConfig
   ): void {
     table.on("dataLoaded", () => {
-      table.on("rowMouseEnter", (e, row) => {
-        this.floatingUi.showFloatingMenu(table, row, e);
-      });
+      table.on(
+        "headerMouseEnter" as any,
+        (e: MouseEvent, column: ColumnComponent) => {
+          this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
+        }
+      );
+    });
+  }
 
-      table.on("headerMouseEnter" as any, (e: MouseEvent, column: ColumnComponent) => {
-        this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
-      });
+  private setupRowEditMode(table: Tabulator): void {
+    table.on("rowMouseEnter", (e, row) => {
+      this.floatingUi.showFloatingMenu(table, row, e);
+    });
+  }
+
+  private setupRowDeleteMode(table: Tabulator) {
+    // Needs adoption
+    table.on("rowMouseEnter", (e, row) => {
+      this.floatingUi.showFloatingMenu(table, row, e);
+    });
+  }
+
+  private setupRowAddMode(
+    table: Tabulator,
+    tableConfigData: DataViewTableConfig
+  ) {
+    // Needs adoption
+    table.on("dataLoaded", () => {
+      table.on(
+        "headerMouseEnter" as any,
+        (e: MouseEvent, column: ColumnComponent) => {
+          this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
+        }
+      );
     });
   }
 }

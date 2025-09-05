@@ -2,7 +2,7 @@
 // All the classes are partial, so you can extend them in a separate file.
 
 // Generator:   RazorViewsGenerator
-// App/Edition: azing Skills and Growth/
+// App/Edition: Extension Sxc Tables/
 // User:        2sic Web-Developer
 
 using AppCode.Data;
