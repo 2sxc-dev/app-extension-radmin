@@ -10,26 +10,60 @@ declare global {
 }
 
 /**
- * TabulatorFloatingUi
- * Handles floating UI for Tabulator tables (row actions, add button, column header button).
- *
- * All action buttons share the same visual styling (circular 40x40 with border, shadow, centered icon).
- * The adapter decides which floating UI variant to call (so we don't read dataset flags or pass the full config).
+ * Floating UI for Tabulator — row actions, add button, column header button.
+ * Focus on small reusable helpers and minimal duplicated logic.
  */
 export class TabulatorFloatingUi {
-  /**
-   * Clean up any lingering floating menus.
-   */
-  private cleanupFloatingMenus(): void {
+  private baseButtonSize = 40;
+  private zIndex = 1000;
+
+  private cleanupFloatingMenus() {
     document.querySelectorAll(".floating-menu").forEach((el) => el.remove());
   }
 
   /**
-   * Helper to create a button element with a given icon/text and handler.
-   * All buttons use the same circular styling. If fullSize is true, the button
-   * will be sized to 100%/100% to fill its parent container (useful for the
-   * column-header single-button floating element).
+   * Wrap $2sxc cms.run with a small adapter so we always pass an acceptable
+   * argument type (HTMLElement | number | ContextIdentifier | Sxc).
+   *
+   * Many Tabulator methods are typed to return Element, which is not assignable
+   * to HTMLElement in TS. We therefore prefer an explicit runtime check/cast.
    */
+  private safeCmsRun(
+    target: Element | HTMLElement,
+    action: CommandNames,
+    params: any
+  ) {
+    // Bypass type-check mismatch for $2sxc by casting to any here (we ensured runtime validity above).
+    try {
+      return ($2sxc as any)(target).cms.run({ action, params });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  private iconButtonStyle(fullSize = false): Partial<CSSStyleDeclaration> {
+    const sizeStyles: Partial<CSSStyleDeclaration> = fullSize
+      ? { width: "100%", height: "100%" }
+      : {
+          width: `${this.baseButtonSize}px`,
+          height: `${this.baseButtonSize}px`,
+        };
+
+    return {
+      ...sizeStyles,
+      borderRadius: "50%",
+      background: "white",
+      border: "1px solid #ccc",
+      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "0",
+      cursor: "pointer",
+      zIndex: String(this.zIndex),
+    };
+  }
+
   private createIconButton(
     icon: string,
     title: string,
@@ -37,111 +71,51 @@ export class TabulatorFloatingUi {
     fullSize = false
   ): HTMLButtonElement {
     const btn = document.createElement("button");
-    btn.innerHTML = icon;
-    btn.title = title;
     btn.type = "button";
+    btn.title = title;
+    btn.innerHTML = icon;
+    Object.assign(btn.style, this.iconButtonStyle(fullSize));
 
-    // Apply base styles
-    Object.assign(
-      btn.style,
-      // For fullSize, width/height will be set to 100% so it fills the floatingEl container.
-      {
-        width: "40px",
-        height: "40px",
-        borderRadius: "50%",
-        background: "white",
-        border: "1px solid #ccc",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "0",
-        cursor: "pointer",
-        zIndex: "1000",
-      } as Partial<CSSStyleDeclaration>
-    );
-
-    btn.onclick = (ev) => {
+    btn.addEventListener("click", (ev) => {
       ev.stopPropagation();
       try {
         onClick(ev);
       } catch (err) {
         console.error("Button click handler error:", err);
       }
-    };
+    });
 
     return btn;
   }
 
-  /**
-   * Open the toolbar for a click event.
-   * @param e - The click event.
-   * @param row - The Tabulator row instance.
-   */
+  // Generic handlers that wrap $2sxc cms.run calls.
   openEditRowDialog(e: Event, row: RowComponent) {
     e.preventDefault();
-    // Cleanup any lingering floating menus before opening the dialog
     this.cleanupFloatingMenus();
-
-    const action = "edit";
-
+    const action = "edit" as CommandNames;
     const rowData = row.getData();
     const params = { entityId: rowData.id };
-
-    return $2sxc(row.getElement())
-      .cms.run({
-        action: action as CommandNames,
-        params: params,
-      })
-      .then((data: any) => {
-        return data;
-      })
-      .catch((err: string) => {
-        console.error("Error running cms action: ", err);
-        throw err;
-      });
+    return this.safeCmsRun(row.getElement() as Element, action, params);
   }
 
-  /**
-   * Open the dialog to delete a row.
-   * @param e - The click event.
-   * @param row - The Tabulator row instance.
-   */
   openDeleteRowDialog(e: Event, row: RowComponent) {
     e.preventDefault();
     this.cleanupFloatingMenus();
-
     const action = "delete" as CommandNames;
-
     const rowData = row.getData();
-
-    const params = {
-      entityId: rowData.id,
-      entityGuid: rowData.guid,
-    };
-
-    return $2sxc(row.getElement())
-      .cms.run({
-        action,
-        params,
-      })
-      .then((data: any) => {
-        // Remove the row from the table after successful deletion
-        row.delete();
-        return data;
-      })
-      .catch((err: string) => {
-        console.error("Error running cms action: ", err);
-        throw err;
-      });
+    const params = { entityId: rowData.id, entityGuid: rowData.guid };
+    return this.safeCmsRun(row.getElement() as Element, action, params).then(
+      (res: any) => {
+        try {
+          row.delete();
+        } catch {
+          /* ignore */
+        }
+        return res;
+      }
+    );
   }
 
-  /**
-   * Open the dialog to add a new row.
-   * @param e - The click event.
-   * @param table - The Tabulator table instance.
-   * @param tableConfigData - The table configuration data.
-   */
   openAddRowDialog(
     e: Event,
     table: Tabulator,
@@ -149,147 +123,108 @@ export class TabulatorFloatingUi {
   ) {
     e.preventDefault();
     this.cleanupFloatingMenus();
-
-    const action = "new";
-
-    // Determine the content type from the table config
-    const contentType = tableConfigData.dataContentType;
-
+    const action = "new" as CommandNames;
     const params = {
-      contentType: contentType,
+      contentType: tableConfigData.dataContentType,
       prefill: {},
     };
-
-    return $2sxc(table.element)
-      .cms.run({
-        action: action as CommandNames,
-        params: params,
-      })
-      .then((data: any) => {
-        // Reload the table data after successful addition
-        table.replaceData();
-        return data;
-      })
-      .catch((err: string) => {
-        console.error("Error running cms action: ", err);
-        throw err;
-      });
+    return this.safeCmsRun(table.element as HTMLElement, action, params).then(
+      (res: any) => {
+        try {
+          table.replaceData();
+        } catch {
+          /* ignore */
+        }
+        return res;
+      }
+    );
   }
 
-  /**
-   * Open the dialog to create a new DataViewColumnConfig on right-click on a column header.
-   * The dialog is prefilled with as many properties as possible.
-   * After creation the new column config is added to the used table config.
-   */
   openNewColumnDialog(
     e: Event,
     column: ColumnComponent,
     tableConfigData: DataViewTableConfig
   ) {
     e.preventDefault();
-    const action = "new";
-
+    const action = "new" as CommandNames;
+    const colDef = column.getDefinition() || {};
     const params = {
-      contentType: "f58eaa8e-88c0-403a-a996-9afc01ec14be", // DataViewColumnConfig Content Type Guid
+      contentType: "f58eaa8e-88c0-403a-a996-9afc01ec14be",
       prefill: {
-        Title: column.getDefinition().title || "",
+        Title: colDef.title || "",
         linkEnable: false,
         tooltipEnabled: false,
-        ValueSelector: column.getDefinition().title || "",
+        ValueSelector: colDef.title || "",
       },
-      fields: "DataViewColumnConfig", // The field in the parent that holds the list.
-      parent: tableConfigData.guid, // Parent entity GUID.
+      fields: "DataViewColumnConfig",
+      parent: tableConfigData.guid,
     };
-
-    return $2sxc(column.getElement())
-      .cms.run({
-        action: action as CommandNames,
-        params: params,
-      })
-      .catch((err: string) => {
-        console.error(
-          "Error running cms action for adding new column to list: ",
-          err
-        );
-        throw err;
-      });
+    return this.safeCmsRun(
+      column.getElement() as Element,
+      action,
+      params
+    ).catch((err: string) => {
+      console.error("Error creating new column config:", err);
+      throw err;
+    });
   }
 
-  /**
-   * Open the dialog to edit an existing DataViewColumnConfig on right-click on a column header.
-   */
-  async openEditColumnDialog(
-    e: Event,
-    column: ColumnComponent,
-    entityId: number
-  ) {
+  openEditColumnDialog(e: Event, column: ColumnComponent, entityId: number) {
     e.preventDefault();
     this.cleanupFloatingMenus();
-
-    const action = "edit";
-
+    const action = "edit" as CommandNames;
     const params = { entityId };
-
-    return $2sxc(column.getElement())
-      .cms.run({
-        action: action as CommandNames,
-        params: params,
-      })
-      .then((data: any) => {
-        return data;
-      })
-      .catch((err: string) => {
-        console.error("Error running cms action: ", err);
-        throw err;
-      });
+    return this.safeCmsRun(column.getElement() as Element, action, params);
   }
 
-  /**
-   * Shows the add button for adding new rows at the top of the table.
-   * @param table - The Tabulator table instance.
-   * @param tableConfigData - The table configuration data.
-   *
-   * The add button uses the same circular 40x40 styling as all other action buttons.
-   */
   public showAddButton(table: Tabulator, tableConfigData: DataViewTableConfig) {
     const tableElement = table.element;
+    // remove existing
+    tableElement
+      .querySelectorAll(".table-add-button")
+      .forEach((n) => n.remove());
 
-    // Remove any existing add buttons first
-    const existingButtons = tableElement.querySelectorAll(".table-add-button");
-    existingButtons.forEach((btn) => btn.remove());
-
-    const addButtonContainer = document.createElement("div");
-    addButtonContainer.className = "table-add-button";
-    Object.assign(addButtonContainer.style, {
+    const container = document.createElement("div");
+    container.className = "table-add-button";
+    Object.assign(container.style, {
       position: "absolute",
       top: "10px",
       right: "10px",
-      zIndex: "100",
-      width: "40px",
-      height: "40px",
+      zIndex: String(this.zIndex - 900),
+      width: `${this.baseButtonSize}px`,
+      height: `${this.baseButtonSize}px`,
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
     });
 
-    // Use helper for creating the button — same circular styling, not full-size since container is fixed.
-    const addButton = this.createIconButton(
+    const btn = this.createIconButton(
       "➕",
       "Add row",
       (ev) => this.openAddRowDialog(ev, table, tableConfigData),
       false
     );
-
-    addButtonContainer.appendChild(addButton);
-    tableElement.appendChild(addButtonContainer);
+    container.appendChild(btn);
+    tableElement.appendChild(container);
   }
 
-  /**
-   * Internal helper to create and display floating UI for row actions.
-   * showEdit/showDelete control which circular buttons are rendered. The container
-   * itself is transparent so no rectangle background is visible — only the circular
-   * buttons are displayed.
-   */
+  private createVirtualElFromRects(x: number, y: number) {
+    return {
+      getBoundingClientRect() {
+        return {
+          width: 0,
+          height: 0,
+          x,
+          y,
+          top: y,
+          left: x,
+          right: x,
+          bottom: y,
+        };
+      },
+    };
+  }
+
   private createRowActionFloatingMenu(
     table: Tabulator,
     row: RowComponent,
@@ -300,31 +235,15 @@ export class TabulatorFloatingUi {
     event.preventDefault();
     this.cleanupFloatingMenus();
 
-    const tableElement = table.element;
-    const rowElement = row.getElement();
-    const tableRect = tableElement.getBoundingClientRect();
-    const rowRect = rowElement.getBoundingClientRect();
-
-    // Virtual element positioned at the right edge of the table,
-    // vertically centered relative to the row.
-    const virtualEl = {
-      getBoundingClientRect() {
-        return {
-          width: 0,
-          height: 0,
-          x: tableRect.right,
-          y: rowRect.top + rowRect.height / 2,
-          top: rowRect.top + rowRect.height / 2,
-          left: tableRect.right,
-          right: tableRect.right,
-          bottom: rowRect.top + rowRect.height / 2,
-        };
-      },
-    };
+    const tableRect = table.element.getBoundingClientRect();
+    const rowRect = row.getElement().getBoundingClientRect();
+    const virtualEl = this.createVirtualElFromRects(
+      tableRect.right,
+      rowRect.top + rowRect.height / 2
+    );
 
     const floatingEl = document.createElement("div");
     floatingEl.className = "floating-menu";
-    // Make the container transparent / borderless so only the circular buttons are visible.
     Object.assign(floatingEl.style, {
       position: "absolute",
       background: "transparent",
@@ -335,78 +254,61 @@ export class TabulatorFloatingUi {
       alignItems: "center",
       justifyContent: "center",
       gap: "8px",
-      zIndex: "1000",
+      zIndex: String(this.zIndex),
       pointerEvents: "auto",
     });
 
     if (showEdit) {
-      const editBtn = this.createIconButton("✏️", "Edit row", () => {
-        // close the floating menu before opening dialog
+      const editBtn = this.createIconButton("✏️", "Edit row", (ev) => {
         floatingEl.remove();
-        this.openEditRowDialog(event, row);
+        this.openEditRowDialog(ev, row);
       });
       floatingEl.appendChild(editBtn);
     }
 
     if (showDelete) {
-      const deleteBtn = this.createIconButton("🗑️", "Delete row", () => {
+      const deleteBtn = this.createIconButton("🗑️", "Delete row", (ev) => {
         floatingEl.remove();
-        this.openDeleteRowDialog(event, row);
+        this.openDeleteRowDialog(ev, row);
       });
       floatingEl.appendChild(deleteBtn);
     }
 
-    // Only add to DOM if we have buttons to show
-    if (floatingEl.children.length > 0) {
-      document.body.appendChild(floatingEl);
+    if (floatingEl.children.length === 0) return;
 
-      window.FloatingUIDOM.computePosition(virtualEl, floatingEl, {
-        placement: "right",
-        middleware: [
-          offset(
-            // Calculate how much to offset based on which buttons are shown
-            () =>
-              -(
-                (showDelete ? 40 : 0) +
-                (showEdit ? 40 : 0) +
-                (showDelete && showEdit ? 18 : 12)
-              )
-          ),
-        ], // Two buttons + padding
-      }).then(({ x, y }: { x: number; y: number }) => {
-        Object.assign(floatingEl.style, {
-          left: `${x}px`,
-          top: `${y}px`,
-        });
-      });
+    document.body.appendChild(floatingEl);
 
-      // Use a flag to determine if the floating element is hovered.
-      let isHovered = false;
-      floatingEl.addEventListener("mouseenter", () => {
-        isHovered = true;
-      });
-      floatingEl.addEventListener("mouseleave", () => {
-        isHovered = false;
-        floatingEl.remove();
-      });
+    window.FloatingUIDOM.computePosition(virtualEl, floatingEl, {
+      placement: "right",
+      middleware: [
+        offset(
+          // Calculate how much to offset based on which buttons are shown
+          () =>
+            -(
+              (showDelete ? 40 : 0) +
+              (showEdit ? 40 : 0) +
+              (showDelete && showEdit ? 18 : 12)
+            )
+        ),
+      ], // Two buttons + padding
+    }).then(({ x, y }: { x: number; y: number }) => {
+      Object.assign(floatingEl.style, { left: `${x}px`, top: `${y}px` });
+    });
 
-      // Instead of immediately removing on rowMouseLeave,
-      // rely on the table event to remove with small delay when not hovered.
-      table.on("rowMouseLeave", () => {
-        setTimeout(() => {
-          if (!isHovered) {
-            floatingEl.remove();
-          }
-        }, 100);
-      });
-    }
+    let isHovered = false;
+    floatingEl.addEventListener("mouseenter", () => (isHovered = true));
+    floatingEl.addEventListener("mouseleave", () => {
+      isHovered = false;
+      floatingEl.remove();
+    });
+
+    table.on("rowMouseLeave", () => {
+      setTimeout(() => {
+        if (!isHovered) floatingEl.remove();
+      }, 100);
+    });
   }
 
-  /**
-   * Exposed variants for the adapter to call based on adapter-level flags.
-   * The adapter decides which of these to call and therefore we avoid
-   * passing configuration objects or datasets into the floating UI.
-   */
   public showFloatingMenuEditDelete(
     table: Tabulator,
     row: RowComponent,
@@ -414,7 +316,6 @@ export class TabulatorFloatingUi {
   ) {
     this.createRowActionFloatingMenu(table, row, event, true, true);
   }
-
   public showFloatingMenuEditOnly(
     table: Tabulator,
     row: RowComponent,
@@ -422,7 +323,6 @@ export class TabulatorFloatingUi {
   ) {
     this.createRowActionFloatingMenu(table, row, event, true, false);
   }
-
   public showFloatingMenuDeleteOnly(
     table: Tabulator,
     row: RowComponent,
@@ -431,11 +331,6 @@ export class TabulatorFloatingUi {
     this.createRowActionFloatingMenu(table, row, event, false, true);
   }
 
-  /**
-   * Show floating menu for column headers.
-   * The floatingEl is sized to 40x40 and the inner button fills it, so the visible
-   * element is a single circular button placed at the computed position.
-   */
   public showFloatingColumnMenu(
     column: ColumnComponent,
     event: Event,
@@ -444,74 +339,51 @@ export class TabulatorFloatingUi {
     event.preventDefault();
     this.cleanupFloatingMenus();
 
-    const colElement = column.getElement();
-    const colRect = colElement.getBoundingClientRect();
-
-    const virtualEl = {
-      getBoundingClientRect() {
-        return {
-          width: 0,
-          height: 0,
-          x: colRect.right,
-          y: colRect.top + colRect.height / 2,
-          top: colRect.top + colRect.height / 2,
-          left: colRect.right,
-          right: colRect.right,
-          bottom: colRect.top + colRect.height / 2,
-        };
-      },
-    };
+    const colEl = column.getElement();
+    const colRect = colEl.getBoundingClientRect();
+    const virtualEl = this.createVirtualElFromRects(
+      colRect.right,
+      colRect.top + colRect.height / 2
+    );
 
     const floatingEl = document.createElement("div");
     floatingEl.className = "floating-menu";
-    // sized to match the desired 40x40 circular button
     Object.assign(floatingEl.style, {
       position: "absolute",
-      width: "40px",
-      height: "40px",
+      width: `${this.baseButtonSize}px`,
+      height: `${this.baseButtonSize}px`,
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      zIndex: "1000",
+      zIndex: String(this.zIndex),
       pointerEvents: "auto",
     });
 
-    // Defensive: ensure dataViewColumnConfig is an array
     const configuredColumns = Array.isArray(
       tableConfigData.dataViewColumnConfig
     )
       ? tableConfigData.dataViewColumnConfig
       : [];
-
-    const colDef = column.getDefinition();
+    const colDef = column.getDefinition() || {};
     const colField = column.getField?.() ?? "";
-    const colTitle = (colDef && (colDef.title ?? "")) || colField;
+    const colTitle = (colDef.title ?? colField) || "";
 
-    // Try to find a matching config. Support different casings and fallbacks for fields.
-    const colConfig = (configuredColumns as any[]).find((cfg: any) => {
-      const cfgTitle = (cfg.Title ?? cfg.title ?? "").toString();
-
-      const titleMatchesTitle = cfgTitle === colTitle;
-      const titleMatchesField = cfgTitle === colField;
-
-      return titleMatchesTitle || titleMatchesField;
+    const colConfig = configuredColumns.find((cfg: any) => {
+      const cfgTitle = String(cfg.Title ?? cfg.title ?? "");
+      return cfgTitle === colTitle || cfgTitle === colField;
     });
 
     const alreadyConfigured = !!colConfig;
+    const entityId = colConfig ? colConfig.id : 0;
 
-    // Use type-cast to `any` when reading possible id variants to satisfy TS.
-    const entityId = colConfig ? Number(colConfig.id) : 0;
-
-    // Create a button that fills the floatingEl (fullSize = true) so the UI appears exactly like the previous circular + button
     const btn = this.createIconButton(
       alreadyConfigured ? "✏️" : "➕",
       alreadyConfigured ? "Edit column" : "Add column",
       (ev) => {
-        // remove floating before launching the cms dialog
         floatingEl.remove();
         if (!alreadyConfigured)
-          this.openNewColumnDialog(event, column, tableConfigData);
-        else this.openEditColumnDialog(event, column, entityId);
+          this.openNewColumnDialog(ev, column, tableConfigData);
+        else this.openEditColumnDialog(ev, column, entityId);
       },
       true
     );
@@ -521,21 +393,12 @@ export class TabulatorFloatingUi {
 
     window.FloatingUIDOM.computePosition(virtualEl, floatingEl, {
       placement: "right",
-      middleware: [offset(() => -40)],
+      middleware: [offset(() => -this.baseButtonSize)],
     }).then(({ x, y }: { x: number; y: number }) => {
-      Object.assign(floatingEl.style, {
-        left: `${x}px`,
-        top: `${y}px`,
-      });
+      Object.assign(floatingEl.style, { left: `${x}px`, top: `${y}px` });
     });
 
-    let isHovered = false;
-    floatingEl.addEventListener("mouseenter", () => {
-      isHovered = true;
-    });
-    floatingEl.addEventListener("mouseleave", () => {
-      isHovered = false;
-      floatingEl.remove();
-    });
+    floatingEl.addEventListener("mouseenter", () => {});
+    floatingEl.addEventListener("mouseleave", () => floatingEl.remove());
   }
 }

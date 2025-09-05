@@ -33,52 +33,40 @@ Tabulator.registerModule([
 
 // Define an extended options interface to include custom properties
 interface ExtendedOptions extends Options {
-  dependencies?: {
-    DateTime: typeof DateTime;
-  };
+  dependencies?: { DateTime: typeof DateTime };
 }
 
 export class TabulatorAdapter {
   private floatingUi = new TabulatorFloatingUi();
-  /**
-   * Create a common configuration base from 2sxc configuration
-   */
+  private configService = new TabulatorConfigService();
+
   private async createTabulatorConfig(
     tableConfigData: DataViewTableConfig,
     schema: JsonSchema
   ): Promise<TabulatorConfig> {
-    const configService = new TabulatorConfigService();
-
-    return configService.createTabulatorConfig(tableConfigData, schema);
+    return this.configService.createTabulatorConfig(tableConfigData, schema);
   }
 
-  /**
-   * Set up a purely custom input filter for the table
-   */
   private setupFilterInput(table: Tabulator, filterName: string) {
     const searchFilter = new TabulatorSearchFilter();
-
     const filterInput = searchFilter.getFilterFunction(filterName);
     if (!filterInput) return;
 
-    // Prevent 'Enter' from reloading page
-    filterInput.addEventListener("keydown", (e) => {
+    // Prevent Enter reload and wire local filter
+    const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        return false;
       }
-    });
-
-    // Apply local matchAny filter
-    filterInput.addEventListener("input", (e) => {
+    };
+    const onInput = (e: Event) => {
       const value = (e.target as HTMLInputElement).value;
       table.setFilter(searchFilter.matchAny, { value });
-    });
+    };
+
+    filterInput.addEventListener("keydown", onKeyDown);
+    filterInput.addEventListener("input", onInput);
   }
 
-  /**
-   * Create a Tabulator table with AJAX data loading
-   */
   async createTable(
     tableName: string,
     tableConfigData: DataViewTableConfig,
@@ -94,52 +82,40 @@ export class TabulatorAdapter {
       const tabulatorConfig: Partial<ExtendedOptions> =
         await this.createTabulatorConfig(tableConfigData, schema);
 
-      // Build final Tabulator options
       const tabulatorOptionsRaw: ExtendedOptions = {
         ajaxURL: dataProvider.getApiUrl(),
         ajaxConfig: {
           method: "GET",
           headers: dataProvider.getHeaders(),
         },
-        ajaxResponse: (url, params, response) => {
-          return dataProvider.processData(response);
-        },
+        ajaxResponse: (_url, _params, response) =>
+          dataProvider.processData(response),
         ...tabulatorConfig,
-        dependencies: {
-          DateTime: DateTime,
-        },
+        dependencies: { DateTime },
       };
 
-      // Apply customizations to the options using the manager
       const tabulatorOptions = customizeManager.customizeTabulator(
         tabulatorOptionsRaw,
         tableConfigData.guid
       );
 
-      // Create the table
       const table = new Tabulator(`#${tableName}`, tabulatorOptions);
 
-      // Optional filtering setup
-      if (filterName && tableConfigData.search)
+      if (filterName && tableConfigData.search) {
         this.setupFilterInput(table, filterName);
+      }
 
-      // Optional table config mode (edit, add)
-      if (this.isViewConfigMode())
+      if (this.isViewConfigMode()) {
         this.setupViewConfigMode(table, tableConfigData);
-      else {
-        // Only allow data manipulation if not in table config mode
-        // Attach a single row hover listener if edit or delete is enabled
-        if (tableConfigData.enableEdit || tableConfigData.enableDelete) {
-          this.setupRowActionsHover(
-            table,
-            !!tableConfigData.enableEdit,
-            !!tableConfigData.enableDelete
-          );
+      } else {
+        const canEdit = !!tableConfigData.enableEdit;
+        const canDelete = !!tableConfigData.enableDelete;
+        if (canEdit || canDelete) {
+          this.setupRowActionsHover(table, canEdit, canDelete);
         }
-
-        // Optional row (data) adding setup
-        if (tableConfigData.enableAdd)
+        if (tableConfigData.enableAdd) {
           this.setupRowAddMode(table, tableConfigData);
+        }
       }
 
       return table;
@@ -149,54 +125,41 @@ export class TabulatorAdapter {
     }
   }
 
-  /**
-   * Check if the current view is in configuration mode
-   */
   isViewConfigMode(): boolean {
     const url = window.location.href.toLowerCase();
-    const queryParamValue = new URLSearchParams(window.location.search)
+    const qp = new URLSearchParams(window.location.search)
       .get("viewconfigmode")
       ?.toLowerCase();
-    return queryParamValue === "true" || url.includes("viewconfigmode/true");
+    return qp === "true" || url.includes("viewconfigmode/true");
   }
 
-  /**
-   * Setup view configuration mode
-   */
   private setupViewConfigMode(
     table: Tabulator,
     tableConfigData: DataViewTableConfig
-  ): void {
+  ) {
+    // only bind once data is present
     table.on("dataLoaded", () => {
-      // Edit columns on header hover
       table.on(
         "headerMouseEnter" as any,
-        (e: MouseEvent, column: ColumnComponent) => {
-          this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
-        }
+        (e: MouseEvent, column: ColumnComponent) =>
+          this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData)
       );
     });
   }
 
-  /**
-   * Attach a single row hover handler that shows the floating action menu.
-   * This is used for edit and/or delete actions, but the actual menu variant
-   * is chosen here so we don't pass flags into the floating UI or mutate datasets.
-   */
   private setupRowActionsHover(
     table: Tabulator,
     enableEdit: boolean,
     enableDelete: boolean
-  ): void {
-    // Remove any existing to avoid duplicate handlers when re-initializing
+  ) {
+    // remove previous handler if present (defensive)
     try {
-      table.off && table.off("rowMouseEnter");
+      table.off?.("rowMouseEnter");
     } catch {
-      // ignore if off isn't supported
+      /* ignore */
     }
 
     table.on("rowMouseEnter", (e, row: RowComponent) => {
-      // Choose which floating UI variant to show based on adapter-side flags.
       if (enableEdit && enableDelete) {
         this.floatingUi.showFloatingMenuEditDelete(table, row, e);
       } else if (enableEdit) {
@@ -211,18 +174,14 @@ export class TabulatorAdapter {
     table: Tabulator,
     tableConfigData: DataViewTableConfig
   ) {
-    // Show the add button after data is loaded (and on subsequent loads)
-    table.on("dataLoaded", () => {
-      this.floatingUi.showAddButton(table, tableConfigData);
-    });
-
-    // Also try to show it right away in case data was already loaded
-    // (Tabulator will usually fire dataLoaded, but this is a safe-guard)
+    table.on("dataLoaded", () =>
+      this.floatingUi.showAddButton(table, tableConfigData)
+    );
+    // try to show immediately if data already present; ignore failures
     try {
-      // If Tabulator has data already, call it once
       this.floatingUi.showAddButton(table, tableConfigData);
-    } catch {
-      // ignore
+    } catch (err) {
+      console.log(err);
     }
   }
 }
