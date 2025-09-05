@@ -120,9 +120,6 @@ export class TabulatorFloatingUi {
       entityGuid: rowData.guid,
     };
 
-    if (!confirm(`Are you sure you want to delete (id: ${rowData.id})?`))
-      return;
-
     return $2sxc(row.getElement())
       .cms.run({
         action,
@@ -479,30 +476,40 @@ export class TabulatorFloatingUi {
       pointerEvents: "auto",
     });
 
-    // Check if the column is already configured by comparing its definitions
-    const colConfig = tableConfigData.dataViewColumnConfig.find((cfg) => {
-      const colDef = column.getDefinition();
+    // Defensive: ensure dataViewColumnConfig is an array
+    const configuredColumns = Array.isArray(
+      tableConfigData.dataViewColumnConfig
+    )
+      ? tableConfigData.dataViewColumnConfig
+      : [];
 
-      // Match on multiple properties for uniqueness
-      const fieldMatch = cfg.valueSelector === column.getField();
-      const titleMatch = cfg.title === colDef.title;
+    const colDef = column.getDefinition();
+    const colField = column.getField?.() ?? "";
+    const colTitle = (colDef && (colDef.title ?? "")) || colField;
 
-      // We require at least field and title to match
-      return fieldMatch && titleMatch;
+    // Try to find a matching config. Support different casings and fallbacks for fields.
+    const colConfig = (configuredColumns as any[]).find((cfg: any) => {
+      const cfgTitle = (cfg.Title ?? cfg.title ?? "").toString();
+
+      const titleMatchesTitle = cfgTitle === colTitle;
+      const titleMatchesField = cfgTitle === colField;
+
+      return titleMatchesTitle || titleMatchesField;
     });
 
-    const allreadyConfigured = !!colConfig;
-    // Get the ColumnConfig id for editing
-    const entityId = colConfig?.id ?? 0;
+    const alreadyConfigured = !!colConfig;
+
+    // Use type-cast to `any` when reading possible id variants to satisfy TS.
+    const entityId = colConfig ? Number(colConfig.id) : 0;
 
     // Create a button that fills the floatingEl (fullSize = true) so the UI appears exactly like the previous circular + button
     const btn = this.createIconButton(
-      allreadyConfigured ? "✏️" : "➕",
-      allreadyConfigured ? "Edit column" : "Add column",
+      alreadyConfigured ? "✏️" : "➕",
+      alreadyConfigured ? "Edit column" : "Add column",
       (ev) => {
         // remove floating before launching the cms dialog
         floatingEl.remove();
-        if (!allreadyConfigured)
+        if (!alreadyConfigured)
           this.openNewColumnDialog(event, column, tableConfigData);
         else this.openEditColumnDialog(event, column, entityId);
       },
