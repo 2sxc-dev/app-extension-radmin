@@ -11,8 +11,10 @@ declare global {
 
 /**
  * TabulatorFloatingUi
- * This class handles the floating UI for Tabulator tables,
- * allowing for actions like editing rows and columns via floating menus.
+ * Handles floating UI for Tabulator tables (row actions, add button, column header button).
+ *
+ * All action buttons share the same visual styling (circular 40x40 with border, shadow, centered icon).
+ * The adapter decides which floating UI variant to call (so we don't read dataset flags or pass the full config).
  */
 export class TabulatorFloatingUi {
   /**
@@ -20,6 +22,55 @@ export class TabulatorFloatingUi {
    */
   private cleanupFloatingMenus(): void {
     document.querySelectorAll(".floating-menu").forEach((el) => el.remove());
+  }
+
+  /**
+   * Helper to create a button element with a given icon/text and handler.
+   * All buttons use the same circular styling. If fullSize is true, the button
+   * will be sized to 100%/100% to fill its parent container (useful for the
+   * column-header single-button floating element).
+   */
+  private createIconButton(
+    icon: string,
+    title: string,
+    onClick: (ev: Event) => any,
+    fullSize = false
+  ): HTMLButtonElement {
+    const btn = document.createElement("button");
+    btn.innerHTML = icon;
+    btn.title = title;
+    btn.type = "button";
+
+    // Apply base styles
+    Object.assign(
+      btn.style,
+      // For fullSize, width/height will be set to 100% so it fills the floatingEl container.
+      {
+        width: "40px",
+        height: "40px",
+        borderRadius: "50%",
+        background: "white",
+        border: "1px solid #ccc",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "0",
+        cursor: "pointer",
+        zIndex: "1000",
+      } as Partial<CSSStyleDeclaration>
+    );
+
+    btn.onclick = (ev) => {
+      ev.stopPropagation();
+      try {
+        onClick(ev);
+      } catch (err) {
+        console.error("Button click handler error:", err);
+      }
+    };
+
+    return btn;
   }
 
   /**
@@ -52,11 +103,86 @@ export class TabulatorFloatingUi {
   }
 
   /**
+   * Open the dialog to delete a row.
+   * @param e - The click event.
+   * @param row - The Tabulator row instance.
+   */
+  openDeleteRowDialog(e: Event, row: RowComponent) {
+    e.preventDefault();
+    this.cleanupFloatingMenus();
+
+    const action = "delete" as CommandNames;
+
+    const rowData = row.getData();
+
+    const params = {
+      entityId: rowData.id,
+      entityGuid: rowData.guid,
+    };
+
+    if (!confirm(`Are you sure you want to delete (id: ${rowData.id})?`))
+      return;
+
+    return $2sxc(row.getElement())
+      .cms.run({
+        action,
+        params,
+      })
+      .then((data: any) => {
+        // Remove the row from the table after successful deletion
+        row.delete();
+        return data;
+      })
+      .catch((err: string) => {
+        console.error("Error running cms action: ", err);
+        throw err;
+      });
+  }
+
+  /**
+   * Open the dialog to add a new row.
+   * @param e - The click event.
+   * @param table - The Tabulator table instance.
+   * @param tableConfigData - The table configuration data.
+   */
+  openAddRowDialog(
+    e: Event,
+    table: Tabulator,
+    tableConfigData: DataViewTableConfig
+  ) {
+    e.preventDefault();
+    this.cleanupFloatingMenus();
+
+    const action = "new";
+
+    // Determine the content type from the table config
+    const contentType = tableConfigData.dataContentType;
+
+    const params = {
+      contentType: contentType,
+      prefill: {},
+    };
+
+    return $2sxc(table.element)
+      .cms.run({
+        action: action as CommandNames,
+        params: params,
+      })
+      .then((data: any) => {
+        // Reload the table data after successful addition
+        table.replaceData();
+        return data;
+      })
+      .catch((err: string) => {
+        console.error("Error running cms action: ", err);
+        throw err;
+      });
+  }
+
+  /**
    * Open the dialog to create a new DataViewColumnConfig on right-click on a column header.
    * The dialog is prefilled with as many properties as possible.
    * After creation the new column config is added to the used table config.
-   * @param e - The right-click event.
-   * @param column - The Tabulator column instance.
    */
   openNewColumnDialog(
     e: Event,
@@ -94,9 +220,6 @@ export class TabulatorFloatingUi {
 
   /**
    * Open the dialog to edit an existing DataViewColumnConfig on right-click on a column header.
-   * The dialog is prefilled with the properties of the column config.
-   * @param e - The right-click event.
-   * @param column - The Tabulator column instance.
    */
   async openEditColumnDialog(
     e: Event,
@@ -125,13 +248,61 @@ export class TabulatorFloatingUi {
   }
 
   /**
-   * Extracted function that creates and displays the floating UI.
+   * Shows the add button for adding new rows at the top of the table.
    * @param table - The Tabulator table instance.
-   * @param row - The Tabulator row instance.
-   * @param event - The originating event.
+   * @param tableConfigData - The table configuration data.
+   *
+   * The add button uses the same circular 40x40 styling as all other action buttons.
    */
-  public showFloatingMenu(table: Tabulator, row: RowComponent, event: Event) {
+  public showAddButton(table: Tabulator, tableConfigData: DataViewTableConfig) {
+    const tableElement = table.element;
+
+    // Remove any existing add buttons first
+    const existingButtons = tableElement.querySelectorAll(".table-add-button");
+    existingButtons.forEach((btn) => btn.remove());
+
+    const addButtonContainer = document.createElement("div");
+    addButtonContainer.className = "table-add-button";
+    Object.assign(addButtonContainer.style, {
+      position: "absolute",
+      top: "10px",
+      right: "10px",
+      zIndex: "100",
+      width: "40px",
+      height: "40px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    });
+
+    // Use helper for creating the button — same circular styling, not full-size since container is fixed.
+    const addButton = this.createIconButton(
+      "➕",
+      "Add row",
+      (ev) => this.openAddRowDialog(ev, table, tableConfigData),
+      false
+    );
+
+    addButtonContainer.appendChild(addButton);
+    tableElement.appendChild(addButtonContainer);
+  }
+
+  /**
+   * Internal helper to create and display floating UI for row actions.
+   * showEdit/showDelete control which circular buttons are rendered. The container
+   * itself is transparent so no rectangle background is visible — only the circular
+   * buttons are displayed.
+   */
+  private createRowActionFloatingMenu(
+    table: Tabulator,
+    row: RowComponent,
+    event: Event,
+    showEdit: boolean,
+    showDelete: boolean
+  ) {
     event.preventDefault();
+    this.cleanupFloatingMenus();
+
     const tableElement = table.element;
     const rowElement = row.getElement();
     const tableRect = tableElement.getBoundingClientRect();
@@ -156,67 +327,107 @@ export class TabulatorFloatingUi {
 
     const floatingEl = document.createElement("div");
     floatingEl.className = "floating-menu";
+    // Make the container transparent / borderless so only the circular buttons are visible.
     Object.assign(floatingEl.style, {
       position: "absolute",
-      background: "white",
-      border: "1px solid #ccc",
-      borderRadius: "50%",
-      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-      width: "40px",
-      height: "40px",
+      background: "transparent",
+      border: "none",
+      boxShadow: "none",
+      padding: "0",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+      gap: "8px",
+      zIndex: "1000",
+      pointerEvents: "auto",
     });
 
-    const btn = document.createElement("button");
-    btn.textContent = "✏️";
-    btn.className = "btn btn-sm";
-    // Prevent outside handlers from removing the menu
-    btn.onclick = (ev) => {
-      floatingEl.remove();
-      ev.stopPropagation();
-      this.openEditRowDialog(event, row);
-    };
-    floatingEl.appendChild(btn);
-
-    document.body.appendChild(floatingEl);
-
-    window.FloatingUIDOM.computePosition(virtualEl, floatingEl, {
-      placement: "right",
-      middleware: [offset(() => -40)],
-    }).then(({ x, y }: { x: number; y: number }) => {
-      Object.assign(floatingEl.style, {
-        left: `${x}px`,
-        top: `${y}px`,
+    if (showEdit) {
+      const editBtn = this.createIconButton("✏️", "Edit row", () => {
+        // close the floating menu before opening dialog
+        floatingEl.remove();
+        this.openEditRowDialog(event, row);
       });
-    });
+      floatingEl.appendChild(editBtn);
+    }
 
-    // Use a flag to determine if the floating element is hovered.
-    let isHovered = false;
-    floatingEl.addEventListener("mouseenter", () => {
-      isHovered = true;
-    });
-    floatingEl.addEventListener("mouseleave", () => {
-      isHovered = false;
-      floatingEl.remove();
-    });
-
-    // Instead of immediately removing on rowMouseLeave,
-    table.on("rowMouseLeave", () => {
-      setTimeout(() => {
-        if (!isHovered) {
-          floatingEl.remove();
-        }
+    if (showDelete) {
+      const deleteBtn = this.createIconButton("🗑️", "Delete row", () => {
+        floatingEl.remove();
+        this.openDeleteRowDialog(event, row);
       });
-    });
+      floatingEl.appendChild(deleteBtn);
+    }
+
+    // Only add to DOM if we have buttons to show
+    if (floatingEl.children.length > 0) {
+      document.body.appendChild(floatingEl);
+
+      window.FloatingUIDOM.computePosition(virtualEl, floatingEl, {
+        placement: "right",
+        middleware: [offset(() => -(40 + 40 + 18))], // Two buttons + padding
+      }).then(({ x, y }: { x: number; y: number }) => {
+        Object.assign(floatingEl.style, {
+          left: `${x}px`,
+          top: `${y}px`,
+        });
+      });
+
+      // Use a flag to determine if the floating element is hovered.
+      let isHovered = false;
+      floatingEl.addEventListener("mouseenter", () => {
+        isHovered = true;
+      });
+      floatingEl.addEventListener("mouseleave", () => {
+        isHovered = false;
+        floatingEl.remove();
+      });
+
+      // Instead of immediately removing on rowMouseLeave,
+      // rely on the table event to remove with small delay when not hovered.
+      table.on("rowMouseLeave", () => {
+        setTimeout(() => {
+          if (!isHovered) {
+            floatingEl.remove();
+          }
+        }, 100);
+      });
+    }
+  }
+
+  /**
+   * Exposed variants for the adapter to call based on adapter-level flags.
+   * The adapter decides which of these to call and therefore we avoid
+   * passing configuration objects or datasets into the floating UI.
+   */
+  public showFloatingMenuEditDelete(
+    table: Tabulator,
+    row: RowComponent,
+    event: Event
+  ) {
+    this.createRowActionFloatingMenu(table, row, event, true, true);
+  }
+
+  public showFloatingMenuEditOnly(
+    table: Tabulator,
+    row: RowComponent,
+    event: Event
+  ) {
+    this.createRowActionFloatingMenu(table, row, event, true, false);
+  }
+
+  public showFloatingMenuDeleteOnly(
+    table: Tabulator,
+    row: RowComponent,
+    event: Event
+  ) {
+    this.createRowActionFloatingMenu(table, row, event, false, true);
   }
 
   /**
    * Show floating menu for column headers.
-   * @param table - The Tabulator table instance.
-   * @param column - The Tabulator column instance.
-   * @param event - The originating event.
+   * The floatingEl is sized to 40x40 and the inner button fills it, so the visible
+   * element is a single circular button placed at the computed position.
    */
   public showFloatingColumnMenu(
     column: ColumnComponent,
@@ -246,18 +457,16 @@ export class TabulatorFloatingUi {
 
     const floatingEl = document.createElement("div");
     floatingEl.className = "floating-menu";
+    // sized to match the desired 40x40 circular button
     Object.assign(floatingEl.style, {
       position: "absolute",
-      background: "white",
-      border: "1px solid #ccc",
-      borderRadius: "50%",
-      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
       width: "40px",
       height: "40px",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      zIndex: 1000,
+      zIndex: "1000",
+      pointerEvents: "auto",
     });
 
     // Check if the column is already configured by comparing its definitions
@@ -276,16 +485,20 @@ export class TabulatorFloatingUi {
     // Get the ColumnConfig id for editing
     const entityId = colConfig?.id ?? 0;
 
-    const btn = document.createElement("button");
-    btn.textContent = allreadyConfigured ? "✏️" : "➕";
-    btn.className = "btn btn-sm";
-    btn.onclick = (ev) => {
-      floatingEl.remove();
-      ev.stopPropagation();
-      if (!allreadyConfigured)
-        this.openNewColumnDialog(event, column, tableConfigData);
-      else this.openEditColumnDialog(event, column, entityId);
-    };
+    // Create a button that fills the floatingEl (fullSize = true) so the UI appears exactly like the previous circular + button
+    const btn = this.createIconButton(
+      allreadyConfigured ? "✏️" : "➕",
+      allreadyConfigured ? "Edit column" : "Add column",
+      (ev) => {
+        // remove floating before launching the cms dialog
+        floatingEl.remove();
+        if (!allreadyConfigured)
+          this.openNewColumnDialog(event, column, tableConfigData);
+        else this.openEditColumnDialog(event, column, entityId);
+      },
+      true
+    );
+
     floatingEl.appendChild(btn);
     document.body.appendChild(floatingEl);
 

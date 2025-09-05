@@ -8,6 +8,7 @@ import {
   Options,
   AjaxModule,
   ColumnComponent,
+  RowComponent,
 } from "tabulator-tables";
 import { DateTime } from "luxon";
 import { TabulatorConfig } from "./tabulator-models";
@@ -123,16 +124,18 @@ export class TabulatorAdapter {
         this.setupFilterInput(table, filterName);
 
       // Optional table config mode (edit, add)
-      if (this.isViewConfigMode()){
+      if (this.isViewConfigMode())
         this.setupViewConfigMode(table, tableConfigData);
-      } else { // Only allow data manipulation if not in table config mode
-        // Optional row (data) editing setup
-        if (tableConfigData.enableEdit)
-          this.setupRowEditMode(table);
-
-        // Optional row (data) deleting setup
-        if (tableConfigData.enableDelete)
-          this.setupRowDeleteMode(table);
+      else {
+        // Only allow data manipulation if not in table config mode
+        // Attach a single row hover listener if edit or delete is enabled
+        if (tableConfigData.enableEdit || tableConfigData.enableDelete) {
+          this.setupRowActionsHover(
+            table,
+            !!tableConfigData.enableEdit,
+            !!tableConfigData.enableDelete
+          );
+        }
 
         // Optional row (data) adding setup
         if (tableConfigData.enableAdd)
@@ -165,6 +168,7 @@ export class TabulatorAdapter {
     tableConfigData: DataViewTableConfig
   ): void {
     table.on("dataLoaded", () => {
+      // Edit columns on header hover
       table.on(
         "headerMouseEnter" as any,
         (e: MouseEvent, column: ColumnComponent) => {
@@ -174,16 +178,32 @@ export class TabulatorAdapter {
     });
   }
 
-  private setupRowEditMode(table: Tabulator): void {
-    table.on("rowMouseEnter", (e, row) => {
-      this.floatingUi.showFloatingMenu(table, row, e);
-    });
-  }
+  /**
+   * Attach a single row hover handler that shows the floating action menu.
+   * This is used for edit and/or delete actions, but the actual menu variant
+   * is chosen here so we don't pass flags into the floating UI or mutate datasets.
+   */
+  private setupRowActionsHover(
+    table: Tabulator,
+    enableEdit: boolean,
+    enableDelete: boolean
+  ): void {
+    // Remove any existing to avoid duplicate handlers when re-initializing
+    try {
+      table.off && table.off("rowMouseEnter");
+    } catch {
+      // ignore if off isn't supported
+    }
 
-  private setupRowDeleteMode(table: Tabulator) {
-    // Needs adoption
-    table.on("rowMouseEnter", (e, row) => {
-      this.floatingUi.showFloatingMenu(table, row, e);
+    table.on("rowMouseEnter", (e, row: RowComponent) => {
+      // Choose which floating UI variant to show based on adapter-side flags.
+      if (enableEdit && enableDelete) {
+        this.floatingUi.showFloatingMenuEditDelete(table, row, e);
+      } else if (enableEdit) {
+        this.floatingUi.showFloatingMenuEditOnly(table, row, e);
+      } else if (enableDelete) {
+        this.floatingUi.showFloatingMenuDeleteOnly(table, row, e);
+      }
     });
   }
 
@@ -191,14 +211,18 @@ export class TabulatorAdapter {
     table: Tabulator,
     tableConfigData: DataViewTableConfig
   ) {
-    // Needs adoption
+    // Show the add button after data is loaded (and on subsequent loads)
     table.on("dataLoaded", () => {
-      table.on(
-        "headerMouseEnter" as any,
-        (e: MouseEvent, column: ColumnComponent) => {
-          this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
-        }
-      );
+      this.floatingUi.showAddButton(table, tableConfigData);
     });
+
+    // Also try to show it right away in case data was already loaded
+    // (Tabulator will usually fire dataLoaded, but this is a safe-guard)
+    try {
+      // If Tabulator has data already, call it once
+      this.floatingUi.showAddButton(table, tableConfigData);
+    } catch {
+      // ignore
+    }
   }
 }
