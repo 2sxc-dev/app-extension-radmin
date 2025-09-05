@@ -40,6 +40,12 @@ export class TabulatorAdapter {
   private floatingUi = new TabulatorFloatingUi();
   private configService = new TabulatorConfigService();
 
+  debug = false;
+
+  private log(...args: any[]) {
+    if (this.debug) console.log("[Adapter]", ...args);
+  }
+
   private async createTabulatorConfig(
     tableConfigData: DataViewTableConfig,
     schema: JsonSchema
@@ -52,11 +58,8 @@ export class TabulatorAdapter {
     const filterInput = searchFilter.getFilterFunction(filterName);
     if (!filterInput) return;
 
-    // Prevent Enter reload and wire local filter
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-      }
+      if (e.key === "Enter") e.preventDefault();
     };
     const onInput = (e: Event) => {
       const value = (e.target as HTMLInputElement).value;
@@ -65,6 +68,7 @@ export class TabulatorAdapter {
 
     filterInput.addEventListener("keydown", onKeyDown);
     filterInput.addEventListener("input", onInput);
+    this.log("Filter input wired", filterName);
   }
 
   async createTable(
@@ -76,11 +80,16 @@ export class TabulatorAdapter {
     customizeManager: CustomizeManager
   ) {
     try {
+      this.log("createTable called", { tableName, tableConfigData });
+
       const schema = await schemaProvider.getSchema(
         tableConfigData.dataContentType || tableConfigData.dataQuery
       );
+      this.log("schema loaded", schema);
+
       const tabulatorConfig: Partial<ExtendedOptions> =
         await this.createTabulatorConfig(tableConfigData, schema);
+      this.log("tabulatorConfig created", tabulatorConfig);
 
       const tabulatorOptionsRaw: ExtendedOptions = {
         ajaxURL: dataProvider.getApiUrl(),
@@ -93,27 +102,34 @@ export class TabulatorAdapter {
         ...tabulatorConfig,
         dependencies: { DateTime },
       };
+      this.log("tabulatorOptionsRaw", tabulatorOptionsRaw);
 
       const tabulatorOptions = customizeManager.customizeTabulator(
         tabulatorOptionsRaw,
         tableConfigData.guid
       );
+      this.log("tabulatorOptions after customization", tabulatorOptions);
 
       const table = new Tabulator(`#${tableName}`, tabulatorOptions);
+      this.log("Tabulator instance created", table);
 
       if (filterName && tableConfigData.search) {
+        this.log("setting up filter input", filterName);
         this.setupFilterInput(table, filterName);
       }
 
       if (this.isViewConfigMode()) {
+        this.log("in ViewConfigMode, setting up header handlers");
         this.setupViewConfigMode(table, tableConfigData);
       } else {
         const canEdit = !!tableConfigData.enableEdit;
         const canDelete = !!tableConfigData.enableDelete;
+        this.log("row actions", { canEdit, canDelete });
         if (canEdit || canDelete) {
           this.setupRowActionsHover(table, canEdit, canDelete);
         }
         if (tableConfigData.enableAdd) {
+          this.log("enabling row add mode");
           this.setupRowAddMode(table, tableConfigData);
         }
       }
@@ -137,12 +153,15 @@ export class TabulatorAdapter {
     table: Tabulator,
     tableConfigData: DataViewTableConfig
   ) {
-    // only bind once data is present
+    this.log("setupViewConfigMode called");
     table.on("dataLoaded", () => {
+      this.log("dataLoaded → attaching headerMouseEnter");
       table.on(
         "headerMouseEnter" as any,
-        (e: MouseEvent, column: ColumnComponent) =>
-          this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData)
+        (e: MouseEvent, column: ColumnComponent) => {
+          this.log("headerMouseEnter triggered", column);
+          this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
+        }
       );
     });
   }
@@ -152,7 +171,8 @@ export class TabulatorAdapter {
     enableEdit: boolean,
     enableDelete: boolean
   ) {
-    // remove previous handler if present (defensive)
+    this.log("setupRowActionsHover called", { enableEdit, enableDelete });
+
     try {
       table.off?.("rowMouseEnter");
     } catch {
@@ -160,6 +180,7 @@ export class TabulatorAdapter {
     }
 
     table.on("rowMouseEnter", (e, row: RowComponent) => {
+      this.log("rowMouseEnter triggered", row.getData());
       if (enableEdit && enableDelete) {
         this.floatingUi.showFloatingMenuEditDelete(table, row, e);
       } else if (enableEdit) {
@@ -168,20 +189,26 @@ export class TabulatorAdapter {
         this.floatingUi.showFloatingMenuDeleteOnly(table, row, e);
       }
     });
+
+    table.on("rowMouseLeave", (e, row: RowComponent) => {
+      this.log("rowMouseLeave triggered", row.getData());
+    });
   }
 
   private setupRowAddMode(
     table: Tabulator,
     tableConfigData: DataViewTableConfig
   ) {
-    table.on("dataLoaded", () =>
-      this.floatingUi.showAddButton(table, tableConfigData)
-    );
-    // try to show immediately if data already present; ignore failures
+    this.log("setupRowAddMode called");
+    table.on("dataLoaded", () => {
+      this.log("dataLoaded → showing add button");
+      this.floatingUi.showAddButton(table, tableConfigData);
+    });
     try {
+      this.log("trying to show add button immediately");
       this.floatingUi.showAddButton(table, tableConfigData);
     } catch (err) {
-      console.log(err);
+      this.log("immediate add button failed", err);
     }
   }
 }

@@ -17,31 +17,38 @@ export class TabulatorFloatingUi {
   private baseButtonSize = 40;
   private zIndex = 1000;
 
+  debug = false;
+
   editSvg = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#85283B"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>`;
   deleteSvg = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#85283B"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>`;
   addSvg = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#85283B"><path d="M440-120v-320H120v-80h320v-320h80v320h320v80H520v320h-80Z"/></svg>`;
   newColumnSvg = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#85283B"><path d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160Zm40 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>`;
 
+  private log(...args: any[]) {
+    if (this.debug) console.log("[TabulatorFloatingUi]", ...args);
+  }
+
   private cleanupFloatingMenus() {
+    this.log("Cleaning up floating menus");
     document.querySelectorAll(".floating-menu").forEach((el) => el.remove());
   }
 
   /**
    * Wrap $2sxc cms.run with a small adapter so we always pass an acceptable
    * argument type (HTMLElement | number | ContextIdentifier | Sxc).
-   *
-   * Many Tabulator methods are typed to return Element, which is not assignable
-   * to HTMLElement in TS. We therefore prefer an explicit runtime check/cast.
    */
   private safeCmsRun(
     target: Element | HTMLElement,
     action: CommandNames,
     params: any
   ) {
-    // Bypass type-check mismatch for $2sxc by casting to any here (we ensured runtime validity above).
+    this.log("safeCmsRun called", { target, action, params });
     try {
-      return ($2sxc as any)(target).cms.run({ action, params });
+      const result = ($2sxc as any)(target).cms.run({ action, params });
+      this.log("safeCmsRun result", result);
+      return result;
     } catch (err) {
+      this.log("safeCmsRun error", err);
       return Promise.reject(err);
     }
   }
@@ -83,6 +90,7 @@ export class TabulatorFloatingUi {
 
     btn.addEventListener("click", (ev) => {
       ev.stopPropagation();
+      this.log("Button clicked", title);
       try {
         onClick(ev);
       } catch (err) {
@@ -93,32 +101,58 @@ export class TabulatorFloatingUi {
     return btn;
   }
 
+  private getEntityIdentifiers(row: RowComponent) {
+    const data = row.getData() as any;
+    const ids = {
+      entityId: data.EntityId ?? data.id,
+      entityGuid: data.EntityGuid ?? data.guid,
+    };
+    this.log("Row data identifiers", ids, data);
+    return ids;
+  }
+
   // Generic handlers that wrap $2sxc cms.run calls.
   openEditRowDialog(e: Event, row: RowComponent) {
     e.preventDefault();
     this.cleanupFloatingMenus();
-    const action = "edit" as CommandNames;
-    const rowData = row.getData();
-    const params = { entityId: rowData.id };
-    return this.safeCmsRun(row.getElement() as Element, action, params);
+    const { entityId } = this.getEntityIdentifiers(row);
+    if (!entityId) {
+      this.log("No entityId found for edit", row.getData());
+      return;
+    }
+    this.log("Opening edit dialog", entityId);
+    return this.safeCmsRun(
+      row.getElement() as Element,
+      "edit" as CommandNames,
+      { entityId }
+    );
   }
 
   openDeleteRowDialog(e: Event, row: RowComponent) {
     e.preventDefault();
     this.cleanupFloatingMenus();
-    const action = "delete" as CommandNames;
-    const rowData = row.getData();
-    const params = { entityId: rowData.id, entityGuid: rowData.guid };
-    return this.safeCmsRun(row.getElement() as Element, action, params).then(
-      (res: any) => {
-        try {
-          if (res) row.delete();
-        } catch (err) {
-          console.error("Error deleting row:", err);
-        }
-        return res;
+    const { entityId, entityGuid } = this.getEntityIdentifiers(row);
+    if (!entityId) {
+      this.log("No entityId found for delete", row.getData());
+      return;
+    }
+    this.log("Opening delete dialog", { entityId, entityGuid });
+    return this.safeCmsRun(
+      row.getElement() as Element,
+      "delete" as CommandNames,
+      {
+        entityId,
+        entityGuid,
       }
-    );
+    ).then((res: any) => {
+      this.log("Delete result", res);
+      try {
+        if (res) row.delete();
+      } catch (err) {
+        this.log("Error deleting row:", err);
+      }
+      return res;
+    });
   }
 
   openAddRowDialog(
@@ -128,21 +162,24 @@ export class TabulatorFloatingUi {
   ) {
     e.preventDefault();
     this.cleanupFloatingMenus();
-    const action = "new" as CommandNames;
     const params = {
       contentType: tableConfigData.dataContentType,
       prefill: {},
     };
-    return this.safeCmsRun(table.element as HTMLElement, action, params).then(
-      (res: any) => {
-        try {
-          table.replaceData();
-        } catch {
-          /* ignore */
-        }
-        return res;
+    this.log("Opening add row dialog", params);
+    return this.safeCmsRun(
+      table.element as HTMLElement,
+      "new" as CommandNames,
+      params
+    ).then((res: any) => {
+      this.log("Add row result", res);
+      try {
+        table.replaceData();
+      } catch (err) {
+        this.log("Error replacing data after add:", err);
       }
-    );
+      return res;
+    });
   }
 
   openNewColumnDialog(
@@ -151,7 +188,6 @@ export class TabulatorFloatingUi {
     tableConfigData: DataViewTableConfig
   ) {
     e.preventDefault();
-    const action = "new" as CommandNames;
     const colDef = column.getDefinition() || {};
     const params = {
       contentType: "f58eaa8e-88c0-403a-a996-9afc01ec14be",
@@ -164,12 +200,13 @@ export class TabulatorFloatingUi {
       fields: "DataViewColumnConfig",
       parent: tableConfigData.guid,
     };
+    this.log("Opening new column dialog", params);
     return this.safeCmsRun(
       column.getElement() as Element,
-      action,
+      "new" as CommandNames,
       params
     ).catch((err: string) => {
-      console.error("Error creating new column config:", err);
+      this.log("Error creating new column config:", err);
       throw err;
     });
   }
@@ -177,12 +214,16 @@ export class TabulatorFloatingUi {
   openEditColumnDialog(e: Event, column: ColumnComponent, entityId: number) {
     e.preventDefault();
     this.cleanupFloatingMenus();
-    const action = "edit" as CommandNames;
-    const params = { entityId };
-    return this.safeCmsRun(column.getElement() as Element, action, params);
+    this.log("Opening edit column dialog", { entityId });
+    return this.safeCmsRun(
+      column.getElement() as Element,
+      "edit" as CommandNames,
+      { entityId }
+    );
   }
 
   public showAddButton(table: Tabulator, tableConfigData: DataViewTableConfig) {
+    this.log("Adding floating add button to table");
     const tableElement = table.element;
     // remove existing
     tableElement
@@ -193,7 +234,7 @@ export class TabulatorFloatingUi {
     container.className = "table-add-button";
     Object.assign(container.style, {
       position: "absolute",
-      top: "10px",
+      top: "5px",
       right: "10px",
       zIndex: String(this.zIndex - 900),
       width: `${this.baseButtonSize}px`,
@@ -214,6 +255,7 @@ export class TabulatorFloatingUi {
   }
 
   private createVirtualElFromRects(x: number, y: number) {
+    this.log("Creating virtual element at coords", { x, y });
     return {
       getBoundingClientRect() {
         return {
@@ -239,9 +281,12 @@ export class TabulatorFloatingUi {
   ) {
     event.preventDefault();
     this.cleanupFloatingMenus();
+    this.log("Creating row action floating menu", { showEdit, showDelete });
 
     const tableRect = table.element.getBoundingClientRect();
     const rowRect = row.getElement().getBoundingClientRect();
+    this.log("Table rect", tableRect, "Row rect", rowRect);
+
     const virtualEl = this.createVirtualElFromRects(
       tableRect.right,
       rowRect.top + rowRect.height / 2
@@ -283,15 +328,18 @@ export class TabulatorFloatingUi {
       floatingEl.appendChild(deleteBtn);
     }
 
-    if (floatingEl.children.length === 0) return;
+    if (floatingEl.children.length === 0) {
+      this.log("No buttons to show in row action menu");
+      return;
+    }
 
     document.body.appendChild(floatingEl);
+    this.log("Row action floating menu appended");
 
     window.FloatingUIDOM.computePosition(virtualEl, floatingEl, {
       placement: "right",
       middleware: [
         offset(
-          // Calculate how much to offset based on which buttons are shown
           () =>
             -(
               (showDelete ? 40 : 0) +
@@ -299,21 +347,29 @@ export class TabulatorFloatingUi {
               (showDelete && showEdit ? 18 : 12)
             )
         ),
-      ], // Two buttons + padding
+      ],
     }).then(({ x, y }: { x: number; y: number }) => {
+      this.log("Computed floating menu position", { x, y });
       Object.assign(floatingEl.style, { left: `${x}px`, top: `${y}px` });
     });
 
     let isHovered = false;
-    floatingEl.addEventListener("mouseenter", () => (isHovered = true));
+    floatingEl.addEventListener("mouseenter", () => {
+      isHovered = true;
+      this.log("Floating menu hover start");
+    });
     floatingEl.addEventListener("mouseleave", () => {
       isHovered = false;
+      this.log("Floating menu hover end — removing");
       floatingEl.remove();
     });
 
     table.on("rowMouseLeave", () => {
       setTimeout(() => {
-        if (!isHovered) floatingEl.remove();
+        if (!isHovered) {
+          this.log("Row mouse leave — removing floating menu");
+          floatingEl.remove();
+        }
       }, 100);
     });
   }
@@ -323,20 +379,25 @@ export class TabulatorFloatingUi {
     row: RowComponent,
     event: Event
   ) {
+    this.log("Show floating menu (edit + delete)");
     this.createRowActionFloatingMenu(table, row, event, true, true);
   }
+
   public showFloatingMenuEditOnly(
     table: Tabulator,
     row: RowComponent,
     event: Event
   ) {
+    this.log("Show floating menu (edit only)");
     this.createRowActionFloatingMenu(table, row, event, true, false);
   }
+
   public showFloatingMenuDeleteOnly(
     table: Tabulator,
     row: RowComponent,
     event: Event
   ) {
+    this.log("Show floating menu (delete only)");
     this.createRowActionFloatingMenu(table, row, event, false, true);
   }
 
@@ -347,9 +408,12 @@ export class TabulatorFloatingUi {
   ) {
     event.preventDefault();
     this.cleanupFloatingMenus();
+    this.log("Creating floating column menu");
 
     const colEl = column.getElement();
     const colRect = colEl.getBoundingClientRect();
+    this.log("Column rect", colRect);
+
     const virtualEl = this.createVirtualElFromRects(
       colRect.right,
       colRect.top + colRect.height / 2
@@ -377,6 +441,8 @@ export class TabulatorFloatingUi {
     const colField = column.getField?.() ?? "";
     const colTitle = (colDef.title ?? colField) || "";
 
+    this.log("Column def", colDef, "colField", colField, "colTitle", colTitle);
+
     const colConfig = configuredColumns.find((cfg: any) => {
       const cfgTitle = String(cfg.Title ?? cfg.title ?? "");
       return cfgTitle === colTitle || cfgTitle === colField;
@@ -385,14 +451,18 @@ export class TabulatorFloatingUi {
     const alreadyConfigured = !!colConfig;
     const entityId = colConfig ? colConfig.id : 0;
 
+    this.log("Column already configured?", alreadyConfigured, colConfig);
+
     const btn = this.createIconButton(
       alreadyConfigured ? this.editSvg : this.newColumnSvg,
       alreadyConfigured ? "Edit column" : "Add column",
       (ev) => {
         floatingEl.remove();
-        if (!alreadyConfigured)
+        if (!alreadyConfigured) {
           this.openNewColumnDialog(ev, column, tableConfigData);
-        else this.openEditColumnDialog(ev, column, entityId);
+        } else {
+          this.openEditColumnDialog(ev, column, entityId);
+        }
       },
       true
     );
@@ -404,10 +474,16 @@ export class TabulatorFloatingUi {
       placement: "right",
       middleware: [offset(() => -this.baseButtonSize)],
     }).then(({ x, y }: { x: number; y: number }) => {
+      this.log("Computed floating column menu position", { x, y });
       Object.assign(floatingEl.style, { left: `${x}px`, top: `${y}px` });
     });
 
-    floatingEl.addEventListener("mouseenter", () => {});
-    floatingEl.addEventListener("mouseleave", () => floatingEl.remove());
+    floatingEl.addEventListener("mouseenter", () => {
+      this.log("Floating column menu hover start");
+    });
+    floatingEl.addEventListener("mouseleave", () => {
+      this.log("Floating column menu hover end — removing");
+      floatingEl.remove();
+    });
   }
 }
