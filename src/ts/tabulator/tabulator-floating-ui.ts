@@ -365,7 +365,17 @@ export class TabulatorFloatingUi {
 
       window.FloatingUIDOM.computePosition(virtualEl, floatingEl, {
         placement: "right",
-        middleware: [offset(() => -(40 + 40 + 18))], // Two buttons + padding
+        middleware: [
+          offset(
+            // Calculate how much to offset based on which buttons are shown
+            () =>
+              -(
+                (showDelete ? 40 : 0) +
+                (showEdit ? 40 : 0) +
+                (showDelete && showEdit ? 18 : 12)
+              )
+          ),
+        ], // Two buttons + padding
       }).then(({ x, y }: { x: number; y: number }) => {
         Object.assign(floatingEl.style, {
           left: `${x}px`,
