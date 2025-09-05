@@ -107,9 +107,9 @@ export class TabulatorFloatingUi {
     return this.safeCmsRun(row.getElement() as Element, action, params).then(
       (res: any) => {
         try {
-          row.delete();
-        } catch {
-          /* ignore */
+          if (res) row.delete();
+        } catch (err) {
+          console.error("Error deleting row:", err);
         }
         return res;
       }
