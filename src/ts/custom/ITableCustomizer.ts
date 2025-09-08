@@ -1,5 +1,5 @@
 import { Options } from "tabulator-tables";
-import { SxcCockpitTableConfig } from "../models/table-config";
+import { RadminTable } from "../models/radmin-table";
 
 /**
  * Interface for table customizers
@@ -11,14 +11,14 @@ export interface ITableCustomizer {
    * @param config The table configuration
    * @returns True if the customizer should be applied, false otherwise
    */
-  shouldApply(config: SxcCockpitTableConfig): boolean;
+  shouldApply(config: RadminTable): boolean;
   
   /**
    * Method to customize the table configuration
    * @param config The original table configuration
    * @returns The modified table configuration
    */
-  customizeConfig(config: SxcCockpitTableConfig): SxcCockpitTableConfig;
+  customizeConfig(config: RadminTable): RadminTable;
   
   /**
    * Method to customize the Tabulator options

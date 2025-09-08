@@ -1,5 +1,5 @@
 import { Sxc } from "@2sic.com/2sxc-typings";
-import { SxcCockpitTableConfig } from "../models/table-config";
+import { RadminTable } from "../models/radmin-table";
 
 export class ConfigurationLoader {
   private sxc: Sxc;
@@ -11,14 +11,14 @@ export class ConfigurationLoader {
   /**
    * Load the table configuration from the server using the provided viewId.
    */
-  async loadConfig(viewId: string): Promise<SxcCockpitTableConfig> {
+  async loadConfig(viewId: string): Promise<RadminTable> {
     try {
       return await this.sxc.webApi.fetchJson(
         `app/auto/api/TableConfig/GetData?viewId=${viewId}`
       );
     } catch (err) {
       console.error("Error loading table config:", err);
-      return {} as SxcCockpitTableConfig;
+      return {} as RadminTable;
     }
   }
 }

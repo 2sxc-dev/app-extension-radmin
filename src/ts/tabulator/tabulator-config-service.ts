@@ -1,15 +1,15 @@
-import { SxcCockpitTableConfig } from "../models/table-config";
+import { RadminTable } from "../models/radmin-table";
 import { JsonSchema } from "../models/json-schema";
 import { TabulatorColumnAdapter } from "./tabulator-column-adapter";
 import { TabulatorConfig } from "./tabulator-models";
 
 /**
- * Service for creating a Tabulator configuration from SxcCockpitTableConfig.
+ * Service for creating a Tabulator configuration from RadminTable.
  * Is used to convert the configuration from 2sxc into a format that Tabulator can understand.
  */
 export class TabulatorConfigService {
   createTabulatorConfig(
-    data: SxcCockpitTableConfig,
+    data: RadminTable,
     schema: JsonSchema
   ): TabulatorConfig {
     const columnAdapter = new TabulatorColumnAdapter();

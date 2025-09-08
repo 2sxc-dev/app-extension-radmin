@@ -1,10 +1,10 @@
 import { CellComponent } from "tabulator-tables";
-import { SxcCockpitTableConfig } from "../models/table-config";
+import { RadminTable } from "../models/radmin-table";
 
 /** Tabulator Config
  * This is the format expected by the Tabulator library.
  */
-export interface TabulatorConfig extends SxcCockpitTableConfig {
+export interface TabulatorConfig extends RadminTable {
   layout:
     | "fitDataStretch"
     | "fitData"

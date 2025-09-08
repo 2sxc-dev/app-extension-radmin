@@ -6,7 +6,7 @@
 @* Show Switcher to toggle table configuration mode - to admins only, and not for demo since that shouldn't be modified *@
 
 @{
-  var item = MyModel.Get<SxcCockpitTableConfig>("item");
+  var item = MyModel.Get<RadminTable>("item");
   if (!MyUser.IsSiteAdmin || item.IsDemoItem)
     return;
 

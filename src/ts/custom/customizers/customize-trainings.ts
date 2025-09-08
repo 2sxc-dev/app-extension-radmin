@@ -1,16 +1,16 @@
 import { Options } from "tabulator-tables";
 import { ITableCustomizer } from "../ITableCustomizer";
-import { SxcCockpitTableConfig } from "../../models/table-config";
+import { RadminTable } from "../../models/radmin-table";
 
 export class CustomizeTrainingsTable implements ITableCustomizer {
   // Store the targeted GUID
   private readonly targetGuid = "1b5939ce-6e7f-4e03-90b7-471d4bd7770d";
 
-  shouldApply(config: SxcCockpitTableConfig): boolean {
+  shouldApply(config: RadminTable): boolean {
     return config.guid === this.targetGuid;
   }
 
-  customizeConfig(config: SxcCockpitTableConfig): SxcCockpitTableConfig {
+  customizeConfig(config: RadminTable): RadminTable {
     return config;
   }
 

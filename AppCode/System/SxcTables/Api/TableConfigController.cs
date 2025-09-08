@@ -8,12 +8,12 @@ namespace AppCode.System.SxcTables.Api
   public class TableConfigController : Custom.Hybrid.ApiTyped
   {
     [HttpGet]
-    public SxcCockpitTableConfig GetData(Guid viewId)
+    public RadminTable GetData(Guid viewId)
     {
       /// <summary>
-      /// Get the SxcCockpitTableConfig for the given Guid
+      /// Get the RadminTable for the given Guid
       /// </summary>
-      return App.Data.GetOne<SxcCockpitTableConfig>(viewId);
+      return App.Data.GetOne<RadminTable>(viewId);
     }
   }
 }

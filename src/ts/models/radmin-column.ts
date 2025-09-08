@@ -2,7 +2,7 @@
  * Table Columns Config
  * This is the format provided by the 2sxc backend.
  */
-export interface SxcCockpitColumnConfig {
+export interface RadminColumn {
   id: number;
   linkEnable: boolean;
   linkParameters: string

@@ -1,12 +1,12 @@
 import { TabulatorColumnConfig } from "./tabulator-models";
 import { formatConfigs } from "./tabulator-column-formats";
-import { SxcCockpitColumnConfig } from "../models/column-config";
+import { RadminColumn } from "../models/radmin-column";
 import { CellComponent } from "tabulator-tables";
 import { JsonSchema, SchemaProperty } from "../models/json-schema";
 
 export class TabulatorColumnAdapter {
   convert(
-    columnConfig: SxcCockpitColumnConfig[],
+    columnConfig: RadminColumn[],
     columnsAutoShowRemaining: boolean,
     schema: JsonSchema
   ): TabulatorColumnConfig[] {

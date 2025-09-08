@@ -1,6 +1,6 @@
 import { CommandNames } from "@2sic.com/2sxc-typings";
 import { ColumnComponent, RowComponent, Tabulator } from "tabulator-tables";
-import { SxcCockpitTableConfig } from "../models/table-config";
+import { RadminTable } from "../models/radmin-table";
 import { offset } from "@floating-ui/dom";
 
 declare global {
@@ -158,7 +158,7 @@ export class TabulatorFloatingUi {
   openAddRowDialog(
     e: Event,
     table: Tabulator,
-    tableConfigData: SxcCockpitTableConfig
+    tableConfigData: RadminTable
   ) {
     e.preventDefault();
     this.cleanupFloatingMenus();
@@ -185,7 +185,7 @@ export class TabulatorFloatingUi {
   openNewColumnDialog(
     e: Event,
     column: ColumnComponent,
-    tableConfigData: SxcCockpitTableConfig
+    tableConfigData: RadminTable
   ) {
     e.preventDefault();
     const colDef = column.getDefinition() || {};
@@ -222,7 +222,7 @@ export class TabulatorFloatingUi {
     );
   }
 
-  public showAddButton(table: Tabulator, tableConfigData: SxcCockpitTableConfig) {
+  public showAddButton(table: Tabulator, tableConfigData: RadminTable) {
     this.log("Adding floating add button to table");
     const tableElement = table.element;
     // remove existing
@@ -404,7 +404,7 @@ export class TabulatorFloatingUi {
   public showFloatingColumnMenu(
     column: ColumnComponent,
     event: Event,
-    tableConfigData: SxcCockpitTableConfig
+    tableConfigData: RadminTable
   ) {
     event.preventDefault();
     this.cleanupFloatingMenus();

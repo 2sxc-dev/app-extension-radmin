@@ -1,9 +1,9 @@
-import { SxcCockpitColumnConfig } from "./column-config";
+import { RadminColumn } from "./radmin-column";
 
 /** Table Config
  * This is the format provided by the 2sxc backend.
  */
-export interface SxcCockpitTableConfig {
+export interface RadminTable {
   title: string;
   viewId: number;
   id: number;
@@ -14,7 +14,7 @@ export interface SxcCockpitTableConfig {
   enableEdit: boolean;
   dataQuery: string;
   search?: boolean;
-  columnConfigs: SxcCockpitColumnConfig[];
+  columnConfigs: RadminColumn[];
   pagingMode?: string;
   pagingSize?: number;
   guid: string;

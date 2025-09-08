@@ -1,6 +1,6 @@
 import { Options } from "tabulator-tables";
 import { ITableCustomizer } from "./ITableCustomizer";
-import { SxcCockpitTableConfig } from "../models/table-config";
+import { RadminTable } from "../models/radmin-table";
 
 /**
  * Manager class for handling table customizers
@@ -37,7 +37,7 @@ export class CustomizeManager {
    * @param config The original table configuration
    * @returns The modified table configuration
    */
-  public customizeConfig(config: SxcCockpitTableConfig): SxcCockpitTableConfig {
+  public customizeConfig(config: RadminTable): RadminTable {
     // Clear active customizers for this table
     this.activeCustomizers.delete(config.guid);
 
