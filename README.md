@@ -1,10 +1,10 @@
 <img src="app-icon.png" align="right" width="200px">
 
-# 2sxc JavaScript Tables App
+# 2sxc Extension Radmin App
 
 > This is a JavaScript App for creating dynamic tables with [2sxc](https://2sxc.org) for [DNN ☢️](https://www.dnnsoftware.com/) and [Oqtane 💧](https://www.oqtane.org/)
 
-This **2sxc JavaScript Tables** app provides a powerful and flexible way to create, manage, and display tabular data in 2sxc apps. Built with TypeScript, it offers robust typing and modern JavaScript features for enhanced development experience.
+This **2sxc Extension Radmin** app provides a powerful and flexible way to create, manage, and display tabular data in 2sxc apps. Built with TypeScript, it offers robust typing and modern JavaScript features for enhanced development experience.
 
 | Aspect              | Status | Comments or Version
 | ------------------- | :----: | -------------------
@@ -37,9 +37,10 @@ This app is only useful if you use DNN or Oqtane. So assuming you have a DNN ins
 * It probably helps to review the [Overview][overview] about how the parts play together by default, so you can then change as little as necessary to get it to do what you want
 
 3. Add the necessary HTML:
-   ```html
-   <div id="my-table"></div>
-   ```
+
+```html
+<div id="my-table"></div>
+```
 
 ## Customize the App
 
