@@ -1,9 +1,9 @@
-import { DataViewColumnConfig } from "./data-view-column-config";
+import { SxcCockpitColumnConfig } from "./column-config";
 
 /** Table Config
  * This is the format provided by the 2sxc backend.
  */
-export interface DataViewTableConfig {
+export interface SxcCockpitTableConfig {
   title: string;
   viewId: number;
   id: number;
@@ -14,7 +14,7 @@ export interface DataViewTableConfig {
   enableEdit: boolean;
   dataQuery: string;
   search?: boolean;
-  dataViewColumnConfig: DataViewColumnConfig[];
+  columnConfigs: SxcCockpitColumnConfig[];
   pagingMode?: string;
   pagingSize?: number;
   guid: string;

@@ -2,7 +2,7 @@
  * Table Columns Config
  * This is the format provided by the 2sxc backend.
  */
-export interface DataViewColumnConfig {
+export interface SxcCockpitColumnConfig {
   id: number;
   linkEnable: boolean;
   linkParameters: string

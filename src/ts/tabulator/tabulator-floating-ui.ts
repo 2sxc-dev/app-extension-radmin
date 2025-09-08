@@ -1,6 +1,6 @@
 import { CommandNames } from "@2sic.com/2sxc-typings";
 import { ColumnComponent, RowComponent, Tabulator } from "tabulator-tables";
-import { DataViewTableConfig } from "../models/data-view-table-config";
+import { SxcCockpitTableConfig } from "../models/table-config";
 import { offset } from "@floating-ui/dom";
 
 declare global {
@@ -158,7 +158,7 @@ export class TabulatorFloatingUi {
   openAddRowDialog(
     e: Event,
     table: Tabulator,
-    tableConfigData: DataViewTableConfig
+    tableConfigData: SxcCockpitTableConfig
   ) {
     e.preventDefault();
     this.cleanupFloatingMenus();
@@ -185,7 +185,7 @@ export class TabulatorFloatingUi {
   openNewColumnDialog(
     e: Event,
     column: ColumnComponent,
-    tableConfigData: DataViewTableConfig
+    tableConfigData: SxcCockpitTableConfig
   ) {
     e.preventDefault();
     const colDef = column.getDefinition() || {};
@@ -197,7 +197,7 @@ export class TabulatorFloatingUi {
         tooltipEnabled: false,
         ValueSelector: colDef.title || "",
       },
-      fields: "DataViewColumnConfig",
+      fields: "ColumnConfigs",
       parent: tableConfigData.guid,
     };
     this.log("Opening new column dialog", params);
@@ -222,7 +222,7 @@ export class TabulatorFloatingUi {
     );
   }
 
-  public showAddButton(table: Tabulator, tableConfigData: DataViewTableConfig) {
+  public showAddButton(table: Tabulator, tableConfigData: SxcCockpitTableConfig) {
     this.log("Adding floating add button to table");
     const tableElement = table.element;
     // remove existing
@@ -404,7 +404,7 @@ export class TabulatorFloatingUi {
   public showFloatingColumnMenu(
     column: ColumnComponent,
     event: Event,
-    tableConfigData: DataViewTableConfig
+    tableConfigData: SxcCockpitTableConfig
   ) {
     event.preventDefault();
     this.cleanupFloatingMenus();
@@ -433,9 +433,9 @@ export class TabulatorFloatingUi {
     });
 
     const configuredColumns = Array.isArray(
-      tableConfigData.dataViewColumnConfig
+      tableConfigData.columnConfigs
     )
-      ? tableConfigData.dataViewColumnConfig
+      ? tableConfigData.columnConfigs
       : [];
     const colDef = column.getDefinition() || {};
     const colField = column.getField?.() ?? "";

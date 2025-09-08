@@ -9,8 +9,8 @@
   var itemViewId = MyPage.Parameters.String(SxcTablesConstants.UrlParamViewId, fallback: null);
 
   var item = string.IsNullOrEmpty(itemViewId) || !Guid.TryParse(itemViewId, out var parsedGuid)
-  ? As<DataViewTableConfig>(MyItem)
-  : App.Data.GetOne<DataViewTableConfig>(parsedGuid);
+  ? As<SxcCockpitTableConfig>(MyItem)
+  : App.Data.GetOne<SxcCockpitTableConfig>(parsedGuid);
 
   var appUrl = App.Folder.Url;
 

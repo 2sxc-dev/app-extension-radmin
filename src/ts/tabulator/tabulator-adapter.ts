@@ -14,7 +14,7 @@ import { DateTime } from "luxon";
 import { TabulatorConfig } from "./tabulator-models";
 import { TabulatorConfigService } from "./tabulator-config-service";
 import { DataProvider } from "../providers/data-provider";
-import { DataViewTableConfig } from "../models/data-view-table-config";
+import { SxcCockpitTableConfig } from "../models/table-config";
 import { TabulatorFloatingUi } from "./tabulator-floating-ui";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
 import { JsonSchema } from "../models/json-schema";
@@ -47,7 +47,7 @@ export class TabulatorAdapter {
   }
 
   private async createTabulatorConfig(
-    tableConfigData: DataViewTableConfig,
+    tableConfigData: SxcCockpitTableConfig,
     schema: JsonSchema
   ): Promise<TabulatorConfig> {
     return this.configService.createTabulatorConfig(tableConfigData, schema);
@@ -73,7 +73,7 @@ export class TabulatorAdapter {
 
   async createTable(
     tableName: string,
-    tableConfigData: DataViewTableConfig,
+    tableConfigData: SxcCockpitTableConfig,
     dataProvider: DataProvider,
     schemaProvider: SchemaProvider,
     filterName: string | undefined,
@@ -153,7 +153,7 @@ export class TabulatorAdapter {
 
   private setupViewConfigMode(
     table: Tabulator,
-    tableConfigData: DataViewTableConfig
+    tableConfigData: SxcCockpitTableConfig
   ) {
     this.log("setupViewConfigMode called");
     table.on("dataLoaded", () => {
@@ -199,7 +199,7 @@ export class TabulatorAdapter {
 
   private setupRowAddMode(
     table: Tabulator,
-    tableConfigData: DataViewTableConfig
+    tableConfigData: SxcCockpitTableConfig
   ) {
     this.log("setupRowAddMode called");
     table.on("dataLoaded", () => {

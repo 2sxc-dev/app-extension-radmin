@@ -1,10 +1,10 @@
 import { CellComponent } from "tabulator-tables";
-import { DataViewTableConfig } from "../models/data-view-table-config";
+import { SxcCockpitTableConfig } from "../models/table-config";
 
 /** Tabulator Config
  * This is the format expected by the Tabulator library.
  */
-export interface TabulatorConfig extends DataViewTableConfig {
+export interface TabulatorConfig extends SxcCockpitTableConfig {
   layout:
     | "fitDataStretch"
     | "fitData"

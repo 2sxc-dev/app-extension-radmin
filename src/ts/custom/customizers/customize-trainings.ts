@@ -1,16 +1,16 @@
 import { Options } from "tabulator-tables";
 import { ITableCustomizer } from "../ITableCustomizer";
-import { DataViewTableConfig } from "../../models/data-view-table-config";
+import { SxcCockpitTableConfig } from "../../models/table-config";
 
 export class CustomizeTrainingsTable implements ITableCustomizer {
   // Store the targeted GUID
   private readonly targetGuid = "1b5939ce-6e7f-4e03-90b7-471d4bd7770d";
 
-  shouldApply(config: DataViewTableConfig): boolean {
+  shouldApply(config: SxcCockpitTableConfig): boolean {
     return config.guid === this.targetGuid;
   }
 
-  customizeConfig(config: DataViewTableConfig): DataViewTableConfig {
+  customizeConfig(config: SxcCockpitTableConfig): SxcCockpitTableConfig {
     return config;
   }
 

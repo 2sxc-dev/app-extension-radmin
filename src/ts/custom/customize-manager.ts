@@ -1,6 +1,6 @@
 import { Options } from "tabulator-tables";
 import { ITableCustomizer } from "./ITableCustomizer";
-import { DataViewTableConfig } from "../models/data-view-table-config";
+import { SxcCockpitTableConfig } from "../models/table-config";
 
 /**
  * Manager class for handling table customizers
@@ -37,7 +37,7 @@ export class CustomizeManager {
    * @param config The original table configuration
    * @returns The modified table configuration
    */
-  public customizeConfig(config: DataViewTableConfig): DataViewTableConfig {
+  public customizeConfig(config: SxcCockpitTableConfig): SxcCockpitTableConfig {
     // Clear active customizers for this table
     this.activeCustomizers.delete(config.guid);
 

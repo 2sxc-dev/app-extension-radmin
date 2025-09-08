@@ -1,5 +1,5 @@
 import { Options } from "tabulator-tables";
-import { DataViewTableConfig } from "../models/data-view-table-config";
+import { SxcCockpitTableConfig } from "../models/table-config";
 
 /**
  * Interface for table customizers
@@ -11,14 +11,14 @@ export interface ITableCustomizer {
    * @param config The table configuration
    * @returns True if the customizer should be applied, false otherwise
    */
-  shouldApply(config: DataViewTableConfig): boolean;
+  shouldApply(config: SxcCockpitTableConfig): boolean;
   
   /**
    * Method to customize the table configuration
    * @param config The original table configuration
    * @returns The modified table configuration
    */
-  customizeConfig(config: DataViewTableConfig): DataViewTableConfig;
+  customizeConfig(config: SxcCockpitTableConfig): SxcCockpitTableConfig;
   
   /**
    * Method to customize the Tabulator options
