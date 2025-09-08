@@ -7,17 +7,17 @@
   Kit.Page.Activate("2sxc.JsCore");
 
   var itemViewId = MyPage.Parameters.String(SxcTablesConstants.UrlParamViewId, fallback: null);
-  
+
   var item = string.IsNullOrEmpty(itemViewId) || !Guid.TryParse(itemViewId, out var parsedGuid)
-    ? As<DataViewTableConfig>(MyItem)
-    : App.Data.GetOne<DataViewTableConfig>(parsedGuid);
-  
+  ? As<DataViewTableConfig>(MyItem)
+  : App.Data.GetOne<DataViewTableConfig>(parsedGuid);
+
   var appUrl = App.Folder.Url;
 
   // Allow for path-to-customizers to be injected by a caller
   var useCustomizer = MyModel.Bool("useCustomizer", fallback: true);
   var pathToCustomizers = MyModel.String("pathToCustomizers", required: false)
-    ?? "/dist/customizers.js";
+  ?? "/dist/customizers.js";
   if (pathToCustomizers.StartsWith("/dist"))
     pathToCustomizers = appUrl + pathToCustomizers;
 }
@@ -36,17 +36,19 @@
 </div>
 
 @Kit.Page.TurnOn("window.table.createTabulatorTable()", data: new {
-  tableName = "tosxc-table-" + MyContext.Module.Id,
-  filterName = "tosxc-table-filter-" + MyContext.Module.Id,
-  moduleId = MyContext.Module.Id,
-  viewId = item.Guid.ToString()
+tableName = "tosxc-table-" + MyContext.Module.Id,
+filterName = "tosxc-table-filter-" + MyContext.Module.Id,
+moduleId = MyContext.Module.Id,
+viewId = item.Guid.ToString(),
+canEdit = MyUser.IsSiteAdmin && !item.IsDemoItem
 })
 @if (useCustomizer)
 {
   <script src="@pathToCustomizers" @Kit.Page.AssetAttributes(position: "bottom")></script>
 }
 <script src="@appUrl/system/sxc-tables/dist/table.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
-<link href="@appUrl/system/sxc-tables/dist/styles.min.css" rel="stylesheet" @Kit.Page.AssetAttributes(position: "bottom")/>
+<link href="@appUrl/system/sxc-tables/dist/styles.min.css" rel="stylesheet" @Kit.Page.AssetAttributes(position:
+                                                                              "bottom") />
 
 @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.9\"></script>")
 @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.13\"></script>")

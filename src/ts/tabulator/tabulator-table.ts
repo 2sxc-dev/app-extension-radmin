@@ -15,6 +15,7 @@ export class tabulatorTable {
     filterName: string;
     moduleId: number;
     viewId: string;
+    canEdit: boolean;
   }) {
     // Get sxc context
     const sxc = $2sxc(data.moduleId);
@@ -85,7 +86,7 @@ export class tabulatorTable {
         linkParameters
       );
     }
-    
+
     const schemaProvider = new SchemaProvider(sxc);
 
     // Create table with remote data loading
@@ -95,7 +96,8 @@ export class tabulatorTable {
       dataProvider,
       schemaProvider,
       data.filterName,
-      customizeManager
+      customizeManager,
+      data.canEdit
     );
   }
 }
