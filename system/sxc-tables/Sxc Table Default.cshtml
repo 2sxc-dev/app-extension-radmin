@@ -36,25 +36,18 @@
 </div>
 
 @Kit.Page.TurnOn("window.table.createTabulatorTable()", data: new {
-tableName = "tosxc-table-" + MyContext.Module.Id,
-filterName = "tosxc-table-filter-" + MyContext.Module.Id,
-moduleId = MyContext.Module.Id,
-viewId = item.Guid.ToString(),
-canEdit = MyUser.IsSiteAdmin && !item.IsDemoItem
+  tableName = "tosxc-table-" + MyContext.Module.Id,
+  filterName = "tosxc-table-filter-" + MyContext.Module.Id,
+  moduleId = MyContext.Module.Id,
+  viewId = item.Guid.ToString(),
+  canEditConfig = MyUser.IsSiteAdmin && !item.IsDemoItem,
+  canEditData = MyUser.IsContentEditor && !item.IsDemoItem,
 })
+
 @if (useCustomizer)
-{
-  <script src="@pathToCustomizers" @Kit.Page.AssetAttributes(position: "bottom")></script>
-}
+{ <script src="@pathToCustomizers" @Kit.Page.AssetAttributes(position: "bottom")></script> }
 <script src="@appUrl/system/sxc-tables/dist/table.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
-<link href="@appUrl/system/sxc-tables/dist/styles.min.css" rel="stylesheet" @Kit.Page.AssetAttributes(position:
-                                                                              "bottom") />
+<link href="@appUrl/system/sxc-tables/dist/styles.min.css" rel="stylesheet" @Kit.Page.AssetAttributes(position: "bottom") />
 
 @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.9\"></script>")
 @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.13\"></script>")
-@*
-
-  - There are 2 ways of data loading implemented 1) Call with Promise 2) Let Tabulator AJAX load
-  - The Code is related to the values of the app - when outsourced needs to be more generic
- 
-*@

@@ -78,7 +78,8 @@ export class TabulatorAdapter {
     schemaProvider: SchemaProvider,
     filterName: string | undefined,
     customizeManager: CustomizeManager,
-    canEdit: boolean
+    canEditConfig: boolean,
+    canEditData: boolean,
   ) {
     try {
       this.log("createTable called", { tableName, tableConfigData });
@@ -119,10 +120,10 @@ export class TabulatorAdapter {
         this.setupFilterInput(table, filterName);
       }
 
-      if (this.isViewConfigMode() && canEdit) {
+      if (this.isViewConfigMode() && canEditConfig) {
         this.log("in ViewConfigMode, setting up header handlers");
         this.setupViewConfigMode(table, tableConfigData);
-      } else if (canEdit) {
+      } else if (canEditData) {
         const editEnabled = !!tableConfigData.enableEdit;
         const canDelete = !!tableConfigData.enableDelete;
         this.log("row actions", { editEnabled, canDelete });

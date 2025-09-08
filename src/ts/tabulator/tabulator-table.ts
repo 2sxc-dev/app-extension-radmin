@@ -15,7 +15,8 @@ export class tabulatorTable {
     filterName: string;
     moduleId: number;
     viewId: string;
-    canEdit: boolean;
+    canEditConfig: boolean;
+    canEditData: boolean;
   }) {
     // Get sxc context
     const sxc = $2sxc(data.moduleId);
@@ -97,7 +98,8 @@ export class tabulatorTable {
       schemaProvider,
       data.filterName,
       customizeManager,
-      data.canEdit
+      data.canEditConfig,
+      data.canEditData,
     );
   }
 }
