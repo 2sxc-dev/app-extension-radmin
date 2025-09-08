@@ -1,13 +1,13 @@
 {
-  "name": "tabulator-2sxc-poc",
+  "name": "2sxc-extension-radmin",
   "version": "01.00.00",
   "description": "",
   "main": "(none)",
   "scripts": {
-    "build:radmin": "webpack --env target=radmin",
-    "watch:radmin": "webpack --watch --env target=radmin",
-    "build:customizers": "webpack --env target=customizers",
-    "watch:customizers": "webpack --watch --env target=customizers"
+    "build:radmin": "webpack --config webpack-radmin.config.js",
+    "watch:radmin": "webpack --watch --config webpack-radmin.config.js",
+    "build:customizers": "webpack",
+    "watch:customizers": "webpack --watch"
   },
   "author": "2sic internet solutions 2025",
   "license": "ISC",
