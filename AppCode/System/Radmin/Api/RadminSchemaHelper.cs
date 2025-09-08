@@ -1,24 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
 using ToSic.Eav.Data;
 
 namespace AppCode.System.Radmin.Api
 {
-  [AllowAnonymous]
-  public class GetSchemaController : Custom.Hybrid.ApiTyped
+  public class RadminSchemaHelper
   {
-    [HttpGet]
-    public object GetSchema(string typename)
-    {
-      /// <summary>
-      /// Get the schema for the given typename in JSON Schema format
-      /// </summary>
-      var contentType = App.Data.GetContentType(typename);
-      return ConvertToJsonSchema(contentType);
-    }
-
-    private object ConvertToJsonSchema(IContentType contentType)
+    public JsonSchema ConvertToJsonSchema(IContentType contentType)
     {
       var properties = contentType.Attributes
         .Select(attribute =>
@@ -49,7 +37,7 @@ namespace AppCode.System.Radmin.Api
     }
 
     // Updated method signature to match IContentTypeAttribute
-    string GetTypeName(IContentTypeAttribute attribute)
+    private string GetTypeName(IContentTypeAttribute attribute)
     {
       // Use the TypeMappings dictionary to get the type name
       return TypeMappings.TryGetValue(attribute.Type.ToString(), out var typeName)
@@ -58,7 +46,7 @@ namespace AppCode.System.Radmin.Api
     }
 
     // Updated method signature to match IContentTypeAttribute
-    string GetFormatName(IContentTypeAttribute attribute)
+    private string GetFormatName(IContentTypeAttribute attribute)
     {
       // Use the FormatMappings dictionary to get the format
       return FormatMappings.TryGetValue(attribute.Type.ToString(), out var formatName)
@@ -67,7 +55,7 @@ namespace AppCode.System.Radmin.Api
     }
 
     // Dictionary for type mappings
-    static Dictionary<string, string> TypeMappings = new Dictionary<string, string>
+    private static Dictionary<string, string> TypeMappings = new Dictionary<string, string>
     {
       { "String", "string" },
       { "Number", "number" },
@@ -84,7 +72,7 @@ namespace AppCode.System.Radmin.Api
     };
 
     // Dictionary for format mappings
-    static Dictionary<string, string> FormatMappings = new Dictionary<string, string>
+    private static Dictionary<string, string> FormatMappings = new Dictionary<string, string>
     {
       { "DateTime", "date-time" },
       { "Date", "date" },

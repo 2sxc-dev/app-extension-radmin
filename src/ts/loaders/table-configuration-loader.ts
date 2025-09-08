@@ -14,7 +14,7 @@ export class ConfigurationLoader {
   async loadConfig(viewId: string): Promise<RadminTable> {
     try {
       return await this.sxc.webApi.fetchJson(
-        `app/auto/api/TableConfig/GetData?viewId=${viewId}`
+        `app/auto/api/radmin/table?viewId=${viewId}`
       );
     } catch (err) {
       console.error("Error loading table config:", err);

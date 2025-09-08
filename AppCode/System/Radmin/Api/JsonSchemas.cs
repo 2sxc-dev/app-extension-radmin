@@ -7,8 +7,10 @@ namespace AppCode.System.Radmin.Api
   {
     [JsonPropertyName("$schema")]
     public string Schema { get; set; } = "https://json-schema.org/draft/2020-12/schema";
+
     [JsonPropertyName("$id")]
     public string Id { get; set; }
+
     public string Title { get; set; }
     public string Description { get; set; }
     public string Type { get; set; }
@@ -27,10 +29,13 @@ namespace AppCode.System.Radmin.Api
     }
     public string Title { get; set; }
     public string Type { get; set; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string Format { get; set; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Dictionary<string, object> Items { get; set; }
+    
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string Description { get; set; }
   }
