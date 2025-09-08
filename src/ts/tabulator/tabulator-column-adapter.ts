@@ -136,7 +136,7 @@ function objectTitleFormatter(cell: CellComponent): string {
     if (value.length === 0) return "";
     const first = value[0];
     const title = first?.Title ?? first?.title ?? JSON.stringify(first);
-    const suffix = value.length > 1 ? ` +${value.length}` : "";
+    const suffix = value.length > 1 ? ` +${value.length - 1}` : "";
     return `${title}${suffix}`;
   }
 
