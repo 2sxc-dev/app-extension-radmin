@@ -6,12 +6,12 @@ module.exports = (env = {}) => {
   let entry;
   let outDir = "dist";
 
-  if (env.target === "table") {
+  if (env.target === "radmin") {
     entry = {
-      table: "./src/ts/table.ts",
+      tables: "./src/ts/tables.ts",
       styles: "./src/styles/styles.scss"
     };
-    outDir = `system/sxc-tables/dist`;
+    outDir = `system/radmin/dist`;
   } else if (env.target === "customizers") {
     entry = { customizers: "./src/ts/customizers.ts" };
     outDir = "dist";

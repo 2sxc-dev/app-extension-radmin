@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace AppCode.System.SxcTables.Api
+namespace AppCode.System.Radmin.Api
 {
   public class JsonSchema
   {

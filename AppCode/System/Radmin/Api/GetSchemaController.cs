@@ -3,7 +3,7 @@ using System.Linq;
 using System.Web.Http;
 using ToSic.Eav.Data;
 
-namespace AppCode.System.SxcTables.Api
+namespace AppCode.System.Radmin.Api
 {
   [AllowAnonymous]
   public class GetSchemaController : Custom.Hybrid.ApiTyped

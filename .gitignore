@@ -9,4 +9,4 @@ node_modules
 .temp_cache\default-production
 
 # folders from built webpack which you don't want in your git repo
-dist
+/dist
