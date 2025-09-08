@@ -8,15 +8,14 @@ import { TabulatorConfig } from "./tabulator-models";
  * Is used to convert the configuration from 2sxc into a format that Tabulator can understand.
  */
 export class TabulatorConfigService {
-
   createTabulatorConfig(
     data: DataViewTableConfig,
     schema: JsonSchema
   ): TabulatorConfig {
     const columnAdapter = new TabulatorColumnAdapter();
-    
+
     return {
-      layout: "fitDataStretch",
+      layout: "fitDataFill",
       columns: columnAdapter.convert(
         data.dataViewColumnConfig,
         data.columnsAutoShowRemaining,
