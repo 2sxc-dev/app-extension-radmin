@@ -14,6 +14,7 @@ export interface RadminTable {
   enableEdit: boolean;
   dataQuery: string;
   search?: boolean;
+  columnSort?: string;
   columnConfigs: RadminColumn[];
   pagingMode?: string;
   pagingSize?: number;

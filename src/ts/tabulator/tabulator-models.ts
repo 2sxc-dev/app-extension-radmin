@@ -1,6 +1,12 @@
 import { CellComponent } from "tabulator-tables";
 import { RadminTable } from "../models/radmin-table";
 
+/** Tabulator Sort entry */
+export interface TabulatorSort {
+  column: string;
+  dir: "asc" | "desc";
+}
+
 /** Tabulator Config
  * This is the format expected by the Tabulator library.
  */
@@ -16,6 +22,7 @@ export interface TabulatorConfig extends RadminTable {
   columns: { title: string; field: string }[];
   pagination: boolean;
   paginationSize: number;
+  initialSort?: TabulatorSort[];
 }
 
 /** Tabulator Column Config

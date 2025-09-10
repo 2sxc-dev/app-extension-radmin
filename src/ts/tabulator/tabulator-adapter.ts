@@ -177,8 +177,8 @@ export class TabulatorAdapter {
 
     try {
       table.off?.("rowMouseEnter");
-    } catch {
-      /* ignore */
+    } catch (err) {
+      console.error("Failed to unbind rowMouseEnter", err);
     }
 
     table.on("rowMouseEnter", (e, row: RowComponent) => {

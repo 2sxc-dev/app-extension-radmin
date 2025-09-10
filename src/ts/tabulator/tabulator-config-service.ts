@@ -1,7 +1,7 @@
 import { RadminTable } from "../models/radmin-table";
 import { JsonSchema } from "../models/json-schema";
 import { TabulatorColumnAdapter } from "./tabulator-column-adapter";
-import { TabulatorConfig } from "./tabulator-models";
+import { TabulatorConfig, TabulatorSort } from "./tabulator-models";
 
 /**
  * Service for creating a Tabulator configuration from RadminTable.
@@ -28,6 +28,7 @@ export class TabulatorConfigService {
       id: data.id,
       columnConfigs: data.columnConfigs,
       search: data.search,
+      initialSort: [{ column: "Title", dir: "asc" }], // data.columnSort,
       columnsAutoShowRemaining: data.columnsAutoShowRemaining,
       pagination: data.pagingMode === "true",
       paginationSize: data.pagingSize ?? 10,
