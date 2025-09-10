@@ -27,7 +27,7 @@ export class TabulatorConfigService {
       viewId: data.viewId,
       id: data.id,
       columnConfigs: data.columnConfigs,
-      search: data.search,
+      searchEnabled: data.searchEnabled,
       initialSort: [{ column: "Title", dir: "asc" }], // data.columnSort,
       columnsAutoShowRemaining: data.columnsAutoShowRemaining,
       pagination: data.pagingMode === "true",

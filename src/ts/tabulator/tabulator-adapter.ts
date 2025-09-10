@@ -115,7 +115,7 @@ export class TabulatorAdapter {
       const table = new Tabulator(`#${tableName}`, tabulatorOptions);
       this.log("Tabulator instance created", table);
 
-      if (filterName && tableConfigData.search) {
+      if (filterName && tableConfigData.searchEnabled) {
         this.log("setting up filter input", filterName);
         this.setupFilterInput(table, filterName);
       }

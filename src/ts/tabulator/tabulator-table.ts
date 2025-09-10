@@ -52,7 +52,7 @@ export class tabulatorTable {
     }
 
     // Create the filter input if search is enabled
-    if (tableConfigData.search) {
+    if (tableConfigData.searchEnabled) {
       const searchFilter = new TabulatorSearchFilter();
       searchFilter.createFilterInput(
         data.tableName,

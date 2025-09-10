@@ -13,7 +13,7 @@ export interface RadminTable {
   enableDelete: boolean;
   enableEdit: boolean;
   dataQuery: string;
-  search?: boolean;
+  searchEnabled?: boolean;
   columnSort?: string;
   columnConfigs: RadminColumn[];
   pagingMode?: string;

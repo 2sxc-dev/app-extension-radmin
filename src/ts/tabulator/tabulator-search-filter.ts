@@ -81,27 +81,27 @@ export class TabulatorSearchFilter {
    * Custom filter function that matches any field in a row against the search term
    */
   matchAny(data: any, filterParams: any, row?: any): boolean {
-    const search = filterParams.value?.toString().toLowerCase() || "";
-    if (!search) return true;
+    const searchEnabled = filterParams.value?.toString().toLowerCase() || "";
+    if (!searchEnabled) return true;
 
     // Check row cells if row object is available
     if (row && row.getCells) {
       for (const cell of row.getCells()) {
         const value = cell.getValue();
-        if (value != null && String(value).toLowerCase().includes(search)) {
+        if (value != null && String(value).toLowerCase().includes(searchEnabled)) {
           return true;
         }
       }
       return false;
     }
 
-    // Fallback: search in the data object
+    // Fallback: searchEnabled in the data object
     for (const key in data) {
       const value = data[key];
       if (value != null) {
         const stringValue =
           typeof value === "object" ? JSON.stringify(value) : String(value);
-        if (stringValue.toLowerCase().includes(search)) {
+        if (stringValue.toLowerCase().includes(searchEnabled)) {
           return true;
         }
       }
