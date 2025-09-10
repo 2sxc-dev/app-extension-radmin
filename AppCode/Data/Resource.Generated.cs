@@ -12,7 +12,7 @@ namespace AppCode.Data
 */
 
 // Generator:   CSharpDataModelsGenerator
-// App/Edition: Extension Sxc Tables/
+// App/Edition: Extension Radmin/
 // User:        2sic Web-Developer
 using System;
 using System.Text.Json.Serialization;
