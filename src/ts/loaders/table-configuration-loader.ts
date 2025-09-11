@@ -1,5 +1,5 @@
 import { Sxc } from "@2sic.com/2sxc-typings";
-import { RadminTable } from "../models/radmin-table";
+import { RadminTable } from "../models/radmin-table-model";
 
 export class ConfigurationLoader {
   private sxc: Sxc;

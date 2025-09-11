@@ -3,7 +3,7 @@ import type {
   RowComponent,
   Tabulator,
 } from "tabulator-tables";
-import { RadminTable } from "../../models/radmin-table";
+import { RadminTable } from "../../models/radmin-table-model";
 import { openAddRowDialog } from "./dialogs/add-row-dialog";
 import { openDeleteRowDialog } from "./dialogs/delete-row-dialog";
 import { openEditColumnDialog } from "./dialogs/edit-column-dialog";

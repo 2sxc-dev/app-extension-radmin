@@ -1,6 +1,6 @@
 import { Options } from "tabulator-tables";
 import { ITableCustomizer } from "../ITableCustomizer";
-import { RadminTable } from "../../models/radmin-table";
+import { RadminTable } from "../../models/radmin-table-model";
 
 export class CustomizeSkillsAndGrowth implements ITableCustomizer {
   // Store the targeted GUID
@@ -25,7 +25,7 @@ export class CustomizeSkillsAndGrowth implements ITableCustomizer {
             max: 9,
           };
         }
-        
+
         if (column.title === "St%") {
           column.formatter = (cell) => {
             const value = cell.getValue();

@@ -1,5 +1,5 @@
 import { Options } from "tabulator-tables";
-import { RadminTable } from "../models/radmin-table";
+import { RadminTable } from "../models/radmin-table-model";
 
 /**
  * Interface for table customizers
@@ -12,14 +12,14 @@ export interface ITableCustomizer {
    * @returns True if the customizer should be applied, false otherwise
    */
   shouldApply(config: RadminTable): boolean;
-  
+
   /**
    * Method to customize the table configuration
    * @param config The original table configuration
    * @returns The modified table configuration
    */
   customizeConfig(config: RadminTable): RadminTable;
-  
+
   /**
    * Method to customize the Tabulator options
    * @param options The original Tabulator options

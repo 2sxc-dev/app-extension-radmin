@@ -1,4 +1,4 @@
-import { RadminColumn } from "./radmin-column";
+import { RadminColumn } from "./radmin-column-model";
 
 /** Table Config
  * This is the format provided by the 2sxc backend.

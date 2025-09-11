@@ -1,6 +1,6 @@
 import { Options } from "tabulator-tables";
 import { ITableCustomizer } from "../ITableCustomizer";
-import { RadminTable } from "../../models/radmin-table";
+import { RadminTable } from "../../models/radmin-table-model";
 
 export class CustomizeResourceTable implements ITableCustomizer {
   // Store the targeted GUID

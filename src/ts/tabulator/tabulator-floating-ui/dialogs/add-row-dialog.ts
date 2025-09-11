@@ -1,6 +1,6 @@
 import { CommandNames } from "@2sic.com/2sxc-typings";
 import type { Tabulator } from "tabulator-tables";
-import { RadminTable } from "../../../models/radmin-table";
+import { RadminTable } from "../../../models/radmin-table-model";
 import { cleanupFloatingMenus } from "../utils/floating-menu";
 import { safeCmsRun } from "../utils/safe-cms-run";
 

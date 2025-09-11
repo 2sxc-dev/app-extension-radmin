@@ -1,5 +1,5 @@
-import { JsonSchema } from "../models/json-schema";
-import { TabulatorSort } from "../tabulator/tabulator-models";
+import { JsonSchema } from "../models/json-schema-model";
+import { TabulatorSort } from "../models/tabulator-config-models";
 
 type ColumnDef = { field?: string; title?: string };
 

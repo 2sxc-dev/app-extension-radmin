@@ -1,5 +1,5 @@
 import { CellComponent } from "tabulator-tables";
-import { RadminTable } from "../models/radmin-table";
+import { RadminTable } from "./radmin-table-model";
 
 /** Tabulator Sort entry */
 export interface TabulatorSort {
@@ -41,4 +41,18 @@ export interface TabulatorColumnConfig {
   width?: number | "automatic";
   formatter?: string | ((cell: CellComponent) => string);
   formatterParams?: object;
+
+  // Added optional sorter property so columns can specify custom sorters
+  // Tabulator supports either a string (named sorter) or a function
+  sorter?:
+    | string
+    | ((
+        a: unknown,
+        b: unknown,
+        aRow?: unknown,
+        bRow?: unknown,
+        column?: unknown,
+        dir?: "asc" | "desc",
+        sorterParams?: unknown
+      ) => number);
 }
