@@ -16,7 +16,7 @@ import { TabulatorConfig } from "./tabulator-models";
 import { TabulatorConfigService } from "./tabulator-config-service";
 import { DataProvider } from "../providers/data-provider";
 import { RadminTable } from "../models/radmin-table";
-import { TabulatorFloatingUi } from "./tabulator-floating-ui";
+import { TabulatorFloatingUi } from "./tabulator-floating-ui/tabulator-floating-ui";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
 import { JsonSchema } from "../models/json-schema";
 import { SchemaProvider } from "../providers/schema-provider";
