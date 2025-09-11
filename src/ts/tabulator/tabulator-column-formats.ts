@@ -1,4 +1,4 @@
-import { TabulatorColumnConfig } from "./tabulator-models";
+import { TabulatorColumnConfig } from "../models/tabulator-config-models";
 
 export const formatConfigs: Record<string, Partial<TabulatorColumnConfig>> = {
   "": {},
@@ -33,7 +33,7 @@ export const formatConfigs: Record<string, Partial<TabulatorColumnConfig>> = {
       outputFormat: "HH:mm:ss",
     },
   },
-  "progress": {
+  progress: {
     formatter: "progress",
     formatterParams: {
       min: 0,

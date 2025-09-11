@@ -12,15 +12,16 @@ import {
   SortModule,
 } from "tabulator-tables";
 import { DateTime } from "luxon";
-import { TabulatorConfig } from "./tabulator-models";
+import { TabulatorConfig } from "../models/tabulator-config-models";
 import { TabulatorConfigService } from "./tabulator-config-service";
 import { DataProvider } from "../providers/data-provider";
-import { RadminTable } from "../models/radmin-table";
+import { RadminTable } from "../models/radmin-table-model";
 import { TabulatorFloatingUi } from "./tabulator-floating-ui/tabulator-floating-ui";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
-import { JsonSchema } from "../models/json-schema";
+import { JsonSchema } from "../models/json-schema-model";
 import { SchemaProvider } from "../providers/schema-provider";
 import { CustomizeManager } from "../custom/customize-manager";
+import { SetupObjectSorter } from "../helpers/setup-object-sorter";
 
 // Register required modules for Tabulator
 Tabulator.registerModule([
@@ -113,6 +114,10 @@ export class TabulatorAdapter {
         tableConfigData.guid
       );
       this.log("tabulatorOptions after customization", tabulatorOptions);
+
+      // Ensure our custom object sorter is registered BEFORE creating the table
+      const sorter = new SetupObjectSorter();
+      sorter.Sort();
 
       const table = new Tabulator(`#${tableName}`, tabulatorOptions);
       this.log("Tabulator instance created", table);

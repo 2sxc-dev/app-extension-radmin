@@ -1,7 +1,7 @@
-import { RadminTable } from "../models/radmin-table";
-import { JsonSchema } from "../models/json-schema";
+import { RadminTable } from "../models/radmin-table-model";
+import { JsonSchema } from "../models/json-schema-model";
 import { TabulatorColumnAdapter } from "./tabulator-column-adapter";
-import { TabulatorConfig, TabulatorSort } from "./tabulator-models";
+import { TabulatorConfig } from "../models/tabulator-config-models";
 import { ColumnSortParser } from "../helpers/column-sort-parser";
 
 /**

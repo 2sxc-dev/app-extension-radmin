@@ -1,8 +1,8 @@
-import { TabulatorColumnConfig } from "./tabulator-models";
+import { TabulatorColumnConfig } from "../models/tabulator-config-models";
 import { formatConfigs } from "./tabulator-column-formats";
-import { RadminColumn } from "../models/radmin-column";
+import { RadminColumn } from "../models/radmin-column-model";
 import { CellComponent } from "tabulator-tables";
-import { JsonSchema, SchemaProperty } from "../models/json-schema";
+import { JsonSchema, SchemaProperty } from "../models/json-schema-model";
 
 export class TabulatorColumnAdapter {
   convert(
@@ -20,17 +20,22 @@ export class TabulatorColumnAdapter {
 
       // Determine formatter based on field type and configuration
       let formatter = formatConfig.formatter;
+      let sorter = formatConfig.sorter;
+
       if (
         (prop?.type === "object" || prop?.type === "array") &&
         !col.linkEnable
       ) {
         formatter = objectTitleFormatter;
+        // Use the registered custom object sorter
+        sorter = "object";
       }
 
       const column: TabulatorColumnConfig = {
         title: col.title,
         field: normalizedField,
         formatter,
+        sorter,
         ...formatConfig,
         // Only set alignment if explicitly specified
         hozAlign:
@@ -65,6 +70,11 @@ export class TabulatorColumnAdapter {
           },
           target: "_self",
         };
+        // When link is enabled we don't want the object formatter/sorter interfering
+        // (link formatter will produce a string)
+        if (prop?.type === "object" || prop?.type === "array") {
+          column.sorter = "string";
+        }
       }
 
       return column;
@@ -94,7 +104,12 @@ export class TabulatorColumnAdapter {
             property.type === "object" || property.type === "array"
               ? objectTitleFormatter
               : formatConfig.formatter,
-        };
+          // Use custom sorter for objects/arrays
+          sorter:
+            property.type === "object" || property.type === "array"
+              ? "object"
+              : formatConfig.sorter,
+        } as TabulatorColumnConfig;
       });
 
     return [...configuredColumns, ...remainingColumns];
