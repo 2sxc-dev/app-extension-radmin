@@ -2,6 +2,7 @@ import { RadminTable } from "../models/radmin-table";
 import { JsonSchema } from "../models/json-schema";
 import { TabulatorColumnAdapter } from "./tabulator-column-adapter";
 import { TabulatorConfig, TabulatorSort } from "./tabulator-models";
+import { ColumnSortParser } from "../helpers/column-sort-parser";
 
 /**
  * Service for creating a Tabulator configuration from RadminTable.
@@ -14,13 +15,22 @@ export class TabulatorConfigService {
   ): TabulatorConfig {
     const columnAdapter = new TabulatorColumnAdapter();
 
+    const columns = columnAdapter.convert(
+      data.columnConfigs,
+      data.columnsAutoShowRemaining,
+      schema
+    );
+
+    const columnParser = new ColumnSortParser();
+    const parsedInitialSort = columnParser.parse(
+      data.columnSort,
+      columns,
+      schema
+    );
+
     return {
       layout: "fitDataFill",
-      columns: columnAdapter.convert(
-        data.columnConfigs,
-        data.columnsAutoShowRemaining,
-        schema
-      ),
+      columns,
       title: data.title || "2sxc Table",
       dataContentType: "",
       dataQuery: "",
@@ -28,7 +38,7 @@ export class TabulatorConfigService {
       id: data.id,
       columnConfigs: data.columnConfigs,
       searchEnabled: data.searchEnabled,
-      initialSort: [{ column: "Title", dir: "asc" }], // data.columnSort,
+      initialSort: parsedInitialSort.length ? parsedInitialSort : undefined,
       columnsAutoShowRemaining: data.columnsAutoShowRemaining,
       pagination: data.pagingMode === "true",
       paginationSize: data.pagingSize ?? 10,

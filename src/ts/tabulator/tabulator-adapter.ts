@@ -81,7 +81,7 @@ export class TabulatorAdapter {
     filterName: string | undefined,
     customizeManager: CustomizeManager,
     canEditConfig: boolean,
-    canEditData: boolean,
+    canEditData: boolean
   ) {
     try {
       this.log("createTable called", { tableName, tableConfigData });
@@ -153,10 +153,7 @@ export class TabulatorAdapter {
     return qp === "true" || url.includes("viewconfigmode/true");
   }
 
-  private setupViewConfigMode(
-    table: Tabulator,
-    tableConfigData: RadminTable
-  ) {
+  private setupViewConfigMode(table: Tabulator, tableConfigData: RadminTable) {
     this.log("setupViewConfigMode called");
     table.on("dataLoaded", () => {
       this.log("dataLoaded → attaching headerMouseEnter");
@@ -199,10 +196,7 @@ export class TabulatorAdapter {
     });
   }
 
-  private setupRowAddMode(
-    table: Tabulator,
-    tableConfigData: RadminTable
-  ) {
+  private setupRowAddMode(table: Tabulator, tableConfigData: RadminTable) {
     this.log("setupRowAddMode called");
     table.on("dataLoaded", () => {
       this.log("dataLoaded → showing add button");
