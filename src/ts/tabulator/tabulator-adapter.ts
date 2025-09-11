@@ -9,6 +9,7 @@ import {
   AjaxModule,
   ColumnComponent,
   RowComponent,
+  SortModule,
 } from "tabulator-tables";
 import { DateTime } from "luxon";
 import { TabulatorConfig } from "./tabulator-models";
@@ -29,6 +30,7 @@ Tabulator.registerModule([
   InteractionModule,
   FilterModule,
   AjaxModule,
+  SortModule,
 ]);
 
 // Define an extended options interface to include custom properties
