@@ -5,4 +5,4 @@ win.table ??= {};
 
 win.table = new tabulatorTable();
 
-console.log("radmin version 0.1.3");
+console.log("radmin version 0.1.4");

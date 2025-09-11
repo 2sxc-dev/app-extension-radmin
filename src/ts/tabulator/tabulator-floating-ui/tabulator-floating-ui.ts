@@ -1,19 +1,21 @@
-import { CommandNames } from "@2sic.com/2sxc-typings";
 import type {
   ColumnComponent,
   RowComponent,
   Tabulator,
 } from "tabulator-tables";
+import { RadminTable } from "../../models/radmin-table";
+import { openAddRowDialog } from "./dialogs/add-row-dialog";
+import { openDeleteRowDialog } from "./dialogs/delete-row-dialog";
+import { openEditColumnDialog } from "./dialogs/edit-column-dialog";
+import { openEditRowDialog } from "./dialogs/edit-row-dialog";
+import { openNewColumnDialog } from "./dialogs/new-column-dialog";
+import { addSvg, editSvg, deleteSvg, newColumnSvg } from "./lib/icons";
+import { createIconButton } from "./utils/button-factory";
 import {
   cleanupFloatingMenus,
   createVirtualElFromRects,
   positionFloatingElement,
-} from "./floating-menu";
-import { safeCmsRun } from "./safe-cms-run";
-import { RadminTable } from "../../models/radmin-table";
-import { createIconButton } from "./button-factory";
-import { addSvg, editSvg, deleteSvg, newColumnSvg } from "./icons";
-
+} from "./utils/floating-menu";
 /**
  * Floating UI for Tabulator — row actions, add button, column header button.
  * Focus on small reusable helpers and minimal duplicated logic.
@@ -28,75 +30,17 @@ export class TabulatorFloatingUi {
     if (this.debug) console.log("[TabulatorFloatingUi]", ...args);
   }
 
-  private getEntityIdentifiers(row: RowComponent) {
-    const data = row.getData() as any;
-    const ids = {
-      entityId: data.EntityId ?? data.id,
-      entityGuid: data.EntityGuid ?? data.guid,
-    };
-    this.log("Row data identifiers", ids, data);
-    return ids;
-  }
-
-  // Wrappers around safeCmsRun
+  // Wrappers that pass this.log to the splitted dialog modules
   openEditRowDialog(e: Event, row: RowComponent) {
-    e.preventDefault();
-    cleanupFloatingMenus();
-    const { entityId } = this.getEntityIdentifiers(row);
-    if (!entityId) {
-      this.log("No entityId found for edit", row.getData());
-      return;
-    }
-    this.log("Opening edit dialog", entityId);
-    return safeCmsRun(row.getElement() as Element, "edit" as CommandNames, {
-      entityId,
-    });
+    return openEditRowDialog(e, row, this.log.bind(this));
   }
 
   openDeleteRowDialog(e: Event, row: RowComponent) {
-    e.preventDefault();
-    cleanupFloatingMenus();
-    const { entityId, entityGuid } = this.getEntityIdentifiers(row);
-    if (!entityId) {
-      this.log("No entityId found for delete", row.getData());
-      return;
-    }
-    this.log("Opening delete dialog", { entityId, entityGuid });
-    return safeCmsRun(row.getElement() as Element, "delete" as CommandNames, {
-      entityId,
-      entityGuid,
-    }).then((res: any) => {
-      this.log("Delete result", res);
-      try {
-        if (res) row.delete();
-      } catch (err) {
-        this.log("Error deleting row:", err);
-      }
-      return res;
-    });
+    return openDeleteRowDialog(e, row, this.log.bind(this));
   }
 
   openAddRowDialog(e: Event, table: Tabulator, tableConfigData: RadminTable) {
-    e.preventDefault();
-    cleanupFloatingMenus();
-    const params = {
-      contentType: tableConfigData.dataContentType,
-      prefill: {},
-    };
-    this.log("Opening add row dialog", params);
-    return safeCmsRun(
-      table.element as HTMLElement,
-      "new" as CommandNames,
-      params
-    ).then((res: any) => {
-      this.log("Add row result", res);
-      try {
-        table.replaceData();
-      } catch (err) {
-        this.log("Error replacing data after add:", err);
-      }
-      return res;
-    });
+    return openAddRowDialog(e, table, tableConfigData, this.log.bind(this));
   }
 
   openNewColumnDialog(
@@ -104,37 +48,11 @@ export class TabulatorFloatingUi {
     column: ColumnComponent,
     tableConfigData: RadminTable
   ) {
-    e.preventDefault();
-    const colDef = column.getDefinition() || {};
-    const params = {
-      contentType: "f58eaa8e-88c0-403a-a996-9afc01ec14be",
-      prefill: {
-        Title: colDef.title || "",
-        linkEnable: false,
-        tooltipEnabled: false,
-        ValueSelector: colDef.title || "",
-      },
-      fields: "ColumnConfigs",
-      parent: tableConfigData.guid,
-    };
-    this.log("Opening new column dialog", params);
-    return safeCmsRun(
-      column.getElement() as Element,
-      "new" as CommandNames,
-      params
-    ).catch((err: string) => {
-      this.log("Error creating new column config:", err);
-      throw err;
-    });
+    return openNewColumnDialog(e, column, tableConfigData, this.log.bind(this));
   }
 
   openEditColumnDialog(e: Event, column: ColumnComponent, entityId: number) {
-    e.preventDefault();
-    cleanupFloatingMenus();
-    this.log("Opening edit column dialog", { entityId });
-    return safeCmsRun(column.getElement() as Element, "edit" as CommandNames, {
-      entityId,
-    });
+    return openEditColumnDialog(e, column, entityId, this.log.bind(this));
   }
 
   public showAddButton(table: Tabulator, tableConfigData: RadminTable) {
@@ -314,7 +232,6 @@ export class TabulatorFloatingUi {
     tableConfigData: RadminTable
   ) {
     event.preventDefault();
-    cleanupFloatingMenus();
     this.log("Creating floating column menu");
 
     const colEl = column.getElement();
