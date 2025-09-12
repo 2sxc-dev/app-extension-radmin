@@ -1,4 +1,4 @@
-@inherits Custom.Hybrid.RazorTyped
+@inherits AppCode.Razor.AppRazor
 @using AppCode
 @using AppCode.System.Radmin
 @using AppCode.System.Radmin.Data
@@ -6,6 +6,8 @@
 @* Show Switcher to toggle table configuration mode - to admins only, and not for demo since that shouldn't be modified *@
 
 @{
+  var res = App.Resources;
+
   var item = MyModel.Get<RadminTable>("item");
   if (!MyUser.IsSiteAdmin || item.IsDemoItem)
     return;
@@ -25,5 +27,7 @@
     onchange="location.href='@onChangeLink'"
     @(viewConfigMode ? "checked" : "")
   >
-  <label class="form-check-label" for="flexSwitchCheckDefault">View Config Mode</label>
+  <label class="form-check-label" for="flexSwitchCheckDefault">
+    @res.VieConfigModeLabel
+  </label>
 </div>

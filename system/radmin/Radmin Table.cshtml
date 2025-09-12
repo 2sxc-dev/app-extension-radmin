@@ -9,15 +9,15 @@
   var itemViewId = MyPage.Parameters.String(SxcTablesConstants.UrlParamViewId, fallback: null);
 
   var item = string.IsNullOrEmpty(itemViewId) || !Guid.TryParse(itemViewId, out var parsedGuid)
-  ? As<RadminTable>(MyItem)
-  : App.Data.GetOne<RadminTable>(parsedGuid);
+    ? As<RadminTable>(MyItem)
+    : App.Data.GetOne<RadminTable>(parsedGuid);
 
   var appUrl = App.Folder.Url;
 
   // Allow for path-to-customizers to be injected by a caller
   var useCustomizer = MyModel.Bool("useCustomizer", fallback: true);
   var pathToCustomizers = MyModel.String("pathToCustomizers", required: false)
-  ?? "/dist/customizers.js";
+    ?? "/dist/customizers.js";
   if (pathToCustomizers.StartsWith("/dist"))
     pathToCustomizers = appUrl + pathToCustomizers;
 }

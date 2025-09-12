@@ -10,7 +10,7 @@ import { JsonSchema } from "../models/json-schema-model";
 import { TabulatorSort } from "../models/tabulator-config-models";
 
 export class ColumnSortParser {
-  debug = true;
+  debug = false;
 
   private log(...args: any[]) {
     if (this.debug) console.log("[ColumnSortParser]", ...args);
