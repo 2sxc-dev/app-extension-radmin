@@ -1,22 +1,14 @@
+/**
+ * Parses a CSV-style sort string (e.g. "Subject:desc,SubSubject:desc")
+ * into Tabulator-compatible sort entries: { column: string, dir: "asc"|"desc" }[]
+ *
+ * Matching against configured column.field, column.title and schema property keys/titles
+ * is done case-insensitively and with whitespace-normalization where appropriate.
+ */
+import { ColumnDef } from "../models/column-def-model";
 import { JsonSchema } from "../models/json-schema-model";
 import { TabulatorSort } from "../models/tabulator-config-models";
 
-type ColumnDef = { field?: string; title?: string };
-
-/**
- * Parse a CSV-style column sort string into TabulatorSort[].
- *
- * Accepted inputs:
- *  - Title
- *  - Title:desc
- *  - "Full Name:desc"
- *  - 'Address:asc'
- *  - Title,Age
- *
- * This implementation replaces the regex-based tokenization with a small
- * deterministic CSV tokenizer that correctly handles quoted tokens and commas
- * inside quotes. It also normalizes and resolves tokens the same way as before.
- */
 export class ColumnSortParser {
   debug = true;
 
@@ -29,59 +21,55 @@ export class ColumnSortParser {
     columns?: ColumnDef[],
     schema?: JsonSchema
   ): TabulatorSort[] {
-    if (!sortString) {
-      this.log("parse called with empty sortString");
-      return [];
-    }
+    if (!sortString) return [];
 
-    this.log("parse called with sortString:", sortString);
+    // strip outer quotes if the entire string is quoted (handles the case you hit)
+    let input = sortString.trim();
+    if (
+      (input.startsWith('"') && input.endsWith('"')) ||
+      (input.startsWith("'") && input.endsWith("'"))
+    ) {
+      input = input.slice(1, -1).trim();
+      this.log("[ColumnSortParser] stripped outer quotes from input:", input);
+    } else {
+      this.log("[ColumnSortParser] parse called with:", input);
+    }
 
     const normalize = (s = "") => s.replace(/^["']|["']$/g, "").trim();
 
-    // Robust CSV tokenization that respects single/double quotes
-    const tokenize = (input: string): string[] => {
-      const tokens: string[] = [];
-      let buf = "";
-      let inQuote = false;
-      let quoteChar = "";
-      for (let i = 0; i < input.length; i++) {
-        const ch = input[i];
-        if (!inQuote && (ch === '"' || ch === "'")) {
-          inQuote = true;
-          quoteChar = ch;
-          buf += ch;
-          continue;
-        }
-        if (inQuote) {
-          buf += ch;
-          if (ch === quoteChar) {
-            // check for escaped quote ("" or '') - simple handling: if next char is same quote, treat as escaped and include it
-            if (input[i + 1] === quoteChar) {
-              // include and skip next
-              buf += input[i + 1];
-              i++;
-              continue;
-            }
-            inQuote = false;
-            quoteChar = "";
-          }
-          continue;
-        }
-        if (!inQuote && ch === ",") {
-          const t = buf.trim();
-          if (t) tokens.push(t);
-          buf = "";
-          continue;
-        }
-        buf += ch;
-      }
-      const last = buf.trim();
-      if (last) tokens.push(last);
-      return tokens;
-    };
+    // Tokenize CSV while respecting quoted tokens
+    let tokens =
+      input
+        .match(/(?:[^,"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g)
+        ?.map((t) => t.trim())
+        .filter(Boolean) || [];
 
-    const tokens = tokenize(sortString);
-    this.log("tokenize -> tokens:", tokens);
+    this.log("[ColumnSortParser] initial tokens:", tokens);
+
+    // If input used only colons (e.g. "A:desc:B:asc") without commas, split into pairs
+    if (tokens.length === 1 && tokens[0].includes(":")) {
+      const parts = tokens[0]
+        .split(":")
+        .map((p) => p.trim())
+        .filter(Boolean);
+      // if there are at least 2 parts and an even number (name,dir pairs), rebuild tokens
+      if (parts.length >= 2 && parts.length % 2 === 0) {
+        const rebuilt: string[] = [];
+        for (let i = 0; i < parts.length; i += 2) {
+          rebuilt.push(`${parts[i]}:${parts[i + 1]}`);
+        }
+        tokens = rebuilt;
+        this.log(
+          "[ColumnSortParser] rebuilt tokens from colon-only input:",
+          tokens
+        );
+      } else {
+        this.log(
+          "[ColumnSortParser] colon-only token present but parts are not even - parts:",
+          parts
+        );
+      }
+    }
 
     // Build lookup maps to make resolveToField fast and concise
     const colFieldByLower = new Map<string, string>();
@@ -100,12 +88,11 @@ export class ColumnSortParser {
       }
     });
 
-    this.log(
-      "column maps sizes",
-      { colFieldByLower: colFieldByLower.size },
-      { colTitleByLower: colTitleByLower.size },
-      { colTitleByNormalized: colTitleByNormalized.size }
-    );
+    this.log("[ColumnSortParser] column lookup sizes:", {
+      fields: colFieldByLower.size,
+      titles: colTitleByLower.size,
+      titlesNormalized: colTitleByNormalized.size,
+    });
 
     const schemaProps = schema?.properties || {};
     const schemaKeys = Object.keys(schemaProps);
@@ -122,72 +109,69 @@ export class ColumnSortParser {
       }
     });
 
-    this.log(
-      "schema maps sizes",
-      { schemaKeyByLower: schemaKeyByLower.size },
-      { schemaTitleByLower: schemaTitleByLower.size },
-      { schemaTitleByNormalized: schemaTitleByNormalized.size }
-    );
+    this.log("[ColumnSortParser] schema lookup sizes:", {
+      keys: schemaKeyByLower.size,
+      titles: schemaTitleByLower.size,
+      titlesNormalized: schemaTitleByNormalized.size,
+    });
 
     const resolveToField = (rawName: string): string => {
       const cleaned = normalize(rawName);
       const lower = cleaned.toLowerCase();
       const normalized = lower.replace(/\s+/g, "");
 
-      this.log("resolveToField called for:", {
-        rawName,
-        cleaned,
-        lower,
-        normalized,
-      });
-
       // configured column.field (case-insensitive)
-      if (colFieldByLower.has(lower)) {
-        const v = colFieldByLower.get(lower)!;
-        this.log("Resolved by column.field ->", v);
-        return v;
+      const byField = colFieldByLower.get(lower);
+      if (byField) {
+        this.log(
+          `[ColumnSortParser] resolved "${rawName}" => column.field (by field):`,
+          byField
+        );
+        return byField;
       }
 
       // configured column.title (case-insensitive)
-      if (colTitleByLower.has(lower)) {
-        const v = colTitleByLower.get(lower)!;
-        this.log("Resolved by column.title (lower) ->", v);
-        return v;
-      }
-      if (colTitleByNormalized.has(normalized)) {
-        const v = colTitleByNormalized.get(normalized)!;
-        this.log("Resolved by column.title (normalized) ->", v);
-        return v;
+      const byTitle =
+        colTitleByLower.get(lower) ?? colTitleByNormalized.get(normalized);
+      if (byTitle) {
+        this.log(
+          `[ColumnSortParser] resolved "${rawName}" => column.field (by title):`,
+          byTitle
+        );
+        return byTitle;
       }
 
       // schema property key (case-insensitive)
-      if (schemaKeyByLower.has(lower)) {
-        const v = schemaKeyByLower.get(lower)!;
-        this.log("Resolved by schema key ->", v);
-        return v;
+      const bySchemaKey = schemaKeyByLower.get(lower);
+      if (bySchemaKey) {
+        this.log(
+          `[ColumnSortParser] resolved "${rawName}" => schema key:`,
+          bySchemaKey
+        );
+        return bySchemaKey;
       }
 
       // schema property title (case-insensitive / normalized)
-      if (schemaTitleByLower.has(lower)) {
-        const v = schemaTitleByLower.get(lower)!;
-        this.log("Resolved by schema title (lower) ->", v);
-        return v;
-      }
-      if (schemaTitleByNormalized.has(normalized)) {
-        const v = schemaTitleByNormalized.get(normalized)!;
-        this.log("Resolved by schema title (normalized) ->", v);
-        return v;
+      const bySchemaTitle =
+        schemaTitleByLower.get(lower) ??
+        schemaTitleByNormalized.get(normalized);
+      if (bySchemaTitle) {
+        this.log(
+          `[ColumnSortParser] resolved "${rawName}" => schema title:`,
+          bySchemaTitle
+        );
+        return bySchemaTitle;
       }
 
       // fallback to cleaned token (Tabulator will attempt to match)
       this.log(
-        "No resolution found, falling back to cleaned token ->",
+        `[ColumnSortParser] fallback resolution for "${rawName}" =>`,
         cleaned
       );
       return cleaned;
     };
 
-    const result: TabulatorSort[] = tokens.map((segment, index) => {
+    const result: TabulatorSort[] = tokens.map((segment) => {
       // remove surrounding quotes from the whole token before splitting
       const token = normalize(segment);
 
@@ -197,25 +181,31 @@ export class ColumnSortParser {
       const dirPart = idx === -1 ? "" : token.substring(idx + 1);
 
       const nameToken = normalize(namePart);
-      const dirToken = normalize(dirPart || "asc").toLowerCase();
-      const dir: "asc" | "desc" = dirToken === "desc" ? "desc" : "asc";
+      const dirToken = normalize(dirPart).toLowerCase();
 
-      const column = resolveToField(nameToken);
+      // Robustly accept desc / descending / d / - or anything starting with 'd'
+      const dir: "asc" | "desc" = /^(-|desc|descending|d)/.test(dirToken)
+        ? "desc"
+        : "asc";
 
-      this.log("token -> parsed", {
-        index,
-        rawSegment: segment,
+      const resolved = {
+        // use Tabulator's expected property name when passing sorts in
+        column: resolveToField(nameToken),
+        dir,
+      };
+
+      this.log("[ColumnSortParser] parsed segment:", {
+        raw: segment,
         token,
         nameToken,
         dirToken,
-        dir,
-        resolvedColumn: column,
+        resolved,
       });
 
-      return { column, dir } as TabulatorSort;
+      return resolved;
     });
 
-    this.log("Final parsed sort array:", result);
+    this.log("[ColumnSortParser] final parsed sorters:", result);
     return result;
   }
 }

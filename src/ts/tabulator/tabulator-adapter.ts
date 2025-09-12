@@ -10,6 +10,7 @@ import {
   ColumnComponent,
   RowComponent,
   SortModule,
+  Sorter,
 } from "tabulator-tables";
 import { DateTime } from "luxon";
 import { TabulatorConfig } from "../models/tabulator-config-models";
@@ -121,6 +122,36 @@ export class TabulatorAdapter {
 
       const table = new Tabulator(`#${tableName}`, tabulatorOptions);
       this.log("Tabulator instance created", table);
+
+      // Apply initialSort after data has loaded (avoid calling setSort too early).
+      try {
+        // accept either shape so we are resilient: { field, dir } or { column, dir }
+        const initialSortRaw = (tabulatorOptions as any).initialSort as
+          | Array<{ field?: string; column?: string; dir: "asc" | "desc" }>
+          | undefined;
+
+        if (initialSortRaw && initialSortRaw.length) {
+          // normalize into Tabulator Sorter[] (must include 'column')
+          const initialSort = initialSortRaw.map((s) => ({
+            column: s.column ?? s.field ?? "",
+            dir: s.dir,
+          })) as Sorter[];
+
+          this.log("initialSort provided (for Tabulator)", initialSort);
+
+          // apply only after dataLoaded to avoid early pipelines errors
+          table.on("dataLoaded", () => {
+            this.log("dataLoaded event — applying initialSort", initialSort);
+            try {
+              table.setSort(initialSort);
+            } catch (err) {
+              this.log("setSort on dataLoaded failed:", err);
+            }
+          });
+        }
+      } catch (err) {
+        this.log("error scheduling initialSort application:", err);
+      }
 
       if (filterName && tableConfigData.searchEnabled) {
         this.log("setting up filter input", filterName);

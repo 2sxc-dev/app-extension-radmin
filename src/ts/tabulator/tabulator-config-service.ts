@@ -28,6 +28,14 @@ export class TabulatorConfigService {
       schema
     );
 
+    // Tabulator treats the last entry in the initialSort array as the highest-priority
+    // sort. The user expects left→right priority, so reverse here to present Tabulator
+    // with the order it will apply (last = primary).
+    const initialSortForTabulator =
+      parsedInitialSort.length > 0
+        ? [...parsedInitialSort].reverse()
+        : undefined;
+
     return {
       layout: "fitDataFill",
       columns,
@@ -38,7 +46,7 @@ export class TabulatorConfigService {
       id: data.id,
       columnConfigs: data.columnConfigs,
       searchEnabled: data.searchEnabled,
-      initialSort: parsedInitialSort.length ? parsedInitialSort : undefined,
+      initialSort: initialSortForTabulator,
       columnsAutoShowRemaining: data.columnsAutoShowRemaining,
       pagination: data.pagingMode === "true",
       paginationSize: data.pagingSize ?? 10,

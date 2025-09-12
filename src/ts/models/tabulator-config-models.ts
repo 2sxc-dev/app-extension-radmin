@@ -1,8 +1,9 @@
 import { CellComponent } from "tabulator-tables";
 import { RadminTable } from "./radmin-table-model";
 
-/** Tabulator Sort entry */
+/** Minimal Sort entry shape used when configuring Tabulator programmatically */
 export interface TabulatorSort {
+  // Tabulator expects the property named 'column' when *passing* an array to initialSort/setSort
   column: string;
   dir: "asc" | "desc";
 }
@@ -41,9 +42,6 @@ export interface TabulatorColumnConfig {
   width?: number | "automatic";
   formatter?: string | ((cell: CellComponent) => string);
   formatterParams?: object;
-
-  // Added optional sorter property so columns can specify custom sorters
-  // Tabulator supports either a string (named sorter) or a function
   sorter?:
     | string
     | ((
