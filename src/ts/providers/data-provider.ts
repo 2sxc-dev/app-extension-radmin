@@ -12,7 +12,7 @@ export class DataProvider {
     this.headers = headers;
     this.dataContentType = dataContentType;
   }
-  
+
   /**
    * Get the API URL
    */
@@ -44,7 +44,7 @@ export class DataProvider {
   /**
    * Process raw data without fetching it - can be used by ajaxResponse
    */
- processData(data: any): any {
+  processData(data: any): any {
     // For arrays (normal content-type data), normalize keys to lowerCamelCase
     if (Array.isArray(data)) {
       return data.map((row: any) => {
