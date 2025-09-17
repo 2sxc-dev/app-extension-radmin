@@ -3,7 +3,7 @@ using System.Linq;
 using ToSic.Eav.Data;
 using System.Web;
 
-namespace AppCode.System.Radmin.Api
+namespace AppCode.Extensions.Radmin.Api
 {
   public class RadminSchemaHelper
   {

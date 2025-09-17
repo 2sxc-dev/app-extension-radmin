@@ -1,26 +1,19 @@
 // DO NOT MODIFY THIS FILE - IT IS AUTO-GENERATED
 // All the classes are partial, so you can extend them in a separate file.
 
-// Generator:   RazorViewsGenerator
+// Generator:   WebApiGenerator
 // App/Edition: Extension Radmin/
 // User:        2sic Web-Developer
 
 using AppCode.Data;
 using ToSic.Sxc.Apps;
 
-namespace AppCode.Razor
+namespace AppCode.Api
 {
   /// <summary>
-  /// Base Class for Razor Views which have a typed App but don't use the Model or use the typed MyModel.
+  /// Base Class for Services which have a typed App.
   /// </summary>
-  public abstract partial class AppRazor: AppRazor<object>
-  {
-  }
-
-  /// <summary>
-  /// Base Class for Razor Views which have a typed App and a typed Model
-  /// </summary>
-  public abstract partial class AppRazor<TModel>: Custom.Hybrid.RazorTyped<TModel>
+  public abstract partial class ControllerBase: Custom.Hybrid.ApiTyped
   {
 
     /// <summary>

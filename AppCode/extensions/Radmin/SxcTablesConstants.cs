@@ -1,4 +1,4 @@
-namespace AppCode.System.Radmin
+namespace AppCode.Extensions.Radmin
 {
   public class SxcTablesConstants
   {

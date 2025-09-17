@@ -1,10 +1,10 @@
 using System;
 using System.Web.Http;
-using AppCode.System.Radmin.Data;
+using AppCode.Extensions.Radmin.Data;
 using DotNetNuke.Security;
 using DotNetNuke.Web.Api;
 
-namespace AppCode.System.Radmin.Api
+namespace AppCode.Extensions.Radmin.Api
 {
   // Requires edit rights to access - edit on the admin-pages
   [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.Edit)]

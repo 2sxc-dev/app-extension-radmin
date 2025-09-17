@@ -1,7 +1,7 @@
 @inherits Custom.Hybrid.RazorTyped
 @using AppCode
-@using AppCode.System.Radmin
-@using AppCode.System.Radmin.Data
+@using AppCode.Extensions.Radmin
+@using AppCode.Extensions.Radmin.Data
 
 @{
   Kit.Page.Activate("2sxc.JsCore");
@@ -46,8 +46,8 @@
 
 @if (useCustomizer)
 { <script src="@pathToCustomizers" @Kit.Page.AssetAttributes(position: "bottom")></script> }
-<script src="@appUrl/system/radmin/dist/tables.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
-<link href="@appUrl/system/radmin/dist/styles.min.css" rel="stylesheet" @Kit.Page.AssetAttributes(position: "bottom") />
+<script src="@appUrl/extensions/radmin/dist/tables.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
+<link href="@appUrl/extensions/radmin/dist/styles.min.css" rel="stylesheet" @Kit.Page.AssetAttributes(position: "bottom") />
 
 @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.9\"></script>")
 @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.13\"></script>")

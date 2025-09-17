@@ -9,7 +9,7 @@ module.exports = (env = {}) => {
     tables: "./src/ts/tables.ts",
     styles: "./src/styles/styles.scss"
   };
-  const outDir = 'system/radmin/dist';
+  const outDir = 'extensions/radmin/dist';
 
   return {
     entry,
