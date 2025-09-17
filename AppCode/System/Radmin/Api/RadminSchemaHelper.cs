@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ToSic.Eav.Data;
+using System.Web;
 
 namespace AppCode.System.Radmin.Api
 {
@@ -8,26 +9,25 @@ namespace AppCode.System.Radmin.Api
   {
     public JsonSchema ConvertToJsonSchema(IContentType contentType)
     {
+      var portalCulture = HttpContext.Current.Items["PortalSettings"]
+        .GetType()
+        .GetProperty("CultureCode")
+        .GetValue(HttpContext.Current.Items["PortalSettings"], null)?
+        .ToString()
+        .ToLower();
+
       var properties = contentType.Attributes
         .Select(attribute =>
         {
-          // Use the dictionary-based helper methods for type and format
           string schemaType = GetTypeName(attribute);
           string format = GetFormatName(attribute);
+          string title = attribute.Metadata
+            .OfType("@All")
+            .FirstOrDefault()?
+            .Get<string>("Name", language: portalCulture);
 
-          var name = attribute.Name;
-          var title = attribute.Metadata.Get<string>("Name") ?? name;
-
-          // Get the main block of metadata for a field (content type is "@All")
-          var mainMetadata = attribute.Metadata.OfType("@All").FirstOrDefault();
-          if (mainMetadata != null) {
-            // get current thread culture
-            var currentCulture = global::System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-            title = mainMetadata.Get<string>("Name", languages: new string[] { currentCulture, "en-us", null }) ?? title;
-          }
-
-          // Create schema property based on determined type and format
-          return new SchemaProperty(name, title, schemaType, format);
+        // Create schema property based on determined type and format
+          return new SchemaProperty(attribute.Name, title, schemaType, format);
         })
         .ToDictionary(p => p.Title, p => p);
 
