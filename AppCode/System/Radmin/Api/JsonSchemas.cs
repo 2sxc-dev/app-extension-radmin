@@ -20,13 +20,15 @@ namespace AppCode.System.Radmin.Api
   
   public class SchemaProperty
   {
-    public SchemaProperty(string title, string type, string format = null, string description = null)
+    public SchemaProperty(string name, string title, string type, string format = null, string description = null)
     {
+      Name = name;
       Title = title;
       Type = type;
       Format = format;
       Description = description;
     }
+    public string Name { get; set; }
     public string Title { get; set; }
     public string Type { get; set; }
 

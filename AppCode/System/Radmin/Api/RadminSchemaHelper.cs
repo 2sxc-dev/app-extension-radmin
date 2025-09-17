@@ -15,8 +15,19 @@ namespace AppCode.System.Radmin.Api
           string schemaType = GetTypeName(attribute);
           string format = GetFormatName(attribute);
 
+          var name = attribute.Name;
+          var title = attribute.Metadata.Get<string>("Name") ?? name;
+
+          // Get the main block of metadata for a field (content type is "@All")
+          var mainMetadata = attribute.Metadata.OfType("@All").FirstOrDefault();
+          if (mainMetadata != null) {
+            // get current thread culture
+            var currentCulture = global::System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+            title = mainMetadata.Get<string>("Name", languages: new string[] { currentCulture, "en-us", null }) ?? title;
+          }
+
           // Create schema property based on determined type and format
-          return new SchemaProperty(attribute.Name, schemaType, format);
+          return new SchemaProperty(name, title, schemaType, format);
         })
         .ToDictionary(p => p.Title, p => p);
 
