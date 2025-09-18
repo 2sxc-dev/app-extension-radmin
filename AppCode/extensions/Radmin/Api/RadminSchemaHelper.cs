@@ -9,10 +9,11 @@ namespace AppCode.Extensions.Radmin.Api
   {
     public JsonSchema ConvertToJsonSchema(IContentType contentType)
     {
-      var portalCulture = HttpContext.Current.Items["PortalSettings"]
+      var portalSettings = HttpContext.Current.Items["PortalSettings"];
+      var portalCulture = portalSettings?
         .GetType()
         .GetProperty("CultureCode")
-        .GetValue(HttpContext.Current.Items["PortalSettings"], null)?
+        .GetValue(portalSettings, null)?
         .ToString()
         .ToLower();
 
@@ -21,10 +22,18 @@ namespace AppCode.Extensions.Radmin.Api
         {
           string schemaType = GetTypeName(attribute);
           string format = GetFormatName(attribute);
+
+          // localized title, fall back to attribute.Name when missing
           string title = attribute.Metadata
             .OfType("@All")
             .FirstOrDefault()?
-            .Get<string>("Name", language: portalCulture);
+            .Get<string>("Name", language: portalCulture) ?? attribute.Name;
+
+          // localized description (if present)
+          string description = attribute.Metadata
+            .OfType("@All")
+            .FirstOrDefault()?
+            .Get<string>("Description", language: portalCulture);
 
           // read input type - e.g. "html", "text", "textarea", "wysiwyg"
           string inputType = attribute.Metadata
@@ -32,10 +41,10 @@ namespace AppCode.Extensions.Radmin.Api
             .FirstOrDefault()?
             .Get<string>("InputType");
 
-          // Create schema property based on determined type and format
-          return new SchemaProperty(attribute.Name, title, schemaType, format, inputType);
+          // Create schema property based on determined type, format, description and inputType
+          return new SchemaProperty(attribute.Name, title, schemaType, format, description, inputType);
         })
-        .ToDictionary(p => p.Title, p => p);
+        .ToDictionary(p => p.Name, p => p);
 
       var schema = new JsonSchema
       {
