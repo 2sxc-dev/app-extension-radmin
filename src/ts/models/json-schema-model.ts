@@ -12,6 +12,7 @@ export interface SchemaProperty {
   title: string;
   type: string;
   format?: string;
+  inputType?: string;
   items?: Record<string, unknown>;
   description?: string;
 }

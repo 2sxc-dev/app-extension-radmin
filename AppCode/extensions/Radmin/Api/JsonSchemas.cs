@@ -17,16 +17,17 @@ namespace AppCode.Extensions.Radmin.Api
     public Dictionary<string, SchemaProperty> Properties { get; set; }
     public List<string> Required { get; set; }
   }
-  
+
   public class SchemaProperty
   {
-    public SchemaProperty(string name, string title, string type, string format = null, string description = null)
+    public SchemaProperty(string name, string title, string type, string format = null, string description = null, string inputType = null)
     {
       Name = name;
       Title = title;
       Type = type;
       Format = format;
       Description = description;
+      InputType = inputType;
     }
     public string Name { get; set; }
     public string Title { get; set; }
@@ -37,8 +38,11 @@ namespace AppCode.Extensions.Radmin.Api
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Dictionary<string, object> Items { get; set; }
-    
+
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string Description { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public string InputType { get; set; }
   }
 }

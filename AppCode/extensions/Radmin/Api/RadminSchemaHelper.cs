@@ -26,8 +26,14 @@ namespace AppCode.Extensions.Radmin.Api
             .FirstOrDefault()?
             .Get<string>("Name", language: portalCulture);
 
-        // Create schema property based on determined type and format
-          return new SchemaProperty(attribute.Name, title, schemaType, format);
+          // read input type - e.g. "html", "text", "textarea", "wysiwyg"
+          string inputType = attribute.Metadata
+            .OfType("@All")
+            .FirstOrDefault()?
+            .Get<string>("InputType");
+
+          // Create schema property based on determined type and format
+          return new SchemaProperty(attribute.Name, title, schemaType, format, inputType);
         })
         .ToDictionary(p => p.Title, p => p);
 
