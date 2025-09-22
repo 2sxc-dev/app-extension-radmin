@@ -18,6 +18,7 @@ namespace AppCode.Extensions.Radmin.Api
         .ToLower();
 
       var properties = contentType.Attributes
+        .OrderBy(attribute => attribute.SortOrder)
         .Select(attribute =>
         {
           string schemaType = GetTypeName(attribute);
