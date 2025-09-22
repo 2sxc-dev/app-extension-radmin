@@ -89,7 +89,7 @@ export class TabulatorAdapter {
       this.log("createTable called", { tableName, tableConfigData });
 
       const schema = await schemaProvider.getSchema(
-        tableConfigData.dataContentType || tableConfigData.dataQuery
+        tableConfigData.dataContentType
       );
       this.log("schema loaded", schema);
 
