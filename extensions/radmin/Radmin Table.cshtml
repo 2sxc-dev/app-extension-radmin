@@ -13,13 +13,7 @@
     : App.Data.GetOne<RadminTable>(parsedGuid);
 
   var appUrl = App.Folder.Url;
-
-  // Allow for path-to-customizers to be injected by a caller
-  var useCustomizer = MyModel.Bool("useCustomizer", fallback: true);
-  var pathToCustomizers = MyModel.String("pathToCustomizers", required: false)
-    ?? "/dist/customizers.js";
-  if (pathToCustomizers.StartsWith("/dist"))
-    pathToCustomizers = appUrl + pathToCustomizers;
+  var useCustomizer = true;
 }
 
 @* Show Switcher to toggle table configuration mode - to admins only, and not for demo since that shouldn't be modified *@
@@ -44,9 +38,9 @@
   canEditData = MyUser.IsContentEditor && !item.IsDemoItem,
 })
 
-@if (useCustomizer)
-{ <script src="@pathToCustomizers" @Kit.Page.AssetAttributes(position: "bottom")></script> }
 <script src="@appUrl/extensions/radmin/dist/tables.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
+@if (useCustomizer)
+{ <script src="@appUrl/extensions/radmin/dist/customizers.js" @Kit.Page.AssetAttributes(position: "bottom")></script> }
 <link href="@appUrl/extensions/radmin/dist/styles.min.css" rel="stylesheet" @Kit.Page.AssetAttributes(position: "bottom") />
 
 @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.9\"></script>")
