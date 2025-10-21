@@ -3,12 +3,13 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = (env = {}) => {
   // Log Info to Developer
-  console.log("Building Radmin Customizers JS/CSS");
+  console.log("Building Radmin Extension JS/CSS");
 
   const entry = {
-    customizers: "./src/ts/customizers.ts"
+    tables: "./src/ts/tables.ts",
+    styles: "./src/styles/styles.scss"
   };
-  const outDir = 'dist';
+  const outDir = 'extensions/radmin/dist';
 
   return {
     entry,

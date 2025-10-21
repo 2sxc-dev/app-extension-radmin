@@ -5,8 +5,10 @@ import { QueryDataProvider } from "../providers/query-data-provider";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
 import { SchemaProvider } from "../providers/schema-provider";
 import { CustomizeManager } from "../custom/customize-manager";
+import type { ITableCustomizer } from "../custom/ITableCustomizer";
 
-import { registerAll as registerBuiltInCustomizers } from "../customizers";
+// Import the customizers array (constructors or instances)
+import { customizers as builtInCustomizers } from "../../../radmin-customizers/src/ts/customizers";
 
 export class tabulatorTable {
   /**
@@ -23,12 +25,16 @@ export class tabulatorTable {
     // Get the CustomizeManager instance early
     const customizeManager = CustomizeManager.getInstance();
 
-    // Register built-in customizers with the manager.
-    // registerAll() will dedupe via the manager, and it's safe to call multiple times.
+    // Register built-in customizers (constructors or instances)
     try {
-      registerBuiltInCustomizers(customizeManager);
+      // builtInCustomizers exports constructors only, so instantiate each one
+      const instances = (builtInCustomizers ?? []).map(
+        (customizer) => new (customizer as new () => ITableCustomizer)()
+      ) as ITableCustomizer[];
+
+      if (instances.length) customizeManager.registerCustomizers(instances);
     } catch (err) {
-      console.error("Failed to register built-in customizers:", err);
+      console.error("Failed to register customizers:", err);
     }
 
     // Get sxc context
@@ -44,7 +50,8 @@ export class tabulatorTable {
     const tableConfigDataRaw = await configLoader.loadConfig(viewId);
 
     // Apply customizations to the config
-    const tableConfigData = customizeManager.customizeConfig(tableConfigDataRaw);
+    const tableConfigData =
+      customizeManager.customizeConfig(tableConfigDataRaw);
 
     // Handle link parameters
     let linkParameters: string | undefined;

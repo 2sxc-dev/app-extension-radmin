@@ -4,10 +4,10 @@
   "description": "",
   "main": "(none)",
   "scripts": {
-    "build:radmin": "webpack --config webpack-radmin.config.js",
-    "watch:radmin": "webpack --watch --config webpack-radmin.config.js",
-    "build:customizers": "webpack",
-    "watch:customizers": "webpack --watch"
+    "build:radmin": "webpack",
+    "watch:radmin": "webpack --watch",
+    "build:customizers": "webpack --config radmin-customizers/webpack.config.js",
+    "watch:customizers": "webpack --watch --config radmin-customizers/webpack.config.js"
   },
   "author": "2sic internet solutions 2025",
   "license": "ISC",
