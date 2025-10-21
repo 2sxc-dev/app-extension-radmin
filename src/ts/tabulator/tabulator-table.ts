@@ -6,6 +6,8 @@ import { TabulatorSearchFilter } from "./tabulator-search-filter";
 import { SchemaProvider } from "../providers/schema-provider";
 import { CustomizeManager } from "../custom/customize-manager";
 
+import { registerAll as registerBuiltInCustomizers } from "../customizers";
+
 export class tabulatorTable {
   /**
    * Create a Tabulator table based on configuration
@@ -18,6 +20,17 @@ export class tabulatorTable {
     canEditConfig: boolean;
     canEditData: boolean;
   }) {
+    // Get the CustomizeManager instance early
+    const customizeManager = CustomizeManager.getInstance();
+
+    // Register built-in customizers with the manager.
+    // registerAll() will dedupe via the manager, and it's safe to call multiple times.
+    try {
+      registerBuiltInCustomizers(customizeManager);
+    } catch (err) {
+      console.error("Failed to register built-in customizers:", err);
+    }
+
     // Get sxc context
     const sxc = $2sxc(data.moduleId);
 
@@ -30,12 +43,8 @@ export class tabulatorTable {
     const configLoader = new ConfigurationLoader(sxc);
     const tableConfigDataRaw = await configLoader.loadConfig(viewId);
 
-    // Get the CustomizeManager instance
-    const customizeManager = CustomizeManager.getInstance();
-
     // Apply customizations to the config
-    const tableConfigData =
-      customizeManager.customizeConfig(tableConfigDataRaw);
+    const tableConfigData = customizeManager.customizeConfig(tableConfigDataRaw);
 
     // Handle link parameters
     let linkParameters: string | undefined;
@@ -99,7 +108,7 @@ export class tabulatorTable {
       data.filterName,
       customizeManager,
       data.canEditConfig,
-      data.canEditData,
+      data.canEditData
     );
   }
 }

@@ -8,7 +8,7 @@ module.exports = (env = {}) => {
   const entry = {
     customizers: "./src/ts/customizers.ts"
   };
-  const outDir = 'extensions/radmin/dist';
+  const outDir = 'dist';
 
   return {
     entry,

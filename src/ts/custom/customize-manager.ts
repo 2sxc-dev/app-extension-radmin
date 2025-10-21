@@ -1,66 +1,55 @@
-// (replacement for your existing customize-manager.ts)
+// Manager for table customizers (no longer relies on window)
 import { Options } from "tabulator-tables";
 import { ITableCustomizer } from "./ITableCustomizer";
 import { RadminTable } from "../models/radmin-table-model";
 
-/**
- * Manager class for handling table customizers
- * Implements a cross-bundle Singleton pattern by storing the instance on window
- */
 export class CustomizeManager {
   private static instance: CustomizeManager | undefined;
   private customizers: ITableCustomizer[] = [];
   private activeCustomizers: Map<string, ITableCustomizer[]> = new Map();
+  private registeredIds: Set<string> = new Set();
   // debug id to detect duplicates
   private _instanceId: string;
 
-  // Private constructor for singleton pattern
   private constructor() {
     this._instanceId = Math.random().toString(36).slice(2, 9);
   }
 
   /**
    * Get the singleton instance of the CustomizeManager.
-   * This method checks window.__RADMIN_CUSTOMIZE_MANAGER to allow sharing the
-   * instance across separately loaded bundles.
+   * This is a plain static singleton (does not use window).
    */
   public static getInstance(): CustomizeManager {
-    const win = (typeof window !== "undefined") ? (window as any) : undefined;
-
-    // If an instance has already been stored on window by another bundle, reuse it
-    if (win && win.__RADMIN_CUSTOMIZE_MANAGER) {
-      if (!CustomizeManager.instance) {
-        CustomizeManager.instance = win.__RADMIN_CUSTOMIZE_MANAGER;
-      }
-      return CustomizeManager.instance!;
-    }
-
     if (!CustomizeManager.instance) {
       CustomizeManager.instance = new CustomizeManager();
-      if (win) {
-        win.__RADMIN_CUSTOMIZE_MANAGER = CustomizeManager.instance;
-        // also expose a helper for debugging
-        win.__RADMIN_CUSTOMIZE_MANAGER_ID = CustomizeManager.instance._instanceId;
-      }
     }
-
-    return CustomizeManager.instance;
+    return CustomizeManager.instance!;
   }
 
   /**
-   * Register a customizer with the manager
-   * @param customizer The customizer to register
+   * Register a customizer with the manager. Will dedupe by constructor name by default.
+   * If you need a different dedupe key, customizers can expose an `id` string property.
    */
-  public registerCustomizer(customizer: ITableCustomizer): void {
-    this.customizers.push(customizer);
+  public registerCustomizer(customizer: ITableCustomizer & { id?: string }): void {
+    try {
+      const id = customizer.id ?? customizer.constructor?.name ?? String(this.customizers.length);
+      if (this.registeredIds.has(id)) {
+        // already registered — ignore duplicate registrations
+        return;
+      }
+      this.registeredIds.add(id);
+      this.customizers.push(customizer);
+    } catch (err) {
+      console.error("[CustomizeManager] registerCustomizer error:", err);
+    }
   }
 
-  /**
-   * Register multiple customizers at once
-   * @param customizers Array of customizers to register
-   */
-  public registerCustomizers(customizers: ITableCustomizer[]): void {
-    customizers.forEach((customizer) => this.registerCustomizer(customizer));
+  public registerCustomizers(customizers: Array<ITableCustomizer & { id?: string }>): void {
+    customizers.forEach((c) => this.registerCustomizer(c));
+  }
+
+  public getRegisteredCustomizers(): ITableCustomizer[] {
+    return [...this.customizers];
   }
 
   /**
@@ -69,7 +58,7 @@ export class CustomizeManager {
    * @returns The modified table configuration
    */
   public customizeConfig(config: RadminTable): RadminTable {
-    // Clear active customizers for this table
+    // Clear any previously stored active list for this table
     this.activeCustomizers.delete(config.guid);
 
     let modifiedConfig = { ...config };
@@ -107,7 +96,6 @@ export class CustomizeManager {
    */
   public customizeTabulator(options: Options, configGuid: string): Options {
     const guid = String(configGuid);
-
     let modifiedOptions = { ...options };
 
     const customizersForThisTable = this.activeCustomizers.get(guid) || [];
@@ -116,6 +104,7 @@ export class CustomizeManager {
       try {
         modifiedOptions = customizer.customizeTabulator(modifiedOptions);
       } catch (err) {
+        console.error(`[CustomizeManager] Error in customizeTabulator of ${customizer.constructor?.name}:`, err);
       }
     }
 

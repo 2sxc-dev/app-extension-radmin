@@ -36,12 +36,13 @@
   viewId = item.Guid.ToString(),
   canEditConfig = MyUser.IsSiteAdmin && !item.IsDemoItem,
   canEditData = MyUser.IsContentEditor && !item.IsDemoItem,
+  @* customizers = ... *@
 })
 
 <script src="@appUrl/extensions/radmin/dist/tables.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
-@if (useCustomizer)
-{ <script src="@appUrl/extensions/radmin/dist/customizers.js" @Kit.Page.AssetAttributes(position: "bottom")></script> }
 <link href="@appUrl/extensions/radmin/dist/styles.min.css" rel="stylesheet" @Kit.Page.AssetAttributes(position: "bottom") />
+@if (useCustomizer)
+{ <script src="@appUrl/dist/customizers.js" @Kit.Page.AssetAttributes(position: "bottom")></script> }
 
 @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.9\"></script>")
 @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.13\"></script>")
