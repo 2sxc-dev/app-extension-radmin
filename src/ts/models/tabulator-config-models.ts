@@ -1,5 +1,5 @@
 import { CellComponent } from "tabulator-tables";
-import { RadminTable } from "./radmin-table-model";
+import { RadminTableConfig } from "../configs/radmin-table-config";
 
 /** Minimal Sort entry shape used when configuring Tabulator programmatically */
 export interface TabulatorSort {
@@ -11,7 +11,7 @@ export interface TabulatorSort {
 /** Tabulator Config
  * This is the format expected by the Tabulator library.
  */
-export interface TabulatorConfig extends RadminTable {
+export interface TabulatorConfig extends RadminTableConfig {
   layout:
     | "fitDataStretch"
     | "fitData"

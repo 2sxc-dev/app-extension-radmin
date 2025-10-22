@@ -3,7 +3,7 @@ import type {
   RowComponent,
   Tabulator,
 } from "tabulator-tables";
-import { RadminTable } from "../../models/radmin-table-model";
+import { RadminTableConfig } from "../../configs/radmin-table-config";
 import { openAddRowDialog } from "./dialogs/add-row-dialog";
 import { openDeleteRowDialog } from "./dialogs/delete-row-dialog";
 import { openEditColumnDialog } from "./dialogs/edit-column-dialog";
@@ -39,14 +39,14 @@ export class TabulatorFloatingUi {
     return openDeleteRowDialog(e, row, this.log.bind(this));
   }
 
-  openAddRowDialog(e: Event, table: Tabulator, tableConfigData: RadminTable) {
+  openAddRowDialog(e: Event, table: Tabulator, tableConfigData: RadminTableConfig) {
     return openAddRowDialog(e, table, tableConfigData, this.log.bind(this));
   }
 
   openNewColumnDialog(
     e: Event,
     column: ColumnComponent,
-    tableConfigData: RadminTable
+    tableConfigData: RadminTableConfig
   ) {
     return openNewColumnDialog(e, column, tableConfigData, this.log.bind(this));
   }
@@ -55,7 +55,7 @@ export class TabulatorFloatingUi {
     return openEditColumnDialog(e, column, entityId, this.log.bind(this));
   }
 
-  public showAddButton(table: Tabulator, tableConfigData: RadminTable) {
+  public showAddButton(table: Tabulator, tableConfigData: RadminTableConfig) {
     this.log("Adding floating add button to table");
     const tableElement = table.element as HTMLElement;
     // remove existing
@@ -229,7 +229,7 @@ export class TabulatorFloatingUi {
   public showFloatingColumnMenu(
     column: ColumnComponent,
     event: Event,
-    tableConfigData: RadminTable
+    tableConfigData: RadminTableConfig
   ) {
     event.preventDefault();
     this.log("Creating floating column menu");

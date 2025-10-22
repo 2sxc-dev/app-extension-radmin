@@ -1,6 +1,6 @@
 import { CommandNames } from "@2sic.com/2sxc-typings";
 import type { Tabulator } from "tabulator-tables";
-import { RadminTable } from "../../../models/radmin-table-model";
+import { RadminTableConfig } from "../../../configs/radmin-table-config";
 import { cleanupFloatingMenus } from "../utils/floating-menu";
 import { safeCmsRun } from "../utils/safe-cms-run";
 
@@ -11,7 +11,7 @@ import { safeCmsRun } from "../utils/safe-cms-run";
 export function openAddRowDialog(
   e: Event,
   table: Tabulator,
-  tableConfigData: RadminTable,
+  tableConfigData: RadminTableConfig,
   logger?: (...args: any[]) => void
 ) {
   e.preventDefault();

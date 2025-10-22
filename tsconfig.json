@@ -18,7 +18,7 @@
   },
   "include": [
     "src/ts/**/*",
-    "src/custom/**/*",
+    "src/customizers/**/*",
     "src/styles/**/*"
   ],
   "exclude": [

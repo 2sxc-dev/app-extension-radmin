@@ -1,9 +1,9 @@
-import { RadminColumn } from "./radmin-column-model";
+import { RadminColumnConfig } from "./radmin-column-config";
 
 /** Table Config
  * This is the format provided by the 2sxc backend.
  */
-export interface RadminTable {
+export interface RadminTableConfig {
   title: string;
   viewId: number;
   id: number;
@@ -16,7 +16,7 @@ export interface RadminTable {
   searchEnabled?: boolean;
   sortOrderReverse?: boolean;
   columnSort?: string;
-  columnConfigs: RadminColumn[];
+  columnConfigs: RadminColumnConfig[];
   pagingMode?: string;
   pagingSize?: number;
   guid: string;

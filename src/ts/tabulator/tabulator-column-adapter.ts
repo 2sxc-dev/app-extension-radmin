@@ -1,6 +1,6 @@
 import { TabulatorColumnConfig } from "../models/tabulator-config-models";
 import { formatConfigs } from "./tabulator-column-formats";
-import { RadminColumn } from "../models/radmin-column-model";
+import { RadminColumnConfig } from "../configs/radmin-column-config";
 import { CellComponent } from "tabulator-tables";
 import { JsonSchema, SchemaProperty } from "../models/json-schema-model";
 import { GroupPropertyIdentifier } from "../helpers/group-property-identifier";
@@ -14,7 +14,7 @@ export class TabulatorColumnAdapter {
   }
 
   convert(
-    columnConfig: RadminColumn[],
+    columnConfig: RadminColumnConfig[],
     columnsAutoShowRemaining: boolean,
     schema: JsonSchema
   ): TabulatorColumnConfig[] {

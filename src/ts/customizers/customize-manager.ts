@@ -1,11 +1,11 @@
 import { Options } from "tabulator-tables";
-import { ITableCustomizer } from "./ITableCustomizer";
-import { RadminTable } from "../models/radmin-table-model";
+import { TableCustomizer } from "./table-customizer";
+import { RadminTableConfig } from "../configs/radmin-table-config";
 
 export class CustomizeManager {
   private static instance: CustomizeManager | undefined;
-  private customizers: ITableCustomizer[] = [];
-  private activeCustomizers: Map<string, ITableCustomizer[]> = new Map();
+  private customizers: TableCustomizer[] = [];
+  private activeCustomizers: Map<string, TableCustomizer[]> = new Map();
   private registeredIds: Set<string> = new Set();
   // debug id to detect duplicates
   private _instanceId: string;
@@ -39,7 +39,7 @@ export class CustomizeManager {
    * Register a customizer with the manager. Will dedupe by constructor name by default.
    * If you need a different dedupe key, customizers can expose an `id` string property.
    */
-  public registerCustomizer(customizer: ITableCustomizer & { id?: string }): void {
+  public registerCustomizer(customizer: TableCustomizer & { id?: string }): void {
     try {
       const id = customizer.id ?? customizer.constructor?.name ?? String(this.customizers.length);
       this.log(`Attempting to register customizer with ID: ${id}`);
@@ -60,12 +60,12 @@ export class CustomizeManager {
     }
   }
 
-  public registerCustomizers(customizers: Array<ITableCustomizer & { id?: string }>): void {
+  public registerCustomizers(customizers: Array<TableCustomizer & { id?: string }>): void {
     this.log(`Registering ${customizers.length} customizers`);
     customizers.forEach((c) => this.registerCustomizer(c));
   }
 
-  public getRegisteredCustomizers(): ITableCustomizer[] {
+  public getRegisteredCustomizers(): TableCustomizer[] {
     this.log(`Getting all registered customizers: ${this.customizers.length} total`);
     return [...this.customizers];
   }
@@ -75,7 +75,7 @@ export class CustomizeManager {
    * @param config The original table configuration
    * @returns The modified table configuration
    */
-  public customizeConfig(config: RadminTable): RadminTable {
+  public customizeConfig(config: RadminTableConfig): RadminTableConfig {
     this.log(`Customizing config for table: ${config.title} (GUID: ${config.guid})`);
     
     // Clear any previously stored active list for this table
@@ -85,7 +85,7 @@ export class CustomizeManager {
     }
 
     let modifiedConfig = { ...config };
-    const activeCustomizersForThisTable: ITableCustomizer[] = [];
+    const activeCustomizersForThisTable: TableCustomizer[] = [];
 
     this.log(`Checking ${this.customizers.length} registered customizers for applicability`);
     

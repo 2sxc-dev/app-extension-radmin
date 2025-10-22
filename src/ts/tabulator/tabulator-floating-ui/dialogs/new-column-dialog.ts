@@ -1,7 +1,7 @@
 import { CommandNames } from "@2sic.com/2sxc-typings";
 import type { ColumnComponent } from "tabulator-tables";
 import { safeCmsRun } from "../utils/safe-cms-run";
-import { RadminTable } from "../../../models/radmin-table-model";
+import { RadminTableConfig } from "../../../configs/radmin-table-config";
 /**
  * Open the "new column config" dialog prefilled based on column definition.
  * logger is optional and used for debug messages (signature: (...args)=>void).
@@ -9,7 +9,7 @@ import { RadminTable } from "../../../models/radmin-table-model";
 export function openNewColumnDialog(
   e: Event,
   column: ColumnComponent,
-  tableConfigData: RadminTable,
+  tableConfigData: RadminTableConfig,
   logger?: (...args: any[]) => void
 ) {
   e.preventDefault();

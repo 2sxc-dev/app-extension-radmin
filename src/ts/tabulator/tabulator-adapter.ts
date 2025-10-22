@@ -16,12 +16,12 @@ import { DateTime } from "luxon";
 import { TabulatorConfig } from "../models/tabulator-config-models";
 import { TabulatorConfigService } from "./tabulator-config-service";
 import { DataProvider } from "../providers/data-provider";
-import { RadminTable } from "../models/radmin-table-model";
+import { RadminTableConfig } from "../configs/radmin-table-config";
 import { TabulatorFloatingUi } from "./tabulator-floating-ui/tabulator-floating-ui";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
 import { JsonSchema } from "../models/json-schema-model";
 import { SchemaProvider } from "../providers/schema-provider";
-import { CustomizeManager } from "../custom/customize-manager";
+import { CustomizeManager } from "../customizers/customize-manager";
 import { SetupObjectSorter } from "../helpers/setup-object-sorter";
 
 // Register required modules for Tabulator
@@ -51,7 +51,7 @@ export class TabulatorAdapter {
   }
 
   private async createTabulatorConfig(
-    tableConfigData: RadminTable,
+    tableConfigData: RadminTableConfig,
     schema: JsonSchema
   ): Promise<TabulatorConfig> {
     return this.configService.createTabulatorConfig(tableConfigData, schema);
@@ -77,7 +77,7 @@ export class TabulatorAdapter {
 
   async createTable(
     tableName: string,
-    tableConfigData: RadminTable,
+    tableConfigData: RadminTableConfig,
     dataProvider: DataProvider,
     schemaProvider: SchemaProvider,
     filterName: string | undefined,
@@ -189,7 +189,7 @@ export class TabulatorAdapter {
     return qp === "true" || url.includes("viewconfigmode/true");
   }
 
-  private setupViewConfigMode(table: Tabulator, tableConfigData: RadminTable) {
+  private setupViewConfigMode(table: Tabulator, tableConfigData: RadminTableConfig) {
     this.log("setupViewConfigMode called");
     table.on("dataLoaded", () => {
       this.log("dataLoaded → attaching headerMouseEnter");
@@ -232,7 +232,7 @@ export class TabulatorAdapter {
     });
   }
 
-  private setupRowAddMode(table: Tabulator, tableConfigData: RadminTable) {
+  private setupRowAddMode(table: Tabulator, tableConfigData: RadminTableConfig) {
     this.log("setupRowAddMode called");
     table.on("dataLoaded", () => {
       this.log("dataLoaded → showing add button");

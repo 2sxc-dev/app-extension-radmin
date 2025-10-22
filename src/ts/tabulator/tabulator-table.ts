@@ -4,8 +4,7 @@ import { DataProvider } from "../providers/data-provider";
 import { QueryDataProvider } from "../providers/query-data-provider";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
 import { SchemaProvider } from "../providers/schema-provider";
-import { CustomizeManager } from "../custom/customize-manager";
-import type { ITableCustomizer } from "../custom/ITableCustomizer";
+import { CustomizeManager } from "../customizers/customize-manager";
 
 export class TabulatorTable {
   debug = false;

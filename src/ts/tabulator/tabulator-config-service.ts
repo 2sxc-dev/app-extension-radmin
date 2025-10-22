@@ -1,16 +1,16 @@
-import { RadminTable } from "../models/radmin-table-model";
+import { RadminTableConfig } from "../configs/radmin-table-config";
 import { JsonSchema } from "../models/json-schema-model";
 import { TabulatorColumnAdapter } from "./tabulator-column-adapter";
 import { TabulatorConfig } from "../models/tabulator-config-models";
 import { ColumnSortParser } from "../helpers/column-sort-parser";
 
 /**
- * Service for creating a Tabulator configuration from RadminTable.
+ * Service for creating a Tabulator configuration from RadminTableConfig.
  * Is used to convert the configuration from 2sxc into a format that Tabulator can understand.
  */
 export class TabulatorConfigService {
   createTabulatorConfig(
-    data: RadminTable,
+    data: RadminTableConfig,
     schema: JsonSchema
   ): TabulatorConfig {
     const columnAdapter = new TabulatorColumnAdapter();
