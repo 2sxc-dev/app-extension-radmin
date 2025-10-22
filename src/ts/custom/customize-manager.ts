@@ -1,4 +1,3 @@
-// Manager for table customizers (no longer relies on window)
 import { Options } from "tabulator-tables";
 import { ITableCustomizer } from "./ITableCustomizer";
 import { RadminTable } from "../models/radmin-table-model";
@@ -11,8 +10,18 @@ export class CustomizeManager {
   // debug id to detect duplicates
   private _instanceId: string;
 
+  debug = false;
+
+  /**
+   * Helper method for logging when debug is enabled
+   */
+  private log(...args: any[]) {
+    if (this.debug) console.log("[CustomizeManager]", ...args);
+  }
+
   private constructor() {
     this._instanceId = Math.random().toString(36).slice(2, 9);
+    this.log(`CustomizeManager initialized with instance ID: ${this._instanceId}`);
   }
 
   /**
@@ -33,22 +42,31 @@ export class CustomizeManager {
   public registerCustomizer(customizer: ITableCustomizer & { id?: string }): void {
     try {
       const id = customizer.id ?? customizer.constructor?.name ?? String(this.customizers.length);
+      this.log(`Attempting to register customizer with ID: ${id}`);
+      
       if (this.registeredIds.has(id)) {
         // already registered — ignore duplicate registrations
+        this.log(`Customizer with ID ${id} already registered - ignoring duplicate`);
         return;
       }
+      
       this.registeredIds.add(id);
       this.customizers.push(customizer);
+      this.log(`Successfully registered customizer: ${id}`);
+      this.log(`Total registered customizers: ${this.customizers.length}`);
     } catch (err) {
+      this.log(`Error registering customizer:`, err);
       console.error("[CustomizeManager] registerCustomizer error:", err);
     }
   }
 
   public registerCustomizers(customizers: Array<ITableCustomizer & { id?: string }>): void {
+    this.log(`Registering ${customizers.length} customizers`);
     customizers.forEach((c) => this.registerCustomizer(c));
   }
 
   public getRegisteredCustomizers(): ITableCustomizer[] {
+    this.log(`Getting all registered customizers: ${this.customizers.length} total`);
     return [...this.customizers];
   }
 
@@ -58,31 +76,55 @@ export class CustomizeManager {
    * @returns The modified table configuration
    */
   public customizeConfig(config: RadminTable): RadminTable {
+    this.log(`Customizing config for table: ${config.title} (GUID: ${config.guid})`);
+    
     // Clear any previously stored active list for this table
-    this.activeCustomizers.delete(config.guid);
+    if (this.activeCustomizers.has(config.guid)) {
+      this.log(`Clearing previous active customizers for ${config.guid}`);
+      this.activeCustomizers.delete(config.guid);
+    }
 
     let modifiedConfig = { ...config };
     const activeCustomizersForThisTable: ITableCustomizer[] = [];
 
+    this.log(`Checking ${this.customizers.length} registered customizers for applicability`);
+    
     for (const customizer of this.customizers) {
+      const customizerName = customizer.constructor?.name || 'Unknown';
       let shouldApply = false;
+      
       try {
         shouldApply = customizer.shouldApply(config);
+        this.log(`Customizer ${customizerName} shouldApply: ${shouldApply}`);
       } catch (err) {
-        console.error(`[CustomizeManager] Error in shouldApply of ${customizer.constructor?.name}:`, err);
+        this.log(`Error in shouldApply of ${customizerName}:`, err);
+        console.error(`[CustomizeManager] Error in shouldApply of ${customizerName}:`, err);
       }
+      
       if (shouldApply) {
+        this.log(`Adding ${customizerName} to active customizers for this table`);
         activeCustomizersForThisTable.push(customizer);
+        
         try {
+          this.log(`Applying ${customizerName} to config`);
+          const configBefore = JSON.stringify(modifiedConfig);
           modifiedConfig = customizer.customizeConfig(modifiedConfig);
+          
+          // Check if config was actually modified
+          const configChanged = configBefore !== JSON.stringify(modifiedConfig);
+          this.log(`Config modified by ${customizerName}: ${configChanged}`);
         } catch (err) {
-          console.error(`[CustomizeManager] Error in customizeConfig of ${customizer.constructor?.name}:`, err);
+          this.log(`Error in customizeConfig of ${customizerName}:`, err);
+          console.error(`[CustomizeManager] Error in customizeConfig of ${customizerName}:`, err);
         }
       }
     }
 
     if (activeCustomizersForThisTable.length > 0) {
+      this.log(`Storing ${activeCustomizersForThisTable.length} active customizers for table ${config.guid}`);
       this.activeCustomizers.set(config.guid, activeCustomizersForThisTable);
+    } else {
+      this.log(`No active customizers for table ${config.guid}`);
     }
 
     return modifiedConfig;
@@ -96,17 +138,37 @@ export class CustomizeManager {
    */
   public customizeTabulator(options: Options, configGuid: string): Options {
     const guid = String(configGuid);
+    this.log(`Customizing Tabulator options for table ${guid}`);
+    
     let modifiedOptions = { ...options };
-
     const customizersForThisTable = this.activeCustomizers.get(guid) || [];
+    
+    this.log(`Found ${customizersForThisTable.length} active customizers for table ${guid}`);
 
     for (const customizer of customizersForThisTable) {
+      const customizerName = customizer.constructor?.name || 'Unknown';
+      
       try {
+        this.log(`Applying ${customizerName} to Tabulator options`);
+        const optionsBefore = JSON.stringify(modifiedOptions);
         modifiedOptions = customizer.customizeTabulator(modifiedOptions);
+        
+        // Check if options were actually modified
+        // Note: This might fail if options contain functions, which don't stringify
+        try {
+          const optionsChanged = optionsBefore !== JSON.stringify(modifiedOptions);
+          this.log(`Tabulator options modified by ${customizerName}: ${optionsChanged}`);
+        } catch (e) {
+          this.log(`Could not compare options changes (likely contains functions): ${e}`);
+        }
       } catch (err) {
-        console.error(`[CustomizeManager] Error in customizeTabulator of ${customizer.constructor?.name}:`, err);
+        this.log(`Error in customizeTabulator of ${customizerName}:`, err);
+        console.error(`[CustomizeManager] Error in customizeTabulator of ${customizerName}:`, err);
       }
     }
+
+    // Log what parts of the options were customized (columns, layout, etc.)
+    this.log(`Final Tabulator options keys:`, Object.keys(modifiedOptions));
 
     return modifiedOptions;
   }
