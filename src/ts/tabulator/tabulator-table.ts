@@ -27,7 +27,7 @@ export class TabulatorTable {
     viewId: string;
     canEditConfig: boolean;
     canEditData: boolean;
-    appUrl?: string; // Optional app URL for dynamic imports
+    customizerDistPath?: string; // Optional app URL for dynamic imports
   }) {
     this.log("Creating tabulator table with data:", data);
 
@@ -38,63 +38,65 @@ export class TabulatorTable {
     const sxc = $2sxc(data.moduleId);
     this.log("SXC context initialized for moduleId:", data.moduleId);
 
-    // Try to load and register user customizers using dynamic import
-    try {
-      // Get app URL from data
-      const appUrl = data.appUrl;
-      this.log("Using app URL for customizers:", appUrl);
-
-      // Create full URL with cache-busting parameter for development
-      const timestamp = new Date().getTime();
-      const distPath = `${appUrl}/radmin-customizers/dist/customizers.js?v=${timestamp}`;
-
-      this.log("Attempting to load customizers from:", distPath);
-
+    // Only try to load customizers if customizerDistPath is provided
+    if (data.customizerDistPath) {
       try {
-        // Add module preload hint to improve loading
-        const preloadLink = document.createElement('link');
-        preloadLink.rel = 'modulepreload';
-        preloadLink.href = distPath;
-        document.head.appendChild(preloadLink);
+        this.log("Using app URL for customizers:", data.customizerDistPath);
 
-        // Dynamically import the module with proper import attributes
-        const importResult = await import(/* webpackIgnore: true */ distPath);
-        
-        this.log("Import successful, module keys:", Object.keys(importResult));
-        this.log("Module content:", importResult);
-        
-        // Access the 'customizers' export specifically
-        if (importResult && Array.isArray(importResult.customizers)) {
-          const customizerClasses = importResult.customizers;
-          this.log(`Found ${customizerClasses.length} customizer classes`);
+        // Create full URL with cache-busting parameter for development
+        const timestamp = new Date().getTime();
+        const distPath = `${data.customizerDistPath}?v=${timestamp}`;
+
+        this.log("Attempting to load customizers from:", distPath);
+
+        try {
+          // Add module preload hint to improve loading
+          const preloadLink = document.createElement('link');
+          preloadLink.rel = 'modulepreload';
+          preloadLink.href = distPath;
+          document.head.appendChild(preloadLink);
+
+          // Dynamically import the module with proper import attributes
+          const importResult = await import(/* webpackIgnore: true */ distPath);
           
-          // Instantiate each customizer class
-          const customizerInstances = customizerClasses.map((CustomizerClass: any) => {
-            try {
-              const instance = new CustomizerClass();
-              this.log(`Instantiated customizer: ${instance.constructor.name}`);
-              return instance;
-            } catch (err) {
-              this.log(`Error instantiating customizer:`, err);
-              return null;
+          this.log("Import successful, module keys:", Object.keys(importResult));
+          this.log("Module content:", importResult);
+          
+          // Access the 'customizers' export specifically
+          if (importResult && Array.isArray(importResult.customizers)) {
+            const customizerClasses = importResult.customizers;
+            this.log(`Found ${customizerClasses.length} customizer classes`);
+            
+            // Instantiate each customizer class
+            const customizerInstances = customizerClasses.map((CustomizerClass: any) => {
+              try {
+                const instance = new CustomizerClass();
+                this.log(`Instantiated customizer: ${instance.constructor.name}`);
+                return instance;
+              } catch (err) {
+                this.log(`Error instantiating customizer:`, err);
+                return null;
+              }
+            }).filter(Boolean); // Remove nulls
+            
+            if (customizerInstances.length) {
+              this.log(`Registering ${customizerInstances.length} user customizers`);
+              customizeManager.registerCustomizers(customizerInstances);
+              this.log(`Customizers registered successfully`);
             }
-          }).filter(Boolean); // Remove nulls
-          
-          if (customizerInstances.length) {
-            this.log(`Registering ${customizerInstances.length} user customizers`);
-            customizeManager.registerCustomizers(customizerInstances);
-            this.log(`Customizers registered successfully`);
+          } else {
+            this.log("No valid customizers array found in imported module");
+            this.log("Available exports:", Object.keys(importResult));
           }
-        } else {
-          this.log("No valid customizers array found in imported module");
-          this.log("Available exports:", Object.keys(importResult));
+        } catch (err) {
+          this.log(`Error during dynamic import:`, err);
         }
       } catch (err) {
-        this.log(`Error during dynamic import:`, err);
+        this.log("Failed to load user customizers:", err);
+        console.warn("Failed to load user customizers:", err);
       }
-    } catch (err) {
-      this.log("Failed to load user customizers:", err);
-      console.warn("Failed to load user customizers:", err);
+    } else {
+      this.log("No customizerDistPath provided, skipping customizer loading");
     }
 
     // Use viewid from URL if available, otherwise use the one provided by the Razor file
