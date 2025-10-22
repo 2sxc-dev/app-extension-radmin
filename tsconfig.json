@@ -20,7 +20,7 @@
     "src/ts/**/*",
     "src/custom/**/*",
     "src/styles/**/*"
-, "radmin-customizers/src/ts/customizers.ts"  ],
+  ],
   "exclude": [
     "node_modules",
     "src/styles/**/*.css"

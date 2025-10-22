@@ -5,10 +5,6 @@ import { QueryDataProvider } from "../providers/query-data-provider";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
 import { SchemaProvider } from "../providers/schema-provider";
 import { CustomizeManager } from "../custom/customize-manager";
-import type { ITableCustomizer } from "../custom/ITableCustomizer";
-
-// Import the customizers array (constructors or instances)
-import { customizers as builtInCustomizers } from "../../../radmin-customizers/src/ts/customizers";
 
 export class tabulatorTable {
   /**
@@ -25,17 +21,8 @@ export class tabulatorTable {
     // Get the CustomizeManager instance early
     const customizeManager = CustomizeManager.getInstance();
 
-    // Register built-in customizers (constructors or instances)
-    try {
-      // builtInCustomizers exports constructors only, so instantiate each one
-      const instances = (builtInCustomizers ?? []).map(
-        (customizer) => new (customizer as new () => ITableCustomizer)()
-      ) as ITableCustomizer[];
-
-      if (instances.length) customizeManager.registerCustomizers(instances);
-    } catch (err) {
-      console.error("Failed to register customizers:", err);
-    }
+    // 1. Load Dist for Customizers
+    // 2. Register
 
     // Get sxc context
     const sxc = $2sxc(data.moduleId);
