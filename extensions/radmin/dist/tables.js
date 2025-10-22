@@ -306,7 +306,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   customizers: () => (/* binding */ customizers)\n/* harmony export */ });\n/* harmony import */ var _src_ts_custom_customizers_customize_access_codes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../src/ts/custom/customizers/customize-access-codes */ \"./src/ts/custom/customizers/customize-access-codes.ts\");\n\n// Export only constructors (not instances)\nvar customizers = [\n    _src_ts_custom_customizers_customize_access_codes__WEBPACK_IMPORTED_MODULE_0__.CustomizeAccessCodesTable,\n    // add more customizer constructors here as needed\n];\nconsole.log(\"radmin customizers version 0.3.2\");\n\n\n//# sourceURL=webpack://2sxc-extension-radmin/./radmin-customizers/src/ts/customizers.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   customizers: () => (/* binding */ customizers)\n/* harmony export */ });\n/* harmony import */ var _src_ts_custom_customizers_customize_access_codes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../src/ts/custom/customizers/customize-access-codes */ \"./src/ts/custom/customizers/customize-access-codes.ts\");\n\n// Export only constructors (not instances)\nvar customizers = [\n    _src_ts_custom_customizers_customize_access_codes__WEBPACK_IMPORTED_MODULE_0__.CustomizeAccessCodesTable,\n    // add more customizer constructors here as needed\n];\nconsole.log(\"radmin customizers version 0.4.0\");\n\n\n//# sourceURL=webpack://2sxc-extension-radmin/./radmin-customizers/src/ts/customizers.ts?");
 
 /***/ }),
 
@@ -416,7 +416,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \**************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _tabulator_tabulator_table__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tabulator/tabulator-table */ \"./src/ts/tabulator/tabulator-table.ts\");\nvar _a;\n\nvar win = window;\n(_a = win.table) !== null && _a !== void 0 ? _a : (win.table = {});\nwin.table = new _tabulator_tabulator_table__WEBPACK_IMPORTED_MODULE_0__.tabulatorTable();\nconsole.log(\"radmin version 0.2.3\");\n\n\n//# sourceURL=webpack://2sxc-extension-radmin/./src/ts/tables.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _tabulator_tabulator_table__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tabulator/tabulator-table */ \"./src/ts/tabulator/tabulator-table.ts\");\nvar _a;\n\nvar win = window;\n(_a = win.table) !== null && _a !== void 0 ? _a : (win.table = {});\nwin.table = new _tabulator_tabulator_table__WEBPACK_IMPORTED_MODULE_0__.tabulatorTable();\nconsole.log(\"radmin version 0.4.0\");\n\n\n//# sourceURL=webpack://2sxc-extension-radmin/./src/ts/tables.ts?");
 
 /***/ }),
 
