@@ -1,10 +1,8 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = (env = {}) => {
-  // Log Info to Developer
-  console.log("Building Radmin Extension JS/CSS");
-
   const entry = {
     tables: "./src/ts/tables.ts",
     styles: "./src/styles/styles.scss"
@@ -53,6 +51,22 @@ module.exports = (env = {}) => {
     plugins: [
       new MiniCssExtractPlugin({
         filename: "[name].min.css",
+      }),
+      new CopyPlugin({
+        patterns: [
+          {
+            from: path.resolve(__dirname, "src/ts/configs/radmin-column-config.ts"),
+            to: path.resolve(__dirname, "extensions/radmin/src/configs/radmin-column-config.ts"),
+          },
+          {
+            from: path.resolve(__dirname, "src/ts/configs/radmin-table-config.ts"),
+            to: path.resolve(__dirname, "extensions/radmin/src/configs/radmin-table-config.ts"),
+          },
+          {
+            from: path.resolve(__dirname, "src/ts/customizers/table-customizer.ts"),
+            to: path.resolve(__dirname, "extensions/radmin/src/customizers/table-customizer.ts"),
+          },
+        ],
       }),
     ],
   };
