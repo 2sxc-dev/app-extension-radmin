@@ -1,11 +1,11 @@
 {
-  "name": "2sxc-extension-radmin",
+  "name": "2sxc-extension-radmin-customizers",
   "version": "01.00.00",
   "description": "",
   "main": "(none)",
   "scripts": {
-    "build:radmin": "webpack",
-    "watch:radmin": "webpack --watch"
+    "build:customizers": "webpack",
+    "watch:customizers": "webpack --watch"
   },
   "author": "2sic internet solutions 2025",
   "license": "ISC",
