@@ -17,8 +17,11 @@ export function openNewColumnDialog(
 
   const colDef = column.getDefinition() || {};
   const colTitle = colDef.title || "";
-  
-  const valueSelector = colTitle.replace(/\s+/g, '');
+
+  // Prefer the actual field name (Tabulator's field) for the ValueSelector.
+  // Fall back to a space-free version of the title only if the field cannot be determined.
+  const colField =column.getField();
+  const valueSelector = colField && colField.trim() !== "" ? colField : colTitle.replace(/\s+/g, "");
 
   const params = {
     contentType: "f58eaa8e-88c0-403a-a996-9afc01ec14be",
@@ -26,7 +29,7 @@ export function openNewColumnDialog(
       Title: colTitle,
       linkEnable: false,
       tooltipEnabled: false,
-      ValueSelector: valueSelector, // Use the space-free version
+      ValueSelector: valueSelector,
     },
     fields: "ColumnConfigs",
     parent: tableConfigData.guid,
