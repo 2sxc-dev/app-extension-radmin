@@ -23,6 +23,9 @@
   @* The filter input will be dynamically inserted here by JavaScript *@
 </div>
 
+@* Add error container before the table *@
+<div id="tosxc-table-error-@MyContext.Module.Id" class="mb-3"></div>
+
 <div>
   @* Tabulator ID *@
   <div id="tosxc-table-@MyContext.Module.Id" />
@@ -31,6 +34,7 @@
 @Kit.Page.TurnOn("window.table.createTabulatorTable()", data: new {
   tableName = "tosxc-table-" + MyContext.Module.Id,
   filterName = "tosxc-table-filter-" + MyContext.Module.Id,
+  errorContainerId = "tosxc-table-error-" + MyContext.Module.Id,
   moduleId = MyContext.Module.Id,
   viewId = item.Guid.ToString(),
   canEditConfig = MyUser.IsSiteAdmin && !item.IsDemoItem,

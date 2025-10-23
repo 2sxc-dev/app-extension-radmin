@@ -23,6 +23,7 @@ import { JsonSchema } from "../models/json-schema-model";
 import { SchemaProvider } from "../providers/schema-provider";
 import { CustomizeManager } from "../customizers/customize-manager";
 import { SetupObjectSorter } from "../helpers/setup-object-sorter";
+import { ErrorMessageGenerator } from "../helpers/error-message-generator";
 
 // Register required modules for Tabulator
 Tabulator.registerModule([
@@ -88,10 +89,22 @@ export class TabulatorAdapter {
     try {
       this.log("createTable called", { tableName, tableConfigData });
 
-      const schema = await schemaProvider.getSchema(
-        tableConfigData.dataContentType
-      );
-      this.log("schema loaded", schema);
+      let schema;
+      try {
+        schema = await schemaProvider.getSchema(
+          tableConfigData.dataContentType
+        );
+        this.log("schema loaded", schema);
+
+        // Check if schema is valid
+        if (!schema || !schema.properties) {
+          throw new Error("Invalid schema: missing properties");
+        }
+      } catch (error: unknown) {
+        const errStr = ErrorMessageGenerator.toErrorString(error);
+        this.log("Error loading schema:", errStr);
+        throw new Error(`Schema loading failed: ${errStr}`);
+      }
 
       const tabulatorConfig: Partial<ExtendedOptions> =
         await this.createTabulatorConfig(tableConfigData, schema);
@@ -144,13 +157,19 @@ export class TabulatorAdapter {
             this.log("dataLoaded event — applying initialSort", initialSort);
             try {
               table.setSort(initialSort);
-            } catch (err) {
-              this.log("setSort on dataLoaded failed:", err);
+            } catch (error) {
+              this.log(
+                "setSort on dataLoaded failed:",
+                ErrorMessageGenerator.toErrorString(error)
+              );
             }
           });
         }
-      } catch (err) {
-        this.log("error scheduling initialSort application:", err);
+      } catch (error) {
+        this.log(
+          "error scheduling initialSort application:",
+          ErrorMessageGenerator.toErrorString(error)
+        );
       }
 
       if (filterName && tableConfigData.searchEnabled) {
@@ -175,9 +194,12 @@ export class TabulatorAdapter {
       }
 
       return table;
-    } catch (err) {
-      console.error("Failed to create Tabulator table:", err);
-      return null;
+    } catch (error) {
+      console.error(
+        "Failed to create Tabulator table:",
+        ErrorMessageGenerator.toErrorString(error)
+      );
+      throw error; // Re-throw to allow parent to handle specific errors
     }
   }
 
@@ -189,7 +211,10 @@ export class TabulatorAdapter {
     return qp === "true" || url.includes("viewconfigmode/true");
   }
 
-  private setupViewConfigMode(table: Tabulator, tableConfigData: RadminTableConfig) {
+  private setupViewConfigMode(
+    table: Tabulator,
+    tableConfigData: RadminTableConfig
+  ) {
     this.log("setupViewConfigMode called");
     table.on("dataLoaded", () => {
       this.log("dataLoaded → attaching headerMouseEnter");
@@ -212,8 +237,11 @@ export class TabulatorAdapter {
 
     try {
       table.off?.("rowMouseEnter");
-    } catch (err) {
-      console.error("Failed to unbind rowMouseEnter", err);
+    } catch (error) {
+      console.error(
+        "Failed to unbind rowMouseEnter",
+        ErrorMessageGenerator.toErrorString(error)
+      );
     }
 
     table.on("rowMouseEnter", (e, row: RowComponent) => {
@@ -232,7 +260,10 @@ export class TabulatorAdapter {
     });
   }
 
-  private setupRowAddMode(table: Tabulator, tableConfigData: RadminTableConfig) {
+  private setupRowAddMode(
+    table: Tabulator,
+    tableConfigData: RadminTableConfig
+  ) {
     this.log("setupRowAddMode called");
     table.on("dataLoaded", () => {
       this.log("dataLoaded → showing add button");
@@ -241,8 +272,11 @@ export class TabulatorAdapter {
     try {
       this.log("trying to show add button immediately");
       this.floatingUi.showAddButton(table, tableConfigData);
-    } catch (err) {
-      this.log("immediate add button failed", err);
+    } catch (error) {
+      this.log(
+        "immediate add button failed",
+        ErrorMessageGenerator.toErrorString(error)
+      );
     }
   }
 }
