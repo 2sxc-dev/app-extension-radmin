@@ -312,11 +312,18 @@ function objectTitleFormatter(cell: CellComponent): string {
  * Tries exact, lowercase-first, and case-insensitive matches.
  */
 function normalizeFieldName(field: string, schema: JsonSchema): string {
+  if (!field || !schema.properties) return field;
+  
   const keys = Object.keys(schema.properties);
-  // prefer exact match first
+  
+  // Try exact match first
   const exact = keys.find((k) => k === field);
   if (exact) return exact;
-  // then case-insensitive match
+  
+  // Try case-insensitive match
   const ci = keys.find((k) => k.toLowerCase() === field.toLowerCase());
-  return ci || field;
+  if (ci) return ci;
+  
+  // Fall back to original field name if no match found
+  return field;
 }

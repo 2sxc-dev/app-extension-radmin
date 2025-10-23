@@ -1,6 +1,6 @@
 # Instructions: How to add Extension to an App
 
-1. Build the Typescript and Scss by running `npm run build:table`
+1. Update 2sxc to v20.0.8+
 1. Copy the entire **/extensions** directory into your app
 1. Download the **export bundle** - containing the content types and demo data (radmin.json)
 1. Place the radmin.json in **/extensions/radmin/App_data/extensions/bundles**

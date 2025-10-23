@@ -16,13 +16,17 @@ export function openNewColumnDialog(
   logger?.("openNewColumnDialog called", { tableConfigData });
 
   const colDef = column.getDefinition() || {};
+  const colTitle = colDef.title || "";
+  
+  const valueSelector = colTitle.replace(/\s+/g, '');
+
   const params = {
     contentType: "f58eaa8e-88c0-403a-a996-9afc01ec14be",
     prefill: {
-      Title: colDef.title || "",
+      Title: colTitle,
       linkEnable: false,
       tooltipEnabled: false,
-      ValueSelector: colDef.title || "",
+      ValueSelector: valueSelector, // Use the space-free version
     },
     fields: "ColumnConfigs",
     parent: tableConfigData.guid,
