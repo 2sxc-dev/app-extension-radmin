@@ -49,6 +49,7 @@
 
     <!-- System.Web is not in the DNN folder but in the .net Framework installed on the server -->
     <Reference Include="System.Web" />
+    <Reference Include="System.Net.Http" /> <!-- needed for RadminController so UI / VS-Code knows it's there -->
   </ItemGroup>
 
   <!-- Might need this for intellisense on data sources -->
