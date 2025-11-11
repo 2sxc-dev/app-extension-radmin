@@ -3,12 +3,12 @@
 @using AppCode.Data
 @using AppCode.Extensions.Radmin
 @using RadminData = AppCode.Extensions.Radmin.Data
+@using ToSic.Razor.Blade
 
-@* Show Switcher to toggle table configuration mode - to admins only, and not for demo since that shouldn't be modified *@
+@* Toggle switch for table configuration mode (admins only, skip for demo items) *@
 
 @{
   var res = App.Data.GetAll<RadminResources>().FirstOrDefault();
-
   var item = MyModel.Get<RadminData.RadminTable>("item");
 
   if (!MyUser.IsSiteAdmin || item.IsDemoItem)
@@ -16,7 +16,15 @@
 
   // The view config mode would enable the JS to show edit buttons to configure the table
   var viewConfigMode = MyPage.Parameters.Bool(SxcTablesConstants.UrlParamConfigMode, fallback: false);
-  var onChangeLink = $"{Link.To()}?{SxcTablesConstants.UrlParamConfigMode}={!viewConfigMode}";
+
+  // Preserve existing query parameters:
+  var currentParams = MyPage.Parameters;
+  var targetParams = viewConfigMode
+    ? currentParams.Remove(SxcTablesConstants.UrlParamConfigMode)
+    : currentParams.Add(SxcTablesConstants.UrlParamConfigMode, "true");
+
+  // Build final URL using Link.To with the parameters object (avoids string manipulation)
+  var onChangeLink = Link.To(parameters: targetParams);
 }
 
 <div class="form-check form-switch">
