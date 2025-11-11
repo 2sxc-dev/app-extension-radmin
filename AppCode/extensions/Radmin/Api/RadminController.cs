@@ -1,13 +1,20 @@
+// Add namespaces to enable security in Oqtane & Dnn despite the differences
+#if NETCOREAPP
+  using Microsoft.AspNetCore.Authorization; // .net core [AllowAnonymous] & [Authorize]
+  using Microsoft.AspNetCore.Mvc;           // .net core [HttpGet] / [HttpPost] etc.
+#else
+  using System.Web.Http;
+  using DotNetNuke.Security;
+  using DotNetNuke.Web.Api;
+#endif
 using System;
-using System.Web.Http;
 using AppCode.Extensions.Radmin.Data;
-using DotNetNuke.Security;
-using DotNetNuke.Web.Api;
+using HttpResponseMessage = System.Net.Http.HttpResponseMessage;
 
 namespace AppCode.Extensions.Radmin.Api
 {
   // Requires edit rights to access - edit on the admin-pages
-  [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.Edit)]
+  [AllowAnonymous]	// define that all commands can be accessed without a login
   public class RadminController : Custom.Hybrid.ApiTyped
   {
     /// <summary>
@@ -16,23 +23,43 @@ namespace AppCode.Extensions.Radmin.Api
     /// <param name="typename"></param>
     /// <returns></returns>
     [HttpGet]
-    public JsonSchema Schema(string typename)
+    [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.Edit)]
+    public JsonSchema Schema(string typename /* , Guid viewId */)
     {
-      /// <summary>
-      /// Get the schema for the given typename in JSON Schema format
-      /// </summary>
+      // TODO: FIRST Get the view, and do permission checks
+
+      // Then take the content-type name from the view
+      // ...and remove it from the WebAPI parameters
+
       var contentType = App.Data.GetContentType(typename);
       var helper = new RadminSchemaHelper();
       return helper.ConvertToJsonSchema(contentType);
     }
 
     [HttpGet]
-    public RadminTable Table(Guid viewId)
+    public HttpResponseMessage Table(Guid viewId)
     {
       /// <summary>
       /// Get the RadminTable for the given Guid
       /// </summary>
-      return App.Data.GetOne<RadminTable>(viewId);
+      var view = App.Data.GetOne<RadminTable>(viewId);
+
+      return BlockBadAccess(view)
+        ?? Ok(view);
+    }
+
+    private HttpResponseMessage BlockBadAccess(RadminTable view)
+    {
+      if (MyUser.IsContentEditor)
+        return null; // ok
+
+      // TODO: after re-export of content type, replace .Bool... with direct property access
+      if (MyUser.IsAnonymous && view.Bool("ViewAllowAnonymous"))
+        return null; // ok
+
+      // TODO: future also allow for role names etc.
+
+      return Unauthorized();
     }
   }
 }
