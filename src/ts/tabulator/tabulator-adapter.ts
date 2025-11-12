@@ -110,6 +110,19 @@ export class TabulatorAdapter {
         await this.createTabulatorConfig(tableConfigData, schema);
       this.log("tabulatorConfig created", tabulatorConfig);
 
+      const savedSortersJson = sessionStorage.getItem(`${tableName}-sorters`);
+      if (savedSortersJson) {
+        try {
+          const savedSorters = JSON.parse(savedSortersJson);
+          if (Array.isArray(savedSorters) && savedSorters.length > 0) {
+            tabulatorConfig.initialSort = savedSorters;
+            this.log(`Loaded saved sorters for ${tableName}`, savedSorters);
+          }
+        } catch (err) {
+          this.log(`Failed to parse saved sorters for ${tableName}`, err);
+        }
+      }
+
       const tabulatorOptionsRaw: ExtendedOptions = {
         ajaxURL: dataProvider.getApiUrl(),
         ajaxConfig: {
@@ -163,6 +176,20 @@ export class TabulatorAdapter {
                 ErrorMessageGenerator.toErrorString(error)
               );
             }
+
+            table.on("dataSorted", function (sorters, rows) {
+              if (sorters.length === 0) return;
+
+              const cleanSorters = sorters.map((s) => ({
+                field: s.field || s.column.getField(),
+                dir: s.dir,
+              }));
+
+              sessionStorage.setItem(
+                `${tableName}-sorters`,
+                JSON.stringify(cleanSorters)
+              );
+            });
           });
         }
       } catch (error) {
