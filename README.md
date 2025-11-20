@@ -46,13 +46,6 @@ This app is only useful if you use DNN or Oqtane. So assuming you have a DNN ins
 
 The Source Code is all here - so you can easily customize to your hearts desire!
 
-## History
-
-* v0.1.0 (Work in Progress)
-  * Initial architecture and core features
-  * TypeScript implementation
-  * Basic table functionality
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
@@ -60,3 +53,20 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## History
+
+### 2025-11-20
+
+1. 2dm: select content type - now a dropdown
+1. 2dm: select query - now a dropdown
+1. 2dm: create group `Data` and add instructions for data; auto-collapse if already specified but show show title with data info
+1. 2dm: hide paging info if disabled
+1. 2dm: advanced columns "group" for JS settings, as very advanced / exotic
+1. 2dm: group `Column features`: collapse + info in title if edit/delete/add are enabled
+
+### v0.1.0 (Work in Progress)
+
+* Initial architecture and core features
+* TypeScript implementation
+* Basic table functionality
