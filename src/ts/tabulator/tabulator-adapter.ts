@@ -84,7 +84,8 @@ export class TabulatorAdapter {
     filterName: string | undefined,
     customizeManager: CustomizeManager,
     canEditConfig: boolean,
-    canEditData: boolean
+    canEditData: boolean,
+    viewId: string
   ) {
     try {
       this.log("createTable called", { tableName, tableConfigData });
@@ -92,7 +93,8 @@ export class TabulatorAdapter {
       let schema;
       try {
         schema = await schemaProvider.getSchema(
-          tableConfigData.dataContentType
+          tableConfigData.dataContentType,
+          viewId
         );
         this.log("schema loaded", schema);
 

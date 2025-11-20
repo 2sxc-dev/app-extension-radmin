@@ -24,15 +24,18 @@ namespace AppCode.Extensions.Radmin.Api
     /// <returns></returns>
     [HttpGet]
     [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.Edit)]
-    public JsonSchema Schema(string typename /* , Guid viewId */)
+    public JsonSchema Schema(string typename, Guid viewid)
     {
-      // TODO: FIRST Get the view, and do permission checks
-
-      // Then take the content-type name from the view
-      // ...and remove it from the WebAPI parameters
 
       var contentType = App.Data.GetContentType(typename);
+      var view = App.Data.GetOne<RadminTable>(viewid);
+      
+      if (MyUser.IsAnonymous && view.ViewAllowAnonymous) {
+        return null;
+      }
+
       var helper = new RadminSchemaHelper();
+      MyPage.Parameters.Remove("typename");
       return helper.ConvertToJsonSchema(contentType);
     }
 

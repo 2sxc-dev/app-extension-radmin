@@ -212,7 +212,8 @@ export class TabulatorTable {
           data.filterName,
           customizeManager,
           data.canEditConfig,
-          data.canEditData
+          data.canEditData,
+          viewId
         );
         this.log("Table creation complete");
       } catch (error) {
