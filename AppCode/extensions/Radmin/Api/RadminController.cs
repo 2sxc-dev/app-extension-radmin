@@ -53,8 +53,7 @@ namespace AppCode.Extensions.Radmin.Api
       if (MyUser.IsContentEditor)
         return null; // ok
 
-      // TODO: after re-export of content type, replace .Bool... with direct property access
-      if (MyUser.IsAnonymous && view.Bool("ViewAllowAnonymous"))
+      if (MyUser.IsAnonymous && view.ViewAllowAnonymous)
         return null; // ok
 
       // TODO: future also allow for role names etc.
