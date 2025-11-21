@@ -58,6 +58,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ### 2025-11-20
 
+1. 2pp: Generate AppCode with Copilot
+1. 2pp: Update Schema Endpoint to include viewId for ViewAllowAnonymous check
 1. 2dm: select content type - now a dropdown
 1. 2dm: select query - now a dropdown
 1. 2dm: create group `Data` and add instructions for data; auto-collapse if already specified but show show title with data info
