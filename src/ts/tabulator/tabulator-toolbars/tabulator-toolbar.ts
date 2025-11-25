@@ -19,14 +19,14 @@ winAny.tabulatorToolbars = winAny.tabulatorToolbars || {};
  * 2sxc Toolbar integration for Tabulator
  * Uses native 2sxc toolbars with Floating UI positioning
  */
-export class TabulatorFloatingUi {
-  private baseButtonSize = 40;
+export class tabulatorToolbars {
+  private baseButtonSize = 32;
   private zIndex = 1000;
 
   debug = false;
 
   private log(...args: any[]) {
-    if (this.debug) console.log("[TabulatorFloatingUi]", ...args);
+    if (this.debug) console.log("[tabulatorToolbars]", ...args);
   }
 
   public showAddButton(table: Tabulator, tableConfigData: RadminTableConfig) {
@@ -187,14 +187,13 @@ export class TabulatorFloatingUi {
       -(
         (showDelete ? this.baseButtonSize : 0) +
         (showEdit ? this.baseButtonSize : 0) +
-        (showDelete && showEdit ? 18 : 12)
+        (showDelete && showEdit ? 16 : 12)
       );
 
     positionFloatingElement(
       virtualEl,
       floatingEl,
       middlewareOffsetFn,
-      "right"
     ).then(({ x, y }) => {
       this.log("Computed floating menu position", { x, y });
     });
@@ -337,7 +336,6 @@ export class TabulatorFloatingUi {
       virtualEl,
       floatingEl,
       () => -this.baseButtonSize,
-      "right"
     ).then(({ x, y }) => {
       this.log("Computed floating column menu position", { x, y });
     });

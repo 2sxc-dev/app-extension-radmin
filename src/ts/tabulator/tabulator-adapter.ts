@@ -17,13 +17,13 @@ import { TabulatorConfig } from "../models/tabulator-config-models";
 import { TabulatorConfigService } from "./tabulator-config-service";
 import { DataProvider } from "../providers/data-provider";
 import { RadminTableConfig } from "../configs/radmin-table-config";
-import { TabulatorFloatingUi } from "./tabulator-floating-ui/tabulator-floating-ui";
 import { TabulatorSearchFilter } from "./tabulator-search-filter";
 import { JsonSchema } from "../models/json-schema-model";
 import { SchemaProvider } from "../providers/schema-provider";
 import { CustomizeManager } from "../customizers/customize-manager";
 import { SetupObjectSorter } from "../helpers/setup-object-sorter";
 import { ErrorMessageGenerator } from "../helpers/error-message-generator";
+import { tabulatorToolbars } from "./tabulator-toolbars/tabulator-toolbar";
 
 // Register required modules for Tabulator
 Tabulator.registerModule([
@@ -42,7 +42,7 @@ interface ExtendedOptions extends Options {
 }
 
 export class TabulatorAdapter {
-  private floatingUi = new TabulatorFloatingUi();
+  private floatingUi = new tabulatorToolbars();
   private configService = new TabulatorConfigService();
 
   debug = false;

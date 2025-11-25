@@ -59,8 +59,7 @@ export function createVirtualElFromRects(x: number, y: number) {
 export function positionFloatingElement(
   virtualEl: { getBoundingClientRect: () => DOMRect },
   floatingEl: HTMLElement,
-  middlewareOffsetFn: () => number = () => 0,
-  placement: string = "right"
+  middlewareOffsetFn: () => number = () => 0
 ): Promise<{ x: number; y: number }> {
   // Get reference rect from the virtual element
   const rect = virtualEl.getBoundingClientRect();
