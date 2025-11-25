@@ -40,7 +40,7 @@ export function positionFloatingElement(
   virtualEl: any,
   floatingEl: HTMLElement,
   middlewareOffsetFn: () => number = () => 0,
-  placement: any = "right"
+  placement = "right"
 ): Promise<{ x: number; y: number }> {
   if (!window.FloatingUIDOM) {
     // If Floating UI isn't available just place the element at the virtualEl coords

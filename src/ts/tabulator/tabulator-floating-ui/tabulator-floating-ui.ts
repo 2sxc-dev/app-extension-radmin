@@ -4,21 +4,20 @@ import type {
   Tabulator,
 } from "tabulator-tables";
 import { RadminTableConfig } from "../../configs/radmin-table-config";
-import { openAddRowDialog } from "./dialogs/add-row-dialog";
-import { openDeleteRowDialog } from "./dialogs/delete-row-dialog";
-import { openEditColumnDialog } from "./dialogs/edit-column-dialog";
-import { openEditRowDialog } from "./dialogs/edit-row-dialog";
-import { openNewColumnDialog } from "./dialogs/new-column-dialog";
-import { addSvg, editSvg, deleteSvg, newColumnSvg } from "./lib/icons";
-import { createIconButton } from "./utils/button-factory";
 import {
   cleanupFloatingMenus,
   createVirtualElFromRects,
   positionFloatingElement,
 } from "./utils/floating-menu";
+import { CommandNames } from "@2sic.com/2sxc-typings";
+
+declare const $2sxc: any;
+const winAny = window as any;
+winAny.tabulatorToolbars = winAny.tabulatorToolbars || {};
+
 /**
- * Floating UI for Tabulator — row actions, add button, column header button.
- * Focus on small reusable helpers and minimal duplicated logic.
+ * 2sxc Toolbar integration for Tabulator
+ * Uses native 2sxc toolbars with Floating UI positioning
  */
 export class TabulatorFloatingUi {
   private baseButtonSize = 40;
@@ -30,38 +29,27 @@ export class TabulatorFloatingUi {
     if (this.debug) console.log("[TabulatorFloatingUi]", ...args);
   }
 
-  // Wrappers that pass this.log to the splitted dialog modules
-  openEditRowDialog(e: Event, row: RowComponent) {
-    return openEditRowDialog(e, row, this.log.bind(this));
-  }
-
-  openDeleteRowDialog(e: Event, row: RowComponent) {
-    return openDeleteRowDialog(e, row, this.log.bind(this));
-  }
-
-  openAddRowDialog(e: Event, table: Tabulator, tableConfigData: RadminTableConfig) {
-    return openAddRowDialog(e, table, tableConfigData, this.log.bind(this));
-  }
-
-  openNewColumnDialog(
-    e: Event,
-    column: ColumnComponent,
-    tableConfigData: RadminTableConfig
-  ) {
-    return openNewColumnDialog(e, column, tableConfigData, this.log.bind(this));
-  }
-
-  openEditColumnDialog(e: Event, column: ColumnComponent, entityId: number) {
-    return openEditColumnDialog(e, column, entityId, this.log.bind(this));
-  }
-
   public showAddButton(table: Tabulator, tableConfigData: RadminTableConfig) {
     this.log("Adding floating add button to table");
     const tableElement = table.element as HTMLElement;
+
     // remove existing
     tableElement
       .querySelectorAll(".table-add-button")
       .forEach((n) => n.remove());
+
+    const sxc = $2sxc(tableElement);
+    if (!sxc.isEditMode()) {
+      this.log("Not in edit mode, skipping add button");
+      return;
+    }
+
+    const contentType = tableConfigData.dataContentType || "Default";
+    const toolbarHtml = sxc.manage.getToolbar({
+      contentType,
+      action: "new",
+      prefill: {},
+    });
 
     const container = document.createElement("div");
     container.className = "table-add-button";
@@ -77,18 +65,10 @@ export class TabulatorFloatingUi {
       justifyContent: "center",
     });
 
-    const btn = createIconButton(
-      addSvg,
-      "Add row",
-      (ev) => this.openAddRowDialog(ev, table, tableConfigData),
-      {
-        baseButtonSize: this.baseButtonSize,
-        zIndex: this.zIndex,
-        fullSize: false,
-      }
-    );
-    container.appendChild(btn);
+    container.innerHTML = toolbarHtml;
     tableElement.appendChild(container);
+
+    this.observeToolbarMutations(container, toolbarHtml);
   }
 
   private createRowActionFloatingMenu(
@@ -101,6 +81,30 @@ export class TabulatorFloatingUi {
     event.preventDefault();
     cleanupFloatingMenus();
     this.log("Creating row action floating menu", { showEdit, showDelete });
+
+    const sxc = $2sxc(table.element);
+    if (!sxc.isEditMode()) {
+      this.log("Not in edit mode, skipping toolbar");
+      return;
+    }
+
+    const data = row.getData() as any;
+    const entityId = data.EntityId ?? data.id;
+    const entityGuid = data.EntityGuid ?? data.guid;
+
+    // Try common title fields - delete requires entityTitle
+    const entityTitle = data.title ?? "";
+
+    this.log("Entity identifiers for toolbar", {
+      entityId,
+      entityGuid,
+      entityTitle,
+    });
+
+    if (!entityId) {
+      this.log("No entityId found for toolbar");
+      return;
+    }
 
     const tableRect = table.element.getBoundingClientRect();
     const rowRect = row.getElement().getBoundingClientRect();
@@ -127,35 +131,52 @@ export class TabulatorFloatingUi {
       pointerEvents: "auto",
     });
 
+    // Build actions array and include entityTitle for delete if available
+    const actions: CommandNames[] = [];
     if (showEdit) {
-      const editBtn = createIconButton(
-        editSvg,
-        "Edit row",
-        (ev) => {
-          floatingEl.remove();
-          this.openEditRowDialog(ev, row);
-        },
-        { baseButtonSize: this.baseButtonSize, zIndex: this.zIndex }
-      );
-      floatingEl.appendChild(editBtn);
+      actions.push({
+        entityId,
+        action: "edit",
+        ...(entityGuid && { entityGuid }),
+      });
     }
 
+    const canRequestDelete = !!entityId && !!entityGuid && !!entityTitle;
     if (showDelete) {
-      const deleteBtn = createIconButton(
-        deleteSvg,
-        "Delete row",
-        (ev) => {
-          floatingEl.remove();
-          this.openDeleteRowDialog(ev, row);
-        },
-        { baseButtonSize: this.baseButtonSize, zIndex: this.zIndex }
-      );
-      floatingEl.appendChild(deleteBtn);
+      if (canRequestDelete) {
+        actions.push({
+          entityId,
+          action: "delete",
+          ...(entityGuid && { entityGuid }),
+          entityTitle, // required for delete button to appear
+        });
+      } else {
+        this.log(
+          "Skipping server delete toolbar request because entityTitle/entityGuid missing or empty. Will not request native delete button.",
+          { entityTitle, entityGuid }
+        );
+      }
     }
 
-    if (floatingEl.children.length === 0) {
-      this.log("No buttons to show in row action menu");
+    if (actions.length === 0) {
+      this.log("No actions to show in row action menu");
       return;
+    }
+
+    // Request combined toolbar HTML from 2sxc
+    const toolbarHtml = sxc.manage.getToolbar(actions);
+    this.log("Generated toolbar HTML:", toolbarHtml);
+
+    // Insert toolbar HTML into floating container
+    floatingEl.innerHTML = toolbarHtml;
+
+    // If delete was requested but server did not include a delete button,
+    // the toolbarHtml will not contain a delete <li>. We log for diagnostics.
+    if (showDelete) {
+      const hasDelete =
+        floatingEl.querySelector &&
+        !!floatingEl.querySelector('a[onclick*="delete"]');
+      this.log("Server returned delete button present:", hasDelete);
     }
 
     document.body.appendChild(floatingEl);
@@ -234,6 +255,14 @@ export class TabulatorFloatingUi {
     event.preventDefault();
     this.log("Creating floating column menu");
 
+    const table = column.getTable();
+    const sxc = $2sxc(table.element);
+
+    if (!sxc.isEditMode()) {
+      this.log("Not in edit mode, skipping column toolbar");
+      return;
+    }
+
     const colEl = column.getElement();
     const colRect = colEl.getBoundingClientRect();
     this.log("Column rect", colRect);
@@ -275,25 +304,33 @@ export class TabulatorFloatingUi {
 
     this.log("Column already configured?", alreadyConfigured, colConfig);
 
-    const btn = createIconButton(
-      alreadyConfigured ? editSvg : newColumnSvg,
-      alreadyConfigured ? "Edit column" : "Add column",
-      (ev) => {
-        floatingEl.remove();
-        if (!alreadyConfigured) {
-          this.openNewColumnDialog(ev, column, tableConfigData);
-        } else {
-          this.openEditColumnDialog(ev, column, entityId);
-        }
-      },
-      {
-        baseButtonSize: this.baseButtonSize,
-        zIndex: this.zIndex,
-        fullSize: true,
-      }
-    );
+    let toolbarHtml: string;
+    if (alreadyConfigured) {
+      toolbarHtml = sxc.manage.getToolbar({
+        entityId,
+        action: "edit",
+      });
+    } else {
+      const valueSelector =
+        colField && colField.trim() !== ""
+          ? colField
+          : colTitle.replace(/\s+/g, "");
 
-    floatingEl.appendChild(btn);
+      toolbarHtml = sxc.manage.getToolbar({
+        contentType: "f58eaa8e-88c0-403a-a996-9afc01ec14be",
+        action: "new",
+        prefill: {
+          Title: colTitle,
+          linkEnable: false,
+          tooltipEnabled: false,
+          ValueSelector: valueSelector,
+        },
+        fields: "ColumnConfigs",
+        parent: tableConfigData.guid,
+      });
+    }
+
+    floatingEl.innerHTML = toolbarHtml;
     document.body.appendChild(floatingEl);
 
     positionFloatingElement(
@@ -311,6 +348,19 @@ export class TabulatorFloatingUi {
     floatingEl.addEventListener("mouseleave", () => {
       this.log("Floating column menu hover end — removing");
       floatingEl.remove();
+    });
+  }
+
+  private observeToolbarMutations(wrapper: HTMLElement, originalHtml: string) {
+    const observer = new MutationObserver(() => {
+      this.log("Toolbar mutated, restoring original HTML");
+      wrapper.innerHTML = originalHtml;
+    });
+
+    observer.observe(wrapper, {
+      childList: true,
+      characterData: true,
+      subtree: true,
     });
   }
 }
