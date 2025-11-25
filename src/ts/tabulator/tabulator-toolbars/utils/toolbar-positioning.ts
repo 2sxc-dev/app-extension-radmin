@@ -1,12 +1,4 @@
 /**
- * Lightweight toolbar helpers.
- *
- * Positions the toolbar element centered vertically on the provided virtual
- * coordinate (so the toolbar appears in the middle of the row) and offset
- * horizontally using the middlewareOffsetFn (mirrors old behavior).
- */
-
-/**
  * Remove any existing toolbar elements.
  */
 export function cleanupToolbars() {

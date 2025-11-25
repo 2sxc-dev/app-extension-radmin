@@ -190,13 +190,11 @@ export class TabulatorToolbars {
         (showDelete && showEdit ? 16 : 12)
       );
 
-    positionToolbarElement(
-      virtualEl,
-      toolbarEl,
-      middlewareOffsetFn,
-    ).then(({ x, y }) => {
-      this.log("Computed toolbar position", { x, y });
-    });
+    positionToolbarElement(virtualEl, toolbarEl, middlewareOffsetFn).then(
+      ({ x, y }) => {
+        this.log("Computed toolbar position", { x, y });
+      }
+    );
 
     let isHovered = false;
     toolbarEl.addEventListener("mouseenter", () => {
@@ -253,6 +251,9 @@ export class TabulatorToolbars {
   ) {
     event.preventDefault();
     this.log("Creating column toolbar");
+
+    // Remove any existing toolbars first so we don't get duplicates
+    cleanupToolbars();
 
     const table = column.getTable();
     const sxc = $2sxc(table.element);
@@ -335,17 +336,31 @@ export class TabulatorToolbars {
     positionToolbarElement(
       virtualEl,
       toolbarEl,
-      () => -this.baseButtonSize,
+      () => -this.baseButtonSize
     ).then(({ x, y }) => {
       this.log("Computed column toolbar position", { x, y });
     });
 
+    // Simple hover removal (same pattern used for rows)
+    let isHovered = false;
     toolbarEl.addEventListener("mouseenter", () => {
+      isHovered = true;
       this.log("Column toolbar hover start");
     });
     toolbarEl.addEventListener("mouseleave", () => {
+      isHovered = false;
       this.log("Column toolbar hover end — removing");
       toolbarEl.remove();
+    });
+
+    // Remove toolbar when header is left (gives time to move into the toolbar)
+    (table as any).on("headerMouseLeave", () => {
+      setTimeout(() => {
+        if (!isHovered) {
+          this.log("Header mouse leave — removing column toolbar");
+          toolbarEl.remove();
+        }
+      }, 100);
     });
   }
 
