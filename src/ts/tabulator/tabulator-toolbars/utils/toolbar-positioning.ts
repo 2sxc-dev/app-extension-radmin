@@ -1,6 +1,7 @@
 /**
- * Remove any existing toolbar elements.
+ * positioning + small DOM helpers for toolbars
  */
+
 export function cleanupToolbars() {
   document.querySelectorAll(".toolbar-menu").forEach((el) => el.remove());
 }
