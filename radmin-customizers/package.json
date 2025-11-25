@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "@2sic.com/2sxc-typings": "^14.7.3",
-    "@floating-ui/dom": "^1.6.13",
     "luxon": "^3.6.0",
     "tabulator-tables": "^6.3.1"
   }
