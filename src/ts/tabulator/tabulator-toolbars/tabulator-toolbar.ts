@@ -5,10 +5,10 @@ import type {
 } from "tabulator-tables";
 import { RadminTableConfig } from "../../configs/radmin-table-config";
 import {
-  cleanupFloatingMenus,
+  cleanupToolbars,
   createVirtualElFromRects,
-  positionFloatingElement,
-} from "./utils/floating-menu";
+  positionToolbarElement,
+} from "./utils/toolbar-positioning";
 import { CommandNames } from "@2sic.com/2sxc-typings";
 
 declare const $2sxc: any;
@@ -17,9 +17,9 @@ winAny.tabulatorToolbars = winAny.tabulatorToolbars || {};
 
 /**
  * 2sxc Toolbar integration for Tabulator
- * Uses native 2sxc toolbars with Floating UI positioning
+ * Uses native 2sxc toolbars to create toolbars for rows and columns
  */
-export class tabulatorToolbars {
+export class TabulatorToolbars {
   private baseButtonSize = 32;
   private zIndex = 1000;
 
@@ -30,7 +30,7 @@ export class tabulatorToolbars {
   }
 
   public showAddButton(table: Tabulator, tableConfigData: RadminTableConfig) {
-    this.log("Adding floating add button to table");
+    this.log("Adding add button to table");
     const tableElement = table.element as HTMLElement;
 
     // remove existing
@@ -71,7 +71,7 @@ export class tabulatorToolbars {
     this.observeToolbarMutations(container, toolbarHtml);
   }
 
-  private createRowActionFloatingMenu(
+  private createRowActioToolbar(
     table: Tabulator,
     row: RowComponent,
     event: Event,
@@ -79,8 +79,8 @@ export class tabulatorToolbars {
     showDelete: boolean
   ) {
     event.preventDefault();
-    cleanupFloatingMenus();
-    this.log("Creating row action floating menu", { showEdit, showDelete });
+    cleanupToolbars();
+    this.log("Creating row action toolbar", { showEdit, showDelete });
 
     const sxc = $2sxc(table.element);
     if (!sxc.isEditMode()) {
@@ -115,9 +115,9 @@ export class tabulatorToolbars {
       rowRect.top + rowRect.height / 2
     );
 
-    const floatingEl = document.createElement("div");
-    floatingEl.className = "floating-menu";
-    Object.assign(floatingEl.style, {
+    const toolbarEl = document.createElement("div");
+    toolbarEl.className = "toolbar-menu";
+    Object.assign(toolbarEl.style, {
       position: "absolute",
       background: "transparent",
       border: "none",
@@ -168,19 +168,19 @@ export class tabulatorToolbars {
     this.log("Generated toolbar HTML:", toolbarHtml);
 
     // Insert toolbar HTML into floating container
-    floatingEl.innerHTML = toolbarHtml;
+    toolbarEl.innerHTML = toolbarHtml;
 
     // If delete was requested but server did not include a delete button,
     // the toolbarHtml will not contain a delete <li>. We log for diagnostics.
     if (showDelete) {
       const hasDelete =
-        floatingEl.querySelector &&
-        !!floatingEl.querySelector('a[onclick*="delete"]');
+        toolbarEl.querySelector &&
+        !!toolbarEl.querySelector('a[onclick*="delete"]');
       this.log("Server returned delete button present:", hasDelete);
     }
 
-    document.body.appendChild(floatingEl);
-    this.log("Row action floating menu appended");
+    document.body.appendChild(toolbarEl);
+    this.log("Row action toolbar appended");
 
     // compute offset based on buttons present (mirrors original logic)
     const middlewareOffsetFn = () =>
@@ -190,69 +190,69 @@ export class tabulatorToolbars {
         (showDelete && showEdit ? 16 : 12)
       );
 
-    positionFloatingElement(
+    positionToolbarElement(
       virtualEl,
-      floatingEl,
+      toolbarEl,
       middlewareOffsetFn,
     ).then(({ x, y }) => {
-      this.log("Computed floating menu position", { x, y });
+      this.log("Computed toolbar position", { x, y });
     });
 
     let isHovered = false;
-    floatingEl.addEventListener("mouseenter", () => {
+    toolbarEl.addEventListener("mouseenter", () => {
       isHovered = true;
-      this.log("Floating menu hover start");
+      this.log("Toolbar hover start");
     });
-    floatingEl.addEventListener("mouseleave", () => {
+    toolbarEl.addEventListener("mouseleave", () => {
       isHovered = false;
-      this.log("Floating menu hover end — removing");
-      floatingEl.remove();
+      this.log("Toolbar hover end — removing");
+      toolbarEl.remove();
     });
 
     table.on("rowMouseLeave", () => {
       setTimeout(() => {
         if (!isHovered) {
-          this.log("Row mouse leave — removing floating menu");
-          floatingEl.remove();
+          this.log("Row mouse leave — removing toolbar");
+          toolbarEl.remove();
         }
       }, 100);
     });
   }
 
-  public showFloatingMenuEditDelete(
+  public showEditDeleteToolbar(
     table: Tabulator,
     row: RowComponent,
     event: Event
   ) {
-    this.log("Show floating menu (edit + delete)");
-    this.createRowActionFloatingMenu(table, row, event, true, true);
+    this.log("Show (edit + delete) toolbar");
+    this.createRowActioToolbar(table, row, event, true, true);
   }
 
-  public showFloatingMenuEditOnly(
+  public showEditOnlyToolbar(
     table: Tabulator,
     row: RowComponent,
     event: Event
   ) {
-    this.log("Show floating menu (edit only)");
-    this.createRowActionFloatingMenu(table, row, event, true, false);
+    this.log("Show (edit only) toolbar");
+    this.createRowActioToolbar(table, row, event, true, false);
   }
 
-  public showFloatingMenuDeleteOnly(
+  public showDeleteOnlyToolbar(
     table: Tabulator,
     row: RowComponent,
     event: Event
   ) {
-    this.log("Show floating menu (delete only)");
-    this.createRowActionFloatingMenu(table, row, event, false, true);
+    this.log("Show (delete only) toolbar");
+    this.createRowActioToolbar(table, row, event, false, true);
   }
 
-  public showFloatingColumnMenu(
+  public showColumnToolbar(
     column: ColumnComponent,
     event: Event,
     tableConfigData: RadminTableConfig
   ) {
     event.preventDefault();
-    this.log("Creating floating column menu");
+    this.log("Creating column toolbar");
 
     const table = column.getTable();
     const sxc = $2sxc(table.element);
@@ -271,9 +271,9 @@ export class tabulatorToolbars {
       colRect.top + colRect.height / 2
     );
 
-    const floatingEl = document.createElement("div");
-    floatingEl.className = "floating-menu";
-    Object.assign(floatingEl.style, {
+    const toolbarEl = document.createElement("div");
+    toolbarEl.className = "toolbar-menu";
+    Object.assign(toolbarEl.style, {
       position: "absolute",
       width: `${this.baseButtonSize}px`,
       height: `${this.baseButtonSize}px`,
@@ -329,23 +329,23 @@ export class tabulatorToolbars {
       });
     }
 
-    floatingEl.innerHTML = toolbarHtml;
-    document.body.appendChild(floatingEl);
+    toolbarEl.innerHTML = toolbarHtml;
+    document.body.appendChild(toolbarEl);
 
-    positionFloatingElement(
+    positionToolbarElement(
       virtualEl,
-      floatingEl,
+      toolbarEl,
       () => -this.baseButtonSize,
     ).then(({ x, y }) => {
-      this.log("Computed floating column menu position", { x, y });
+      this.log("Computed column toolbar position", { x, y });
     });
 
-    floatingEl.addEventListener("mouseenter", () => {
-      this.log("Floating column menu hover start");
+    toolbarEl.addEventListener("mouseenter", () => {
+      this.log("Column toolbar hover start");
     });
-    floatingEl.addEventListener("mouseleave", () => {
-      this.log("Floating column menu hover end — removing");
-      floatingEl.remove();
+    toolbarEl.addEventListener("mouseleave", () => {
+      this.log("Column toolbar hover end — removing");
+      toolbarEl.remove();
     });
   }
 

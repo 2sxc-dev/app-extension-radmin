@@ -23,7 +23,7 @@ import { SchemaProvider } from "../providers/schema-provider";
 import { CustomizeManager } from "../customizers/customize-manager";
 import { SetupObjectSorter } from "../helpers/setup-object-sorter";
 import { ErrorMessageGenerator } from "../helpers/error-message-generator";
-import { tabulatorToolbars } from "./tabulator-toolbars/tabulator-toolbar";
+import { TabulatorToolbars } from "./tabulator-toolbars/tabulator-toolbar";
 
 // Register required modules for Tabulator
 Tabulator.registerModule([
@@ -42,7 +42,7 @@ interface ExtendedOptions extends Options {
 }
 
 export class TabulatorAdapter {
-  private floatingUi = new tabulatorToolbars();
+  private tabulatorToolbars = new TabulatorToolbars();
   private configService = new TabulatorConfigService();
 
   debug = false;
@@ -251,7 +251,7 @@ export class TabulatorAdapter {
         "headerMouseEnter" as any,
         (e: MouseEvent, column: ColumnComponent) => {
           this.log("headerMouseEnter triggered", column);
-          this.floatingUi.showFloatingColumnMenu(column, e, tableConfigData);
+          this.tabulatorToolbars.showColumnToolbar(column, e, tableConfigData);
         }
       );
     });
@@ -276,11 +276,11 @@ export class TabulatorAdapter {
     table.on("rowMouseEnter", (e, row: RowComponent) => {
       this.log("rowMouseEnter triggered", row.getData());
       if (enableEdit && enableDelete) {
-        this.floatingUi.showFloatingMenuEditDelete(table, row, e);
+        this.tabulatorToolbars.showEditDeleteToolbar(table, row, e);
       } else if (enableEdit) {
-        this.floatingUi.showFloatingMenuEditOnly(table, row, e);
+        this.tabulatorToolbars.showEditOnlyToolbar(table, row, e);
       } else if (enableDelete) {
-        this.floatingUi.showFloatingMenuDeleteOnly(table, row, e);
+        this.tabulatorToolbars.showDeleteOnlyToolbar(table, row, e);
       }
     });
 
@@ -296,11 +296,11 @@ export class TabulatorAdapter {
     this.log("setupRowAddMode called");
     table.on("dataLoaded", () => {
       this.log("dataLoaded → showing add button");
-      this.floatingUi.showAddButton(table, tableConfigData);
+      this.tabulatorToolbars.showAddButton(table, tableConfigData);
     });
     try {
       this.log("trying to show add button immediately");
-      this.floatingUi.showAddButton(table, tableConfigData);
+      this.tabulatorToolbars.showAddButton(table, tableConfigData);
     } catch (error) {
       this.log(
         "immediate add button failed",
