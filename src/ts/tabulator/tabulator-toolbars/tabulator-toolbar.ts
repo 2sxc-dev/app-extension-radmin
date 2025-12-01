@@ -7,7 +7,6 @@ import { RadminTableConfig } from "../../configs/radmin-table-config";
 import { createRowActionToolbar } from "./row-toolbar";
 import { showColumnToolbar } from "./column-toolbar";
 import { showAddButton } from "./add-button";
-import { cleanupToolbars } from "./utils/toolbar-positioning";
 
 /**
  * Facade class kept for backward compatibility.

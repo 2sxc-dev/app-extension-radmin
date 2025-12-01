@@ -35,7 +35,7 @@ export function showAddButton(
   container.className = "table-add-button";
   Object.assign(container.style, {
     position: "absolute",
-    top: "5px",
+    top: "7.5px",
     right: "10px",
     zIndex: String(zIndex - 900),
     width: `${baseButtonSize}px`,
