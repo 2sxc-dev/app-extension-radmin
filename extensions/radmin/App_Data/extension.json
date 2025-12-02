@@ -9,7 +9,7 @@
   "linkDocs": "",
   "linkSource": "https://github.com/2sxc-dev/app-extension-radmin",
   "linkDemo": "",
-  "version": "0.4.7",
+  "version": "00.04.08",
   "releases": [],
   "isInstalled": false,
   "editionsSupported": false,
@@ -27,9 +27,9 @@
   "hasContentTypes": false,
   "hasQueries": false,
   "hasViews": false,
-  "dataInside": false,
+  "dataInside": true,
   "inputFieldAssets": null,
   "inputTypeAssets": null,
-  "dataBundles": null,
+  "dataBundles": "5bad7589-d1d9-4edd-afa4-4adb92b59a55",
   "bundles": ""
 }
