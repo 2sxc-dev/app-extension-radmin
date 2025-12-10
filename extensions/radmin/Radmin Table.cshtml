@@ -6,19 +6,31 @@
 @{
   Kit.Page.Activate("2sxc.JsCore");
 
-  var itemViewId = MyPage.Parameters.String(SxcTablesConstants.UrlParamViewId, fallback: null);
+  var viewId = MyPage.Parameters.String(
+    SxcTablesConstants.UrlParamViewId,
+    fallback: null
+  );
 
-  var item = string.IsNullOrEmpty(itemViewId) || !Guid.TryParse(itemViewId, out var parsedGuid)
-    ? As<RadminTable>(MyItem)
-    : App.Data.GetOne<RadminTable>(parsedGuid);
+  @if (!string.IsNullOrWhiteSpace(viewId))
+  {
+    @Html.Partial("Radmin Details.cshtml", new { viewId });
+    return;
+  }
 
+  var item = As<RadminTable>(MyItem);
   var appUrl = App.Folder.Url;
 }
 
-@* Show Switcher to toggle table configuration mode - to admins only, and not for demo since that shouldn't be modified *@
+@*  
+  Show Switcher to toggle table configuration mode.
+  ~admins only, and not for demo since that shouldn't be modified~
+*@
 @Html.Partial("./ToggleViewConfigMode.cshtml", new { item })
 
-<div class="d-flex justify-content-between align-items-center mb-1" @Kit.Toolbar.Default(item)>
+<div
+  class="d-flex justify-content-between align-items-center mb-1"
+  @Kit.Toolbar.Default(item)
+>
   <h1>@item.Title</h1>
   @* The filter input will be dynamically inserted here by JavaScript *@
 </div>
@@ -39,7 +51,10 @@
   viewId = item.Guid.ToString(),
   canEditConfig = MyUser.IsSiteAdmin && !item.IsDemoItem,
   canEditData = MyUser.IsContentEditor && !item.IsDemoItem,
-  customizerDistPath = (string.IsNullOrEmpty(item.CustomizersDistPath) ? "" : appUrl + item.CustomizersDistPath)
+  customizerDistPath = (string.IsNullOrEmpty(item.CustomizersDistPath)
+    ? ""
+    : appUrl + item.CustomizersDistPath
+  )
 })
 
 <script src="@appUrl/extensions/radmin/dist/tables.js" @Kit.Page.AssetAttributes(position: "bottom")></script>

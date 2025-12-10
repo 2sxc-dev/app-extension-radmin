@@ -1,0 +1,33 @@
+@inherits Custom.Hybrid.RazorTyped
+@using AppCode
+@using AppCode.Extensions.Radmin
+
+@{
+  var viewId = MyModel.Get<string>("viewId");
+
+  if (string.IsNullOrWhiteSpace(viewId))
+  {
+    <div class="alert alert-warning">
+      Missing viewId parameter.
+    </div>
+    return;
+  }
+
+  var backPageParameters = MyPage.Parameters.Remove(SxcTablesConstants.UrlParamViewId);
+
+  // TODO: Get ContentType from Radmin Details <Security>
+  // TODO: Get passed (when implemented) entity
+
+  @* var details = MyView.Get<dynamic>("ContentType"); *@
+}
+
+<a
+  href="@Link.To(
+    parameters: backPageParameters
+  )"
+  class="btn btn-primary mt-3"
+>
+  Back to Table View
+</a>
+
+Found viewid: @viewId
