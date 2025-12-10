@@ -128,6 +128,9 @@ export class TabulatorColumnAdapter {
               return url;
             },
             target: "_self",
+            label: (cell: CellComponent) => {
+              return objectTitleFormatter(cell);
+            },
           };
           // When link is enabled we don't want the object formatter/sorter interfering
           // (link formatter will produce a string)
