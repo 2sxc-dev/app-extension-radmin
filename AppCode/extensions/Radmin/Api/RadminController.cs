@@ -9,6 +9,7 @@
 #endif
 using System;
 using AppCode.Extensions.Radmin.Data;
+// Note: since this DLL is not included by default, you must have the compile.json set to include System.Net.Http
 using HttpResponseMessage = System.Net.Http.HttpResponseMessage;
 
 namespace AppCode.Extensions.Radmin.Api
