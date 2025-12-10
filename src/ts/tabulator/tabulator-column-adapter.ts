@@ -317,17 +317,17 @@ function objectTitleFormatter(cell: CellComponent): string {
 function normalizeFieldName(field: string, schema: JsonSchema): string {
   field = field.toLowerCase();
   if (!field || !schema.properties) return field;
-  
+
   const keys = Object.keys(schema.properties);
-  
+
   // Try exact match first
   const exact = keys.find((k) => k === field);
   if (exact) return exact;
-  
+
   // Try case-insensitive match
   const ci = keys.find((k) => k.toLowerCase() === field.toLowerCase());
   if (ci) return ci;
-  
+
   // Fall back to original field name if no match found
   return field;
 }
