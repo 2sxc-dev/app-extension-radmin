@@ -19,5 +19,7 @@ export interface RadminColumnConfig {
 }
 
 export interface RadminDetailsViewConfig {
+  id: number;
+  guid: string;
   viewId: string
 }

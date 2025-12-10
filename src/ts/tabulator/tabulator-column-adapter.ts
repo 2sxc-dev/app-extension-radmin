@@ -118,7 +118,7 @@ export class TabulatorColumnAdapter {
                 col.linkParameters,
                 cell.getData()
               );
-              const url = `?viewid=${col.linkViewId}${
+              const url = `?viewid=${col.linkViewId.viewId}${
                 params ? "&" + params : ""
               }`;
               this.log("Generated link url for cell", {
