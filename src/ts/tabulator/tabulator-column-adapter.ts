@@ -14,13 +14,13 @@ export class TabulatorColumnAdapter {
   }
 
   convert(
-    columnConfig: RadminColumnConfig[],
+    columnConfigs: RadminColumnConfig[],
     columnsAutoShowRemaining: boolean,
     schema: JsonSchema
   ): TabulatorColumnConfig[] {
     this.log(
       "convert called with",
-      { columnConfigLength: columnConfig.length },
+      { columnConfigLength: columnConfigs.length },
       { columnsAutoShowRemaining },
       { schemaProperties: Object.keys(schema.properties).length }
     );
@@ -30,7 +30,7 @@ export class TabulatorColumnAdapter {
 
     // Process configured columns (explicit user config). If a configured column points to a group property,
     // skip it (group fields should not become visible columns).
-    const configuredColumns = columnConfig
+    const configuredColumns = columnConfigs
       .map((col) => {
         const normalizedField = normalizeFieldName(col.valueSelector, schema);
         const prop = schema.properties[normalizedField];

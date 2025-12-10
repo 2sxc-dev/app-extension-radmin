@@ -40,8 +40,6 @@ export class TabulatorConfigService {
       layout: "fitDataFill",
       columns,
       title: data.title || "2sxc Table",
-      dataContentType: "",
-      dataQuery: "",
       viewId: data.viewId,
       id: data.id,
       columnConfigs: data.columnConfigs,
@@ -50,7 +48,7 @@ export class TabulatorConfigService {
       columnsAutoShowRemaining: data.columnsAutoShowRemaining,
       pagination: data.pagingMode === "true",
       paginationSize: data.pagingSize ?? 10,
-      guid: "",
+      guid: data.guid,
     } as TabulatorConfig;
   }
 }
