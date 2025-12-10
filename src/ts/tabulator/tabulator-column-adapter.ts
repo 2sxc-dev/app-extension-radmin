@@ -5,6 +5,8 @@ import { CellComponent } from "tabulator-tables";
 import { JsonSchema, SchemaProperty } from "../models/json-schema-model";
 import { GroupPropertyIdentifier } from "../helpers/group-property-identifier";
 import HtmlStripper from "../helpers/html-stripper";
+import { ParamMatcher } from "../helpers/param-matcher";
+import { ShemaFormatter } from "../helpers/shema-formatter";
 
 export class TabulatorColumnAdapter {
   debug = false;
@@ -32,7 +34,10 @@ export class TabulatorColumnAdapter {
     // skip it (group fields should not become visible columns).
     const configuredColumns = columnConfigs
       .map((col) => {
-        const normalizedField = normalizeFieldName(col.valueSelector, schema);
+        const normalizedField = ParamMatcher.normalizeFieldName(
+          col.valueSelector,
+          schema
+        );
         const prop = schema.properties[normalizedField];
         this.log(
           "configured column:",
@@ -55,7 +60,7 @@ export class TabulatorColumnAdapter {
 
         const chosenFormat =
           col.valueFormat ||
-          this.getFormatFromSchema(col.valueSelector, schema);
+          ShemaFormatter.getFormatFromSchema(col.valueSelector, schema);
         const formatConfig = formatConfigs[chosenFormat] || {};
         this.log("chosenFormat:", chosenFormat, "formatConfig:", formatConfig);
 
@@ -68,7 +73,7 @@ export class TabulatorColumnAdapter {
           !col.linkEnable
         ) {
           this.log("Using objectTitleFormatter for", normalizedField);
-          formatter = objectTitleFormatter;
+          formatter = ShemaFormatter.objectTitleFormatter;
           // Use the registered custom object sorter
           sorter = "object";
         }
@@ -94,8 +99,13 @@ export class TabulatorColumnAdapter {
           tooltip: !col.tooltipEnabled
             ? false
             : col.tooltipSelector
-            ? (e: Event, cell: CellComponent) =>
-                this.replaceParameters(col.tooltipSelector, cell.getData())
+            ? (e, cell) =>
+                ParamMatcher.replaceParameters(
+                  col.tooltipSelector,
+                  cell.getData(),
+                  schema,
+                  (...a) => this.log(...a)
+                )
             : true,
         };
 
@@ -114,9 +124,11 @@ export class TabulatorColumnAdapter {
           column.formatter = "link";
           column.formatterParams = {
             url: (cell: CellComponent) => {
-              const params = this.replaceParameters(
+              const params = ParamMatcher.replaceParameters(
                 col.linkParameters,
-                cell.getData()
+                cell.getData(),
+                schema,
+                (...a) => this.log(...a)
               );
               const url = `?viewid=${col.linkViewId.viewId}${
                 params ? "&" + params : ""
@@ -129,7 +141,7 @@ export class TabulatorColumnAdapter {
             },
             target: "_self",
             label: (cell: CellComponent) => {
-              return objectTitleFormatter(cell);
+              return ShemaFormatter.objectTitleFormatter(cell);
             },
           };
           // When link is enabled we don't want the object formatter/sorter interfering
@@ -193,7 +205,7 @@ export class TabulatorColumnAdapter {
       })
       .map((key) => {
         const property = schema.properties[key];
-        const format = this.mapSchemaTypeToFormat(property);
+        const format = ShemaFormatter.mapSchemaTypeToFormat(property);
         const formatConfig = formatConfigs[format] || {};
         this.log("Auto-adding column for key:", key, { format, formatConfig });
 
@@ -203,7 +215,7 @@ export class TabulatorColumnAdapter {
           ...formatConfig,
           formatter:
             property.type === "object" || property.type === "array"
-              ? objectTitleFormatter
+              ? ShemaFormatter.objectTitleFormatter
               : formatConfig.formatter,
           // Use custom sorter for objects/arrays
           sorter:
@@ -235,99 +247,4 @@ export class TabulatorColumnAdapter {
 
     return [...configuredColumns, ...remainingColumns];
   }
-
-  private mapSchemaTypeToFormat(property: SchemaProperty): string {
-    const origType = property.type;
-    if (property.format === "date-time") {
-      this.log("mapSchemaTypeToFormat: using 'date-time' for", { property });
-      return "date-time";
-    }
-    if (property.format === "date") {
-      this.log("mapSchemaTypeToFormat: using 'date' for", { property });
-      return "date";
-    }
-    if (property.format === "uri" || property.format === "email") {
-      this.log("mapSchemaTypeToFormat: using 'link' for", { property });
-      return "link";
-    }
-    this.log("mapSchemaTypeToFormat: falling back to type", origType);
-    return property.type;
-  }
-
-  private getFormatFromSchema(field: string, schema: JsonSchema): string {
-    const normalizedField = normalizeFieldName(field, schema);
-    const property = schema.properties[normalizedField];
-    const format = property ? this.mapSchemaTypeToFormat(property) : "";
-    this.log("getFormatFromSchema", { field, normalizedField, format });
-    return format;
-  }
-
-  private replaceParameters(template: string, data: any): string {
-    try {
-      const result = template.replace(
-        /\[([^\]]+)\]/g,
-        (_, key) => this.getNestedValue(data, key) || ""
-      );
-      this.log("replaceParameters", { template, result });
-      return result;
-    } catch (err) {
-      this.log("replaceParameters error", err, { template });
-      return "";
-    }
-  }
-
-  private getNestedValue(obj: any, key: string): any {
-    try {
-      const val = key.split(".").reduce((prev, curr) => prev?.[curr], obj);
-      this.log("getNestedValue", { key, val });
-      return val;
-    } catch (err) {
-      this.log("getNestedValue error", err, { key });
-      return undefined;
-    }
-  }
-}
-
-/**
- * Formats the title for object and array fields.
- */
-function objectTitleFormatter(cell: CellComponent): string {
-  const value = cell.getValue();
-
-  if (!value) return "";
-  if (Array.isArray(value)) {
-    if (value.length === 0) return "";
-    const first = value[0];
-    const title = first?.Title ?? first?.title ?? JSON.stringify(first);
-    const suffix = value.length > 1 ? ` +${value.length - 1}` : "";
-    return `${title}${suffix}`;
-  }
-
-  if (typeof value === "object") {
-    return value.Title ?? value.title ?? JSON.stringify(value);
-  }
-
-  return String(value);
-}
-
-/**
- * Normalizes a field name to match schema property keys.
- * Tries exact, lowercase-first, and case-insensitive matches.
- */
-function normalizeFieldName(field: string, schema: JsonSchema): string {
-  field = field.toLowerCase();
-  if (!field || !schema.properties) return field;
-
-  const keys = Object.keys(schema.properties);
-
-  // Try exact match first
-  const exact = keys.find((k) => k === field);
-  if (exact) return exact;
-
-  // Try case-insensitive match
-  const ci = keys.find((k) => k.toLowerCase() === field.toLowerCase());
-  if (ci) return ci;
-
-  // Fall back to original field name if no match found
-  return field;
 }
