@@ -124,10 +124,11 @@ export class TabulatorColumnAdapter {
           column.formatter = "link";
           column.formatterParams = {
             url: (cell: CellComponent) => {
-              const entityId = ParamMatcher.getNestedValue(
-                cell.getData(),
-                col.valueSelector
-              )[0].Id;
+              const entityId =
+                ParamMatcher.getNestedValue(
+                  cell.getData(),
+                  col.valueSelector
+                )[0].Id || cell.getData().id;
               const params = ParamMatcher.replaceParameters(
                 col.linkParameters,
                 cell.getData(),
