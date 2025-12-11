@@ -124,15 +124,18 @@ export class TabulatorColumnAdapter {
           column.formatter = "link";
           column.formatterParams = {
             url: (cell: CellComponent) => {
+              const entityId = ParamMatcher.getNestedValue(
+                cell.getData(),
+                col.valueSelector
+              )[0].Id;
               const params = ParamMatcher.replaceParameters(
                 col.linkParameters,
                 cell.getData(),
-                schema,
-                (...a) => this.log(...a)
+                schema
               );
-              const url = `?viewid=${col.linkViewId.viewId}&entityid=${cell.getData().id}${
-                params ? "&" + params : ""
-              }`;
+              const url = `?viewid=${
+                col.linkViewId.viewId
+              }&entityid=${entityId}${params ? "&" + params : ""}`;
               this.log("Generated link url for cell", {
                 field: normalizedField,
                 url,
@@ -140,10 +143,10 @@ export class TabulatorColumnAdapter {
               return url;
             },
             target: "_self",
-            label: (cell: CellComponent) => {
-              return ShemaFormatter.objectTitleFormatter(cell);
-            },
+            label: (cell: CellComponent) =>
+              ShemaFormatter.objectTitleFormatter(cell),
           };
+
           // When link is enabled we don't want the object formatter/sorter interfering
           // (link formatter will produce a string)
           if (prop?.type === "object" || prop?.type === "array") {

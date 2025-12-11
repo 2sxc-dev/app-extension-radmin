@@ -1,8 +1,9 @@
-@inherits Custom.Hybrid.RazorTyped
+@inherits AppCode.Razor.AppRazor
 @using ToSic.Razor.Blade
 @using AppCode
 @using AppCode.Data
 @using AppCode.Extensions.Radmin
+@using ToSic.Sxc.Data;
 
 @{
   var viewId = MyModel.Get<string>("viewId");
@@ -19,15 +20,16 @@
   }
 
   var backPageParameters = MyPage.Parameters.Flush();
-  
-  var radminDetails = App.Data.GetAll<RadminDetails>().Where(d => d.ViewId == viewId).FirstOrDefault();
 
-  // TODO: Get ContentType from Radmin Details <Security>
-  // TODO: Get passed (when implemented) entity
+  var radminDetails = App.Data.GetAll<RadminDetails>()
+    .Where(d => d.ViewId == viewId)
+    .FirstOrDefault();
 
-  var entity = App.Data.GetAll<radminDetails.DataContentType>().FirstOrDefault(e =>
-    e.Id == entityId
-  );
+  var stream = App.Data.GetStream(radminDetails.DataContentType);
+  var items = AsItems(stream).ToList();
+
+  var entity = AsItems(stream)
+    .FirstOrDefault(e => e.Id == entityId);
 }
 
 <a href="@Link.To(
@@ -37,6 +39,22 @@
   Back to Table View
 </a>
 
-@radminDetails.Id
+@if (entity == null)
+{
+  <div class="alert alert-warning">
+    Entity not found in provided datasource.
+  </div>
+  return;
+}
 
-Found viewid: @entity.Title
+<table class="table table-bordered mt-4">
+  <tbody>
+    @foreach (var key in entity.Keys())
+    {
+      <tr>
+        <th class="w-25">@key</th>
+        <td>@entity.Get(key)</td>
+      </tr>
+    }
+  </tbody>
+</table>
