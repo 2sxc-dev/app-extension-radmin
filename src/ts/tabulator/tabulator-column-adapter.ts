@@ -130,7 +130,7 @@ export class TabulatorColumnAdapter {
                 schema,
                 (...a) => this.log(...a)
               );
-              const url = `?viewid=${col.linkViewId.viewId}${
+              const url = `?viewid=${col.linkViewId.viewId}&entityid=${cell.getData().id}${
                 params ? "&" + params : ""
               }`;
               this.log("Generated link url for cell", {

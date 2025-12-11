@@ -1,33 +1,42 @@
 @inherits Custom.Hybrid.RazorTyped
+@using ToSic.Razor.Blade
 @using AppCode
+@using AppCode.Data
 @using AppCode.Extensions.Radmin
 
 @{
   var viewId = MyModel.Get<string>("viewId");
+  var entityId = MyPage.Parameters.Int(
+    SxcTablesConstants.UrlParamEntityId
+  );
 
-  if (string.IsNullOrWhiteSpace(viewId))
+  if (!Text.Has(viewId) || entityId <= 0)
   {
     <div class="alert alert-warning">
-      Missing viewId parameter.
+      Missing parameters.
     </div>
     return;
   }
 
-  var backPageParameters = MyPage.Parameters.Remove(SxcTablesConstants.UrlParamViewId);
+  var backPageParameters = MyPage.Parameters.Flush();
+  
+  var radminDetails = App.Data.GetAll<RadminDetails>().Where(d => d.ViewId == viewId).FirstOrDefault();
 
   // TODO: Get ContentType from Radmin Details <Security>
   // TODO: Get passed (when implemented) entity
 
-  @* var details = MyView.Get<dynamic>("ContentType"); *@
+  var entity = App.Data.GetAll<radminDetails.DataContentType>().FirstOrDefault(e =>
+    e.Id == entityId
+  );
 }
 
-<a
-  href="@Link.To(
+<a href="@Link.To(
     parameters: backPageParameters
-  )"
-  class="btn btn-primary mt-3"
+  )" class="btn btn-primary mt-3"
 >
   Back to Table View
 </a>
 
-Found viewid: @viewId
+@radminDetails.Id
+
+Found viewid: @entity.Title
