@@ -30,14 +30,10 @@
 
   var entity = AsItems(stream)
     .FirstOrDefault(e => e.Id == entityId);
+
+  var entityContentType = App.Data.GetContentType(radminDetails.DataContentType);
 }
 
-<a href="@Link.To(
-    parameters: backPageParameters
-  )" class="btn btn-primary mt-3"
->
-  Back to Table View
-</a>
 
 @if (entity == null)
 {
@@ -47,14 +43,25 @@
   return;
 }
 
-<table class="table table-bordered mt-4">
-  <tbody>
-    @foreach (var key in entity.Keys())
-    {
-      <tr>
-        <th class="w-25">@key</th>
-        <td>@entity.Get(key)</td>
-      </tr>
-    }
-  </tbody>
-</table>
+<div @Kit.Toolbar.Empty().Edit(entity)>
+  <h2>@entity.Get("Title")</h2>
+
+  <table class="table table-bordered mt-4">
+    <tbody>
+      @foreach (var attr in entityContentType.Attributes)
+      {
+        <tr>
+          <th class="w-25 fw-normal">@attr.Name</th> @* TODO: @2pp - make group names bold *@
+          <td>@entity.Get(attr.Name)</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  
+  <a href="@Link.To(
+      parameters: backPageParameters
+    )" class="btn btn-primary mt-3"
+  >
+    Back to Table View
+  </a>
+</div>
