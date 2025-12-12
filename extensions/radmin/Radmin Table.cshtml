@@ -19,13 +19,15 @@
 
   var item = As<RadminTable>(MyItem);
   var appUrl = App.Folder.Url;
+
+  var resources = GetService<RadminHelper>().GetResources();
 }
 
 @*  
   Show Switcher to toggle table configuration mode.
   ~admins only, and not for demo since that shouldn't be modified~
 *@
-@Html.Partial("./ToggleViewConfigMode.cshtml", new { item })
+@Html.Partial("./ToggleViewConfigMode.cshtml", new { item, resources })
 
 <div
   class="d-flex justify-content-between align-items-center mb-1"

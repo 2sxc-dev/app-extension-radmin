@@ -9,7 +9,8 @@ export class TabulatorSearchFilter {
     moduleId: number
   ): void {
     const tableElement = document.getElementById(tableName);
-    if (!tableElement) return;
+    if (!tableElement)
+      return;
 
     // Find module container (parent element that contains the table)
     const moduleContainer =
@@ -21,7 +22,8 @@ export class TabulatorSearchFilter {
       ) ||
       tableElement.parentElement;
 
-    if (!moduleContainer) return;
+    if (!moduleContainer)
+      return;
 
     // Create search input
     const filterInput = document.createElement("input");
@@ -82,7 +84,8 @@ export class TabulatorSearchFilter {
    */
   matchAny(data: any, filterParams: any, row?: any): boolean {
     const searchEnabled = filterParams.value?.toString().toLowerCase() || "";
-    if (!searchEnabled) return true;
+    if (!searchEnabled)
+      return true;
 
     // Check row cells if row object is available
     if (row && row.getCells) {
@@ -99,11 +102,11 @@ export class TabulatorSearchFilter {
     for (const key in data) {
       const value = data[key];
       if (value != null) {
-        const stringValue =
-          typeof value === "object" ? JSON.stringify(value) : String(value);
-        if (stringValue.toLowerCase().includes(searchEnabled)) {
+        const stringValue = typeof value === "object"
+          ? JSON.stringify(value)
+          : String(value);
+        if (stringValue.toLowerCase().includes(searchEnabled))
           return true;
-        }
       }
     }
 

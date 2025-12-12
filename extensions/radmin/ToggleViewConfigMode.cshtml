@@ -2,14 +2,16 @@
 @using AppCode
 @using AppCode.Data
 @using AppCode.Extensions.Radmin
-@using RadminData = AppCode.Extensions.Radmin.Data
+@using AppCode.Extensions.Radmin.Data
 @using ToSic.Razor.Blade
 
 @* Toggle switch for table configuration mode (admins only, skip for demo items) *@
 
 @{
-  var res = App.Data.GetAll<RadminResources>().FirstOrDefault();
-  var item = MyModel.Get<RadminData.RadminTable>("item");
+  // Get Radmin resources
+  var res = MyModel.Get<RadminResources>("resources");
+
+  var item = MyModel.Get<RadminTable>("item");
 
   if (!MyUser.IsSiteAdmin || item.IsDemoItem)
     return;
@@ -38,7 +40,6 @@
     @(viewConfigMode ? "checked" : "")
   >
   <label class="form-check-label" for="flexSwitchCheckDefault">
-    @* TODO: Serve with bundle -> @res.ViewConfigModeLabel *@
-    View Config Mode
+    @res.ViewConfigModeLabel
   </label>
 </div>

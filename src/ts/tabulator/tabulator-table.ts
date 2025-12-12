@@ -32,6 +32,7 @@ export class TabulatorTable {
     canEditConfig: boolean;
     canEditData: boolean;
     customizerDistPath?: string; // Optional app URL for dynamic imports
+    resources: Record<string, string>;
   }) {
     this.log("Creating tabulator table with data:", data);
 
