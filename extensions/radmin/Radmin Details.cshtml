@@ -50,7 +50,9 @@
 
   <table class="table table-bordered mt-4">
     <tbody>
-      @foreach (var attr in entityContentType.Attributes)
+      @foreach (var attr in entityContentType.Attributes
+        .OrderBy(a => a.SortOrder)
+      )
       {
         var key = attr.Name;
         var value = entity.Get(key);
