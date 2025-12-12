@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using AppCode.Data;
+using AppCode.Extensions.Radmin.Data;
 using Custom.Hybrid;
 
 namespace AppCode.Extensions.Radmin

@@ -21,6 +21,8 @@
   var appUrl = App.Folder.Url;
 
   var resources = GetService<RadminHelper>().GetResources();
+
+  var mid = MyContext.Module.Id;
 }
 
 @*  
@@ -38,25 +40,25 @@
 </div>
 
 @* Add error container before the table *@
-<div id="tosxc-table-error-@MyContext.Module.Id" class="mb-3"></div>
+<div id="tosxc-table-error-@mid" class="mb-3"></div>
 
 <div>
   @* Tabulator ID *@
-  <div id="tosxc-table-@MyContext.Module.Id" />
+  <div id="tosxc-table-@mid" />
 </div>
 
 @Kit.Page.TurnOn("window.table.createTabulatorTable()", data: new {
-  tableName = "tosxc-table-" + MyContext.Module.Id,
-  filterName = "tosxc-table-filter-" + MyContext.Module.Id,
-  errorContainerId = "tosxc-table-error-" + MyContext.Module.Id,
-  moduleId = MyContext.Module.Id,
-  viewId = item.Guid.ToString(),
+  tableName = "tosxc-table-" + mid,
+  filterName = "tosxc-table-filter-" + mid,
+  errorContainerId = "tosxc-table-error-" + mid,
+  moduleId = mid,
+  viewId = item.Guid,
   canEditConfig = MyUser.IsSiteAdmin && !item.IsDemoItem,
   canEditData = MyUser.IsContentEditor && !item.IsDemoItem,
-  customizerDistPath = (string.IsNullOrEmpty(item.CustomizersDistPath)
+  customizerDistPath = item.IsEmpty(nameof(item.CustomizersDistPath))
     ? ""
-    : appUrl + item.CustomizersDistPath
-  )
+    : appUrl + item.CustomizersDistPath,
+  resources = resources
 })
 
 <script src="@appUrl/extensions/radmin/dist/tables.js" @Kit.Page.AssetAttributes(position: "bottom")></script>
