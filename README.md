@@ -56,6 +56,26 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## History
 
+### 2025-12-12
+
+1. 2pp: Ensure Detail View Keys are sorted and rendered correctly
+
+### 2025-12-11
+
+1. 2pp: Add and configure Details View
+1. 2pp: Use matcher to correctly retreave infos for Details View
+
+### 2025-12-10
+
+1. 2pp: Fix Link formatted labels
+1. 2pp: Update ViewId type to use RadminDetails type and not a string
+1. 2pp: Update radmin schemas
+1. 2pp: Refactor Column adapter into Helpers
+
+### 2025-11-25
+
+1. 2pp: Refactor Toolbars to use normal 2sxc Toolbars
+
 ### 2025-11-20
 
 1. 2pp: Generate AppCode with Copilot
