@@ -25,15 +25,17 @@
     .Where(d => d.ViewId == viewId)
     .FirstOrDefault();
 
-  var stream = App.Data.GetStream(radminDetails.DataContentType);
-  var items = AsItems(stream).ToList();
+  var entitiyStream = App.Data.GetStream(
+    radminDetails.DataContentType
+  );
 
-  var entity = AsItems(stream)
+  var entity = AsItems(entitiyStream)
     .FirstOrDefault(e => e.Id == entityId);
 
-  var entityContentType = App.Data.GetContentType(radminDetails.DataContentType);
+  var entityContentType = App.Data.GetContentType(
+    radminDetails.DataContentType
+  );
 }
-
 
 @if (entity == null)
 {
@@ -50,17 +52,30 @@
     <tbody>
       @foreach (var attr in entityContentType.Attributes)
       {
+        var key = attr.Name;
+        var value = entity.Get(key);
+        // Determine if current attr is a group title (starts with "Group" and has no value)
+        var isGroupTitle = key.StartsWith("Group") && !Text.Has(value);
+        // Group titles should be rendered bold
+        var groupTitleClass = isGroupTitle ? "fw-bold" : "fw-normal";
+        
         <tr>
-          <th class="w-25 fw-normal">@attr.Name</th> @* TODO: @2pp - make group names bold *@
-          <td>@entity.Get(attr.Name)</td>
+          <th class="w-25 @groupTitleClass">
+            @key
+          </th>
+          <td>
+            @value
+          </td>
         </tr>
       }
     </tbody>
   </table>
   
-  <a href="@Link.To(
+  <a
+    href="@Link.To(
       parameters: backPageParameters
-    )" class="btn btn-primary mt-3"
+    )"
+    class="btn btn-primary mt-3"
   >
     Back to Table View
   </a>
