@@ -1,3 +1,5 @@
+import { Resources } from '../models/resources';
+
 export class TabulatorSearchFilter {
   /**
    * Create filter input element and place it next to the table heading
@@ -6,13 +8,15 @@ export class TabulatorSearchFilter {
   createFilterInput(
     tableName: string,
     filterName: string,
-    moduleId: number
+    moduleId: number,
+    resources: Resources,
   ): void {
     const tableElement = document.getElementById(tableName);
     if (!tableElement)
       return;
 
     // Find module container (parent element that contains the table)
+    // TODO: @2pp this looks fishy, I believe there should only be one clear option for the container
     const moduleContainer =
       tableElement.closest(
         `[data-block-instance="${moduleId}"], [data-block-settings="${moduleId}"], [data-cb-instance="${moduleId}"]`
@@ -29,7 +33,7 @@ export class TabulatorSearchFilter {
     const filterInput = document.createElement("input");
     filterInput.className = "form-control";
     filterInput.type = "text";
-    filterInput.placeholder = "Search...";
+    filterInput.placeholder = resources.SearchLabel || "Search...";
     filterInput.id = filterName;
 
     // Create container for the filter
@@ -42,6 +46,7 @@ export class TabulatorSearchFilter {
 
     // Try to find existing flex container within this specific module
     const flexContainer = moduleContainer.querySelector(
+      // TODO: @2pp this is extremely specific, and looks fishy - can we simplify?
       `.d-flex.justify-content-between.align-items-center.mb-1[data-module-id="${moduleId}"], .d-flex.justify-content-between.align-items-center.mb-1`
     );
 
@@ -52,9 +57,9 @@ export class TabulatorSearchFilter {
     }
 
     // If no flex container exists, create one
+    // TODO: EXPLAIN when this happens
     const newFlexContainer = document.createElement("div");
-    newFlexContainer.className =
-      "d-flex justify-content-between align-items-center mb-1";
+    newFlexContainer.className = "d-flex justify-content-between align-items-center mb-1";
     newFlexContainer.setAttribute("data-module-id", moduleId.toString());
 
     // Try to find a heading to pair with the filter, specific to this module
@@ -72,8 +77,7 @@ export class TabulatorSearchFilter {
       newFlexContainer.appendChild(filterContainer);
     } else {
       // No heading found, just add filter before table
-      newFlexContainer.className =
-        "d-flex justify-content-end align-items-center mb-1";
+      newFlexContainer.className = "d-flex justify-content-end align-items-center mb-1";
       newFlexContainer.appendChild(filterContainer);
       tableElement.parentElement?.insertBefore(newFlexContainer, tableElement);
     }
@@ -88,12 +92,11 @@ export class TabulatorSearchFilter {
       return true;
 
     // Check row cells if row object is available
-    if (row && row.getCells) {
+    if (row?.getCells) {
       for (const cell of row.getCells()) {
         const value = cell.getValue();
-        if (value != null && String(value).toLowerCase().includes(searchEnabled)) {
+        if (value != null && String(value).toLowerCase().includes(searchEnabled))
           return true;
-        }
       }
       return false;
     }

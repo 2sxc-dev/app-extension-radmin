@@ -59,11 +59,14 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ### 2025-12-12
 
 1. 2pp: Ensure Detail View Keys are sorted and rendered correctly
+1. 2dm: Introduce stacked extensions
+1. 2dm: Correct namespace of Radmin data
+1. 2dm: Introduce js resources passed in by the razor
 
 ### 2025-12-11
 
 1. 2pp: Add and configure Details View
-1. 2pp: Use matcher to correctly retreave infos for Details View
+1. 2pp: Use matcher to correctly retrieve infos for Details View
 
 ### 2025-12-10
 

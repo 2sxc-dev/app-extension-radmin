@@ -6,6 +6,7 @@ import { TabulatorSearchFilter } from "./tabulator-search-filter";
 import { SchemaProvider } from "../providers/schema-provider";
 import { CustomizeManager } from "../customizers/customize-manager";
 import { ErrorMessageGenerator } from "../helpers/error-message-generator";
+import { Resources } from '../models/resources';
 
 export class TabulatorTable {
   debug = false;
@@ -32,7 +33,7 @@ export class TabulatorTable {
     canEditConfig: boolean;
     canEditData: boolean;
     customizerDistPath?: string; // Optional app URL for dynamic imports
-    resources: Record<string, string>;
+    resources: Resources;
   }) {
     this.log("Creating tabulator table with data:", data);
 
@@ -169,7 +170,8 @@ export class TabulatorTable {
         searchFilter.createFilterInput(
           data.tableName,
           data.filterName,
-          data.moduleId
+          data.moduleId,
+          data.resources
         );
       }
 
